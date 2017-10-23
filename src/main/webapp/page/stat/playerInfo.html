@@ -1,0 +1,213 @@
+@ var head={
+<title>玩家信息</title>
+@}; var ctrls= "ng-controller='PlayerInfoCtrls'" ; var body ={
+@if( so.hasPermission("/stat/club/clubInfo")) {
+  <div  ng-model="so_club_view" ng-init="so_club_view=true"></div>
+@}if( so.hasPermission("/stat/player/playerInfo")) {
+  <div  ng-model="so_player_view" ng-init="so_player_view=true"></div>
+@}if( so.hasPermission("/stat/poker/pokerInfo")) {
+  <div  ng-model="so_poker_view" ng-init="so_poker_view=true"></div>
+@}if( so.hasPermission("/stat/poker/delTicket")) {
+  <div  ng-model="so_delTicket" ng-init="so_delTicket=true"></div>
+@}
+
+<div id="tt" class="easyui-tabs"  data-options="region:'center',border:false,fit:true">
+    <div id="baseinfo" title="基本信息"  >
+		    <div class="easyui-layout" data-options="fit:true,border:false">
+				<div data-options="region:'center',border:false" title="" style="overflow: hidden;">
+		
+						<div id="base">
+						<input id="uuid" value="${rd.uuid}" type="hidden">
+							<table id="baseme" class="table">
+								<tr>
+									<td width="10%" rowspan="2"><img src="${rd.smallicon}" id="icon" style="width: 100px; height: 100px"> 
+									
+									</td>
+									<td width="20%"><br><font size="3">showid/昵称:${rd.showid+"/"+rd.nickname}</font></td>
+									<td width="20%"><br><font size="3">UUID:${rd.uuid}</font></td>
+									<td width="20%"><br><font size="3">手机:${rd.phonenumber}</font></td>
+								</tr>
+								<tr>
+									<td width="20%"><font size="3">注册类型:${rd.idtype=='ID_TYPE_FACEBOOK'?'Facebook':''}${rd.idtype=='ID_TYPE_PHONE'?'手机号码':''}</font></td>
+									<td width="20%"><font size="3">国家代码:${rd.countrycode}</font></td>
+									<td><font size="3">签名:${rd.description}</font></td>
+								</tr>
+							</table>
+<hr/>
+						</div>
+						
+						<table class="easyui-datagrid "   >
+							<thead>
+								<tr>
+									<th data-options="field : 'name',width:120,align:'center'">VIP</th>
+									<th data-options="field : 'name',width:100,align:'center'">性别</th>
+									<th data-options="field : 'name',width:80,align:'center'">钻石数</th>
+									<th data-options="field : 'name',width:80,align:'center'">德扑币</th>
+									<th data-options="field : 'name',width:80,align:'center'">VIP级别</th>
+									<th data-options="field : 'name',width:80,align:'center'">VIP到期时间</th>
+									<th data-options="field : 'name',width:150,align:'center'">最近登录时间</th>
+									<th data-options="field : 'name',width:150,align:'center'">最近所在地</th>
+									<th data-options="field : 'name',width:150,align:'center'">最近登录ip</th>
+								    <th data-options="field : 'name',width:80,align:'center'">操作</th>
+								</tr> 
+								<tr>
+									<th data-options="field : 'name',width:120,align:'center'">
+									${rd.viptype=='BLUE_CARD'?'蓝卡':''}
+									${rd.viptype=='GOLD_CARD'?'黄金卡':''}
+									${rd.viptype=='BLACK_CARD'?'黑卡':''}
+									${rd.viptype=='PLATINUM_CARD'?'白金卡':''}
+									</th>
+									<th data-options="field : 'name',width:100,align:'center'">
+									${rd.gender==0?'女':''}
+									${rd.gender==1?'男':''}
+									</th>
+									<th data-options="field : 'name',width:80,align:'center'">${rd.diamond}</th>
+									<th data-options="field : 'name',width:80,align:'center'">${rd.depu_coin}</th>
+								    <th data-options="field : 'name',width:80,align:'center'">${rd.viptype}</th>
+									<th data-options="field : 'name',width:80,align:'center'">${rd.viplimittime}</th>
+									<th data-options="field : 'name',width:150,align:'center'">${rd.logintime}</th>
+									<th data-options="field : 'name',width:150,align:'center'">${rd.address}</th>
+									<th data-options="field : 'name',width:150,align:'center'">${rd.ip}</th>
+									<th data-options="field : 'name',width:80,align:'center'">
+									<a href="#" onclick="$(this).scope().start(${rd.uuid});">${rd.myflag==0?'关注':''}</a>
+									<a href="#" onclick="$(this).scope().end(${rd.uuid});">${rd.myflag==1?'取消关注':''}</a>
+									</th>
+								</tr>
+							</thead>
+						</table>
+				</div>
+			</div>
+    </div>
+    
+    <!-- ###################################################### -->
+
+     <div id="club" title="他的俱乐部"  >
+     	<div id="clubDiv" data-options="fit:true,region:'center',border:false"></div>
+    </div>
+    
+  <!-- ###################################################### -->
+  
+     <div id="friend" title="他的好友"  >
+       <div id="friendDiv" data-options="fit:true,region:'center',border:false">
+       </div>
+    </div>
+    
+  <!-- ###################################################### -->
+  
+     <div id="common" title="他的普通局"  >
+							
+			 <div class="easyui-layout" data-options="fit : true,border : false">
+					<div data-options="region:'center',border:false">
+							<table class="table">
+								<tr>
+									<td width="10%" rowspan="2"><img src="${rd.smallicon}" id="icon" style="width: 100px; height: 100px"> </td>
+									<td width="20%"><br><font size="3">昵称:${rd.nickname}</font></td>
+									<td width="20%"><br><font size="3">UUID:${rd.uuid}</font></td>
+									<td width="20%"><br><font size="3">手机:${rd.phonenumber}</font></td>
+								</tr>
+								<tr>
+									<td width="20%"><font size="3">注册类型:${rd.idtype=='ID_TYPE_FACEBOOK'?'Facebook':''}${rd.idtype=='ID_TYPE_PHONE'?'手机号码':''}</font></td>
+									<td width="20%"><font size="3">国家代码:${rd.countrycode}</font></td>
+									<td><font size="3">签名:${rd.description}</font></td>
+								</tr>
+							</table>
+							<hr/>
+			
+				
+						<form id="searchForm">
+						     
+							<table class="table  " >
+                                 
+								<tr>
+									<td width="5%" align="right">开始时间</td>
+									<td width="40%"><input name="dateStart" id="dateStart" placeholder="点击选择时间" onclick="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd'})" readonly="readonly" />至 <input
+										name="dateEnd" placeholder="点击选择时间" id="dateEnd" onclick="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd'})" readonly="readonly" /></td>
+									<td>
+										<a href="javascript:void(0)" class="easyui-linkbutton" onclick="$(this).scope().searchFun()">搜索</a> <a href="javascript:void(0)" class="easyui-linkbutton"
+											onclick="$(this).scope().cleanFun()" >重置</a>
+									</td>
+				
+								</tr>
+							</table>
+						</form>
+						
+						
+						<table class="table">
+								<tr>
+									
+									<th width="20%">盈亏合计:<label id="totalBonus">0</label></th>
+									<th width="20%">快速局:<label id="totalFast">0</label></th>
+									<th width="20%">俱乐部局:<label id="totalClub">0</label></th>
+									<th >圈子局:<label id="totalGroup">0</label></th>
+								</tr>
+							</table>
+						<hr>
+
+						<div style=" width:1500px;">
+					        <div id='pokerchart' style=" width: 750px;  float:right;"></div>
+					        <div  id='bonuschart' style=" width: 750px;  "></div>
+					        <div style=" width: 1500px; ">
+								<table id="commonDG" title="他的普通局信息"  ></table>
+					        </div>
+					    </div>
+					</div>
+                </div>
+		</div>
+		
+       
+	     <div id="sng" title="他的SNG"  >
+	       <div id="sngDiv" data-options="fit:true,region:'center',border:false"></div>
+	     </div>
+			    
+<!-- ###################################################### -->
+          <div id="ticket" title="他的门票"  >
+               <div id="ticketDiv" data-options="fit:true,region:'center',border:false"> </div>
+          </div>
+<!-- ###################################################### -->
+    </div>
+    
+<!--  删除门票dialog -->
+<div id="ddlg" class="easyui-dialog" style="width: 550px; height: 480px; padding: 5px 10px" closed="true" buttons="#ddlg-buttons"
+	data-options="resizable:true,modal:true">
+	<div class="easyui-layout" data-options="fit:true,border:false">
+		<div data-options="region:'center',border:false" title="" style="overflow: hidden;">
+			<form id="rfm" method="post">
+				<table class="table table-hover table-condensed">
+					<tr>
+						<th width="30%" style="text-align: right;">门票ID</th>
+						<td><input name="typeid"  id="typeid" type="text"  class="easyui-validatebox span3" data-options="required:true" readonly="readonly" value=""></td>
+					</tr>
+					<tr>
+						<th width="30%" style="text-align: right;">门票名字</th>
+						<td><input name="zhname"  id="zhname"  type="text" class="easyui-validatebox span3" data-options="required:true" readonly="readonly"  value=""></td>
+					</tr>
+					<tr>
+						<th width="30%" style="text-align: right;">玩家UUID</th>
+						<td><input name="belonguuid"  id="belonguuid"  type="text" class="easyui-validatebox span3" data-options="required:true" readonly="readonly"  value=""></td>
+					</tr>
+					<tr>
+						<th width="30%" style="text-align: right;">门票剩余数量</th>
+						<td><input name="remainnum"  id="remainnum"  type="text" class="easyui-numberbox span3" data-options="required:true" readonly="readonly"  value=""></td>
+					</tr>
+					<tr>
+						<th width="30%" style="text-align: right;">删除数量</th>
+						<td><input name="delNum"  id="delNum"  type="text" class="easyui-numberbox span3" data-options="required:true"  value=""></td>
+					</tr>
+					<tr>
+						<th width="30%" style="text-align: right;">备注</th>
+						<td> <textarea  id="remark" name="remark" placeholder="请填写备注" rows="3"  class="easyui-validatebox span4" data-options="required:true"></textarea></td>
+					</tr>
+				</table>
+			</form>
+		</div>
+	</div>
+</div>
+<div id="ddlg-buttons">
+	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="$(this).scope().setpwdSubmit('#rfm','#ddlg')">确定</a> <a href="javascript:void(0)" class="easyui-linkbutton" onclick="javascript:$('#ddlg').dialog('close')">取消</a>
+</div>
+
+@};var js={
+<script src="${CONTEXT_PATH}/static/js/Highcharts-4.2.3/js/highcharts.js"></script>
+<script src="${CONTEXT_PATH}/static/js/Highcharts-4.2.3/js/modules/exporting.js"></script>
+<script src="${CONTEXT_PATH}/static/app/ctrls/playerInfo-ctrls.js" type="text/javascript"></script>
+ @}; include("../layout/_layout.html",{head:head,body:body,js:js,ctrls:ctrls}) {}

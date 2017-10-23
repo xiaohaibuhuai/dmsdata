@@ -1,0 +1,24 @@
+
+jdbcUrl = jdbc:mysql://127.0.0.1:3306/cms_support?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
+user = root
+password =rootroot
+dbType=mysql
+devMode = true
+decrypt=true
+
+poker.jdbcUrl = jdbc:mysql://127.0.0.1:3306/test_poker?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
+poker.user = root
+poker.password =rootroot
+
+poker2.jdbcUrl = jdbc:mysql://127.0.0.1:3306/test_poker?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
+poker2.user = root
+poker2.password =rootroot
+
+
+poker3.jdbcUrl = jdbc:mysql://127.0.0.1:3306/test_poker?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
+poker3.user = root
+poker3.password =rootroot
+
+pro.jdbcUrl = jdbc:mysql://127.0.0.1:3306/test_poker?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
+pro.user = root
+pro.password =rootroot

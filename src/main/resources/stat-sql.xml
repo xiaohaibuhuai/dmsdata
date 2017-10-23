@@ -1,0 +1,859 @@
+<!-- 复杂的 sql 写在 这里  简单的 直接 拼接了    -->
+<sqlGroup name="stat">
+
+	<sqlGroup name="userchart">
+	
+		<sql id="getActiveUser">
+		    SELECT count( distinct uuid) as num,date
+			FROM
+			    t_bill_info AS bi,
+			    (SELECT
+			        roomid,
+			        DATE(FROM_UNIXTIME(createtime / 1000)) as  date
+			    FROM
+			        t_bill_base_info
+			    WHERE
+			        DATE(FROM_UNIXTIME(createtime / 1000)) BETWEEN ? and ?) AS ri
+			where
+				bi.roomid = ri.roomid and buystacks > 0 group by date
+		</sql>
+		
+	</sqlGroup>
+	
+	<sqlGroup name="pokerchart">
+		<sql id="getCommonTotal">
+			SELECT
+					count(roomid) as total,
+					DATE(FROM_UNIXTIME(createtime / 1000)) as  date
+			FROM
+					t_bill_base_info
+			WHERE
+					createtime BETWEEN ? AND ? GROUP BY date
+		</sql>
+		
+		<sql id="getCommonTypeTotal">
+			SELECT count(CASE createroomtype WHEN 1 THEN 1 END) as grp,
+				   count(CASE createroomtype WHEN 2 THEN 1 END) as club,
+				   count(CASE createroomtype WHEN 3 THEN 1 END) as fast,
+			DATE(FROM_UNIXTIME(createtime / 1000)) as  date
+			from   t_bill_base_info
+			where 
+			createtime BETWEEN ? AND ? GROUP BY date
+		</sql>
+		
+	</sqlGroup>
+	
+	<sqlGroup name="clubchart">
+		<sql id="getActiveClub">
+			SELECT count( distinct fromroomid) as num  , DATE(FROM_UNIXTIME(createtime / 1000)) as  date FROM  t_bill_base_info WHERE  createtime BETWEEN ? AND ? and createroomtype =2 GROUP BY date
+		</sql>
+	</sqlGroup>
+	
+	<sqlGroup name="task">
+		<sql id="getUserTotal">
+			select count(uuid) from t_user_baseinfo
+		</sql>
+		<sql id="getClubTotal">
+			select count(clubid) from t_club_info
+		</sql>
+		<sql id="getActiveUserTotalOfDay">
+			select  count( distinct uuid) as total
+			from 
+			t_bill_info as  bi,
+			(select roomid 
+				from t_bill_base_info where createtime BETWEEN ? AND ? 
+			 ) as bbi
+			where  bi.roomid = bbi.roomid and bi.buystacks > 0
+						
+		</sql>
+		<sql id="getDataByTypeAndDate">
+			select * from t_stat_data 
+			where type = ? and targetDate = ?
+		</sql>
+		
+		<sql id="getDataList">
+			select * from t_stat_data 
+			where type = ? and targetDate BETWEEN ? AND ?
+		</sql>
+		
+		<sql id="getAllLeagueInfo">
+			select tli.*,tci.clubname,tci.createUser from t_league_info tli,t_club_info tci where tli.leaguelord = tci.clubid order by tli.leagueid asc
+		</sql>
+		<sql id="getLeagueTotalUsers">
+			SELECT 
+			    leagueid, COUNT(DISTINCT (leagueuser.uuid)) as peoplenum
+			FROM
+			    (SELECT 
+			        tli.leagueid as leagueid, lmi.memberclubid, cmi.memberuuid AS uuid
+			    FROM
+			        t_league_member_info lmi, t_league_info tli,t_club_member_info cmi
+			    WHERE
+			        tli.leagueid = lmi.leagueid and lmi.memberclubid = cmi.clubid) AS leagueuser
+			GROUP BY leagueuser.leagueid order by leagueid asc;
+		</sql>
+		<sql id="getLeagueTotalGames">
+			SELECT 
+			    leagueid,
+			    COUNT(*) AS ontablenum,
+			    COUNT(DISTINCT (ss.roomid)) AS gamenum
+			FROM
+			    (SELECT 
+			        bbi.leagueid AS leagueid,
+			        bbi.roomid AS roomid,
+			        bi.uuid AS uuid
+			    FROM
+			        t_bill_info bi, t_bill_base_info bbi
+			    WHERE
+			        bbi.roomid = bi.roomid
+			        AND bi.buystacks > 0
+			        AND bbi.leagueid != 0
+			        AND bbi.createtime BETWEEN ? AND ?) AS ss
+			GROUP BY leagueid
+			ORDER BY leagueid ASC;
+		</sql>
+		<sql id="getLeagueDataByDate">
+			SELECT 
+			    leaguedata.leagueid AS leagueid,
+			    leaguedata.leaguename AS leaguename,
+			    leaguedata.clubid AS clubid,
+			    leaguedata.clubname AS clubname,
+			    leaguedata.maxmembers AS maxmembers,
+			    SUM(leaguedata.ontablenum) AS ontablenum,
+			    leaguedata.peoplenum AS peoplenum,
+			    SUM(leaguedata.gamenum) AS gamenum,
+			    SUM(leaguedata.NLHE) AS NLHE,
+			    SUM(leaguedata.PLO) AS PLO,
+			    SUM(leaguedata.SIXPLUS) AS SIXPLUS,
+			    SUM(leaguedata.bigblind) AS bigblind,
+			    SUM(leaguedata.mainLandNum) AS mainLandNum,
+			    SUM(leaguedata.otherLandNum) AS otherLandNum,
+			    CONCAT(GROUP_CONCAT(leaguedata.ipaddress), ',') AS ipaddress
+			FROM
+			    (SELECT 
+			        *
+			    FROM
+			        t_league_daily_snapshot
+			    WHERE
+			        targetDate BETWEEN ? AND ?
+			    ORDER BY targetDate DESC) AS leaguedata
+			GROUP BY leagueid
+			HAVING gamenum >= 10
+			ORDER BY leagueid ASC;
+		</sql>
+		<sql id="getLeagueGameNumsAndBlindsByDateAndLeagueid">
+			SELECT
+			     sum(bigblind) as bigblind,
+			     sum(CASE WHEN gameroomtype in (1,3) THEN 1 END) as NLHE,
+			     sum(CASE WHEN gameroomtype in (5,6) THEN 1 END) as PLO,
+			     sum(CASE WHEN gameroomtype = 4 THEN 1 END) as SIXPLUS
+			FROM
+				(SELECT bbi.*  FROM
+			         t_bill_base_info bbi,t_bill_info bi
+			    WHERE
+			        bbi.leagueid = ?
+			        AND bbi.roomid = bi.roomid
+			        AND bi.buystacks > 0
+			        AND bbi.createtime BETWEEN ? AND ? GROUP BY bbi.roomid ) as ss
+		</sql>
+		<sql id="getLeagueOntablesUserNumByLeagueidAndDate">
+			SELECT 
+			    leagueid,
+			    uuid,
+			    count(*) as num
+			FROM
+			    (SELECT 
+			        bbi.leagueid AS leagueid,
+			        bi.uuid AS uuid
+			    FROM
+			        t_bill_info bi, t_bill_base_info bbi
+			    WHERE
+			        bbi.roomid = bi.roomid
+			        AND bi.buystacks > 0
+			        AND bbi.leagueid != 0
+			        AND bbi.createtime BETWEEN ? AND ?) AS ss
+			GROUP BY leagueid,uuid
+		</sql>
+	</sqlGroup>
+
+	<sqlGroup name="player">
+	
+		<sql id="getPlayerList">
+		    select uuid,showid,nickname,idtype,countrycode,strid as phonenumber,pwd,viptype,if(viplimittime>0,DATE(FROM_UNIXTIME(viplimittime / 1000)),'-') AS viplimittime, gender, coin as diamond, popularity as depu_coin,androidcoin as android_diamond, androidpopularity as android_depu_coin, smallicon, description,devicetype,languagetype
+        from t_user_baseinfo 
+		</sql>
+		<sql id="getPlayerByUuid">
+		    select uuid,showid,nickname,strid as phonenumber, pwd, viptype,if(viplimittime>0,DATE(FROM_UNIXTIME(viplimittime / 1000)),'-') AS viplimittime, gender,FROM_UNIXTIME(logintime / 1000) AS logintime, coin as diamond, popularity as depu_coin,androidcoin as android_diamond, androidpopularity as android_depu_coin, smallicon, description, idtype, countrycode
+        from t_user_baseinfo where uuid=?
+		</sql>
+		<sql id="getPlayerByPhone">
+		    select uuid, nickname, strid,  pwd
+            from t_user_baseinfo where strid=?
+		</sql>
+		<sql id="getUserWhiteByPhone">
+		    select *
+            from t_user_white where account=?
+		</sql>
+		<sql id="getUserWhiteByClubidIsNull">
+		    select *
+            from t_user_white where clubid is null
+		</sql>
+		<sql id="getUserWhiteByPhoneAndClubid">
+		    select *
+            from t_user_white where account=? and clubid =?
+		</sql>
+		<sql id="getUserWhiteByClubid">
+		    select *
+            from t_user_white where clubid =?
+		</sql>
+		<sql id="getClubForPlayer">
+		    select ci.clubid, ci.clubname, ci.clublocation, ci.createuser,ub.nickname,ub.showid, ci.fund, ci.maxmembers   
+	        from t_club_info as ci,t_club_member_info as cmi,t_user_baseinfo ub 
+	        where ci.clubid = cmi.clubid and cmi.memberuuid  =? and ub.uuid=ci.createUser
+		</sql>
+		<sql id="getClubCurNum">
+		   select  count(memberuuid) as cur_number        
+	        from t_club_member_info  
+	        where clubid = ?
+		</sql>
+		<sql id="getFriendForPlayer">
+		
+		 select ub.uuid,uf.friendtype,ub.nickname,ub.showid,ub.gender, ub.viptype, ub.coin as diamond, ub.popularity as depu_coin,ub.androidcoin as android_diamond, ub.androidpopularity as android_depu_coin
+         from t_user_baseinfo ub,t_user_friendinfo uf
+         where ub.uuid=uf.frienduuid and uf.uuid=?
+		</sql>
+		
+		<!-- ###################特殊处理########################### -->
+		<sql id="getCommonForPlayer">
+		
+		 SELECT bb.*,count(tbi.uuid)as players from 
+			t_bill_info tbi,
+			(
+			SELECT
+			bi.buystacks,	
+			bi.roomid,
+			bbi.roomname,
+			 CONCAT(smallblind, '/', bigblind) AS blind,
+			bbi.createuser,
+			FROM_UNIXTIME(createtime / 1000) AS ctime,
+			FORMAT(createduration / 3600, 1) AS gtime,
+			totalgamenum AS hands,
+			(remainstacks-buystacks) as bonus,
+			gameroomtype,
+			createroomtype,
+			leagueid			
+			from t_bill_info as bi,t_bill_base_info as bbi 
+			where 
+			bi.roomid=bbi.roomid 
+			and bi.uuid=? 
+			and bbi.createtime BETWEEN ? AND ?
+			) as bb
+			where 
+			tbi.roomid=bb.roomid and tbi.buystacks>0 GROUP BY tbi.roomid
+        
+		</sql>
+		<sql id="getCountCommonForPlayer">
+		
+			SELECT 	
+			count(1)
+			
+			from t_bill_info as bi,t_bill_base_info as bbi 
+			where 
+			bi.roomid=bbi.roomid 
+			and bi.uuid=? 
+			and bi.buystacks>0
+			and bbi.createtime BETWEEN ? AND ?
+        
+		</sql>
+		<sql id="getCommonTotalRoomType">
+			SELECT 	
+			count(createroomtype) as total,createroomtype
+			from t_bill_info as bi,t_bill_base_info as bbi 
+			where 
+			bi.roomid=bbi.roomid 
+			and bi.uuid=? 
+			and bi.buystacks>0
+			and bbi.createtime BETWEEN ? AND ? group by createroomtype
+		</sql>
+		<sql id="getCommonTotalBonus">
+			SELECT 	
+			sum(remainstacks-buystacks) as bonus
+			from t_bill_info as bi,t_bill_base_info as bbi
+			where 
+			bi.roomid=bbi.roomid 
+			and bi.uuid=? 
+			and bi.buystacks>0
+			and bbi.createtime BETWEEN ? AND ?
+		</sql>
+		<sql id="getCommonBonusChart">
+			SELECT 	
+			sum(remainstacks-buystacks) as num,DATE(FROM_UNIXTIME(createtime / 1000)) as  date
+			from t_bill_info as bi,t_bill_base_info as bbi
+			where 
+			bi.roomid=bbi.roomid 
+			and bi.uuid=? 
+			and bi.buystacks>0
+			and bbi.createtime BETWEEN ? AND ? GROUP BY date
+		</sql>
+		<sql id="getCommonPokerChart">
+			SELECT count(CASE createroomtype WHEN 1 THEN 1 END) as grp,
+					count(CASE createroomtype WHEN 2 THEN 1 END) as club,
+					count(CASE createroomtype WHEN 3 THEN 1 END) as fst,
+		DATE(FROM_UNIXTIME(createtime / 1000)) as  date
+		from t_bill_info as bi,t_bill_base_info as bbi
+		where 
+		bi.roomid=bbi.roomid 
+		and bi.uuid=? 
+		and bi.buystacks>0
+		and bbi.createtime BETWEEN ? AND ? GROUP BY date
+		</sql>
+		<sql id="setUserPwdNull">
+		update  t_user_baseinfo set pwd = null where uuid = ?
+		</sql>
+		<sql id="resetUserPwd">
+		update  t_user_baseinfo set pwd = ? where uuid = ?
+		</sql>
+		<sql id ="getTraceUuidList">
+		select uuid from t_user_trace where opertor = ?
+		</sql>
+		<sql id ="getTraceUuid">
+		select uuid from t_user_trace where opertor = ? and uuid = ?
+		</sql>
+		<sql id ="insertTraceUuid">
+		insert into t_user_trace (uuid,opertor) values (?, ?)
+		</sql>
+		<sql id ="deleteTraceUuid">
+		delete from t_user_trace where uuid = ? and opertor = ?
+		</sql>
+		<sql id ="getIpInfoByUuid">
+		     select ip,country,province,city from t_user_address where uuid = ? order by id desc
+		</sql>
+		<sql id="getPlayerByPhoneAndUuid">
+		    select uuid  from t_user_baseinfo where strid=? and uuid= ?
+		</sql>
+		<sql id="getBlindDataByUuidAndDate">
+			SELECT 
+                  smallblind, COUNT(*) AS num
+            FROM
+                  t_bill_base_info bbi,
+                  t_bill_info bi
+            WHERE
+                  bi.roomid = bbi.roomid
+            AND bi.uuid = ?
+            AND bbi.createtime BETWEEN ? AND ?
+            GROUP BY bbi.smallblind
+            ORDER BY num DESC
+		</sql>
+		<!-- CMS白名单 -->
+		<sql id="addUserRoleByStrId">
+		    insert into t_user_role  (uuid,strid,role_id) values (?, ?, ?)
+		</sql>
+		<sql id="deleteUserRoleByStrId">
+		    delete from t_user_role  where strid = ?
+		</sql>
+		<sql id="deleteUserRoleByUUID">
+		    delete from t_user_role  where uuid = ? and role_id != 1
+		</sql>
+	</sqlGroup>
+	
+	
+	<sqlGroup name="club">
+	    <!-- 
+	    <sql id="getClubList">
+		    select clubid, clubname, clublocation, createuser , fund, maxmembers ,clubexperience,clublevel,maxmanagers,currentmembers,clubchangeexp,if(clubbuylevel>0,clubbuylevel,'-') as clubbuylevel,if(buylevellimittime>0,DATE(FROM_UNIXTIME(buylevellimittime / 1000)),'-') AS buylevellimittime from t_club_info 
+		</sql>
+		,clubchangeexp,if(clubbuylevel>0,clubbuylevel,'-') as clubbuylevel,if(buylevellimittime>0,DATE(FROM_UNIXTIME(buylevellimittime / 1000)),'-') AS buylevellimittime 
+	     -->
+		<sql id="getClubList">
+		    select clubid, clubname, clublocation, createuser , fund, maxmembers ,clubexperience,clublevel from t_club_info 
+		</sql>
+		<sql id="getClubByClubid">
+		    select ci.clubid, ci.clubname, ci.clublocation, ci.createuser,ub.nickname ,ub.showid , ci.fund, ci.maxmembers ,ci.smallicon
+	        from t_club_info as ci,t_user_baseinfo ub 
+	        where ub.uuid=ci.createUser and ci.clubid=?
+		</sql>
+		<sql id="getClubByCreateuser">
+		    select clubid, clubname
+	        from t_club_info 
+	        where createuser = ?
+		</sql>
+		<sql id="getMemberListByClubid">
+			 select cmi.memberuuid, cmi.memberlevel as memberlevel,ub.showid,ub.nickname, ub.viptype, ub.coin as diamond, ub.popularity as depu_coin,ub.androidcoin as android_diamond,ub.androidpopularity as android_depu_coin,ub.gender
+	         from t_user_baseinfo ub,t_club_member_info cmi
+	         where ub.uuid=cmi.memberuuid and cmi.clubid=?
+		</sql>
+		
+		<sql id="getMemberVipTypeByClubid">
+			SELECT count(CASE viptype WHEN 'BLUE_CARD' THEN 1 END) as blue,
+			count(CASE viptype WHEN 'GOLD_CARD' THEN 1 END) as gold,
+			count(CASE viptype WHEN 'PLATINUM_CARD' THEN 1 END) as platinum,
+       		count(CASE viptype WHEN 'BLACK_CARD' THEN 1 END) as black
+  			from t_user_baseinfo ub,t_club_member_info cmi
+	        where ub.uuid=cmi.memberuuid and cmi.clubid=?
+		</sql>
+		<!-- ###################特殊处理########################### -->
+		<sql id="getMemberlistByClubid">
+			select cmi.memberuuid as uuid, ub.showid,ub.nickname 
+			from  t_club_member_info cmi ,t_user_baseinfo ub
+			WHERE cmi.memberuuid = ub.uuid
+			and cmi.clubid = ?
+		</sql>
+		<sql id="getToplistByClubid">
+			select sum(bi.remainstacks-bi.buystacks) as bonus 
+			from  t_bill_info as bi,t_bill_base_info bbi
+			WHERE bbi.roomid = bi.roomid
+			and bi.buystacks>0
+			and bbi.fromroomid=?
+			and bi.uuid = ?
+			and bbi.createtime BETWEEN ? AND ? 
+		</sql>
+		<!-- ###################特殊处理########################### -->
+		<!-- and tbi.buystacks>0 -->
+		<sql id="getPokerListForClub">
+		
+	 		SELECT bb.*,count(tbi.uuid)as players from 
+			t_bill_info tbi,
+			(
+			
+			SELECT 	
+			bbi.roomid,
+			bbi.roomname,
+			 CONCAT(smallblind, '/', bigblind) AS blind,
+			bbi.createuser,
+			FROM_UNIXTIME(createtime / 1000) AS ctime,
+			FORMAT(createduration / 3600, 1) AS gtime,
+			totalgamenum AS hands,
+			gameroomtype,
+			createroomtype,
+			leagueid
+			from  t_bill_base_info as bbi 
+			where 
+			bbi.fromroomid=?
+			and bbi.createtime  BETWEEN ? AND ?
+			
+			) as bb
+			where 
+			tbi.roomid=bb.roomid GROUP BY tbi.roomid
+		</sql>
+		
+		<sql id="getDistinctBigblind">
+			select DISTINCT(bigblind) as type  from t_bill_base_info 
+			where fromroomid=?
+			and createtime  BETWEEN ? AND ?
+		</sql>
+		
+		<sql id="getCountBigblind">
+			select count(1) as num ,DATE(FROM_UNIXTIME(createtime / 1000)) as  date,bigblind
+			from t_bill_base_info
+			where fromroomid=?
+			and createtime  BETWEEN ? AND ? GROUP BY date,bigblind
+		</sql>
+		
+		<sql id="getDistinctGtime">
+			select DISTINCT(FORMAT(createduration / 3600, 1)) as type from t_bill_base_info 
+			where fromroomid=? 
+			and createtime  BETWEEN ? AND ?
+		</sql>
+		<sql id="getCountGtime">
+			select count(1) as num ,DATE(FROM_UNIXTIME(createtime / 1000)) as  date,FORMAT(createduration / 3600, 1) AS gtime
+			from t_bill_base_info
+			where fromroomid=?
+			and createtime  BETWEEN ? AND ? GROUP BY date,gtime
+		</sql>
+		<sql id ="getTraceClubidList">
+		select clubid from t_club_trace where opertor = ?
+		</sql>
+		<sql id ="getTraceClubid">
+		select clubid from t_club_trace where opertor = ? and clubid = ?
+		</sql>
+		<sql id ="insertTraceClubid">
+		insert into t_club_trace (clubid,opertor) values (?, ?)
+		</sql>
+		<sql id ="deleteTraceClubid">
+		delete from t_club_trace where clubid = ? and opertor = ?
+		</sql>
+		<sql id="getClubInfoByClubid">
+		    select ci.clubid, ci.clubname, ci.clublocation, ci.createuser,ub.nickname,ub.showid,ub.strid, ci.fund, ci.maxmembers ,ci.smallicon
+	        from t_club_info as ci,t_user_baseinfo ub 
+	        where ub.uuid=ci.createUser and ci.clubid=?
+		</sql>
+		<sql id="getClubLeagueWhiteList">
+		    select ci.clubid, ci.clubname, ci.createuser,ub.nickname, ci.fund, ci.maxmembers ,ci.smallicon
+	        from t_league_auth_whitelist as law,t_club_info as ci,t_user_baseinfo ub 
+	        where law.clubid = ci.clubid and ub.uuid=ci.createUser 
+		</sql>
+		<sql id="getClubLeagueWhiteByClubid">
+	        select * from t_league_auth_whitelist  where clubid =?
+		</sql>
+		<sql id="addClubLeagueWhiteByClubid">
+	        insert into t_league_auth_whitelist (clubid)  values (?)
+		</sql>
+		<sql id="addClubInfo">
+	        insert into t_club_info (clubid,clubname,clublocation,createUser,fund,smallicon,bigicon,description,verify,clubexperience,logintime,maxmembers,chatroomid,clublevel,bigalbums,smallalbums,clubscore)  
+	        values (?,?,'000001',?,0,"","","",1,0,0,?,0,0,"","",0)
+		</sql>
+		<sql id="addClubMemberInfo">
+	        insert into t_club_member_info (clubid,memberuuid,memberlevel,memberstatus)  
+	        values (?,?,1,0)
+		</sql>
+		<sql id="getClubMaxLength">
+		    SELECT MAX(length(clubid)) as maxLength FROM t_club_info
+		</sql>
+		<sql id="getPokerNumForClub">
+		    select a.weeknum,b.monthnum from 
+			(SELECT 	
+			count(*) as weeknum
+			from  t_bill_base_info as bbi
+			where 
+			bbi.overtag = 1 and bbi.totalgamenum >0 and bbi.fromroomid=?
+			and bbi.createtime  BETWEEN ? AND ?) as a,
+			(SELECT 	
+			count(*) as monthnum
+			from  t_bill_base_info as bbi
+			where 
+			bbi.overtag = 1 and bbi.totalgamenum >0 and bbi.fromroomid=?
+			and bbi.createtime  BETWEEN ? AND ?) as b
+		</sql>
+		<sql id="getLeagueForClub">
+		    select li.leagueid, li.leaguename,FROM_UNIXTIME(li.createtime / 1000) AS ctime, li.leaguelord, ci.clubname , li.maxmembers   
+	        from t_league_info as li,t_league_member_info as lmi,t_club_info ci 
+	        where li.leagueid = lmi.leagueid and lmi.memberclubid  = ? and ci.clubid = li.leaguelord
+		</sql>
+		<sql id="getBillDataByClubid">
+			SELECT 
+			    a.clubOnTableNum as clubOnTableNum, b.leagueOnTableNum as leagueOnTableNum
+			FROM
+			    (SELECT 
+			        COUNT(*) AS clubOnTableNum
+			    FROM
+			        t_bill_info bi, t_bill_base_info bbi
+			    WHERE
+			        bbi.roomid = bi.roomid
+			    AND bbi.leagueid = 0
+			    AND bi.buystacks > 0
+			    AND bbi.createtime BETWEEN ? AND ?
+			    AND bbi.fromroomid = ?) AS a,
+			    (SELECT 
+			        COUNT(*) AS leagueOnTableNum
+			    FROM
+			        t_bill_info bi, t_bill_base_info bbi
+			    WHERE
+			        bbi.roomid = bi.roomid
+			    AND bbi.createtime BETWEEN ? AND ?
+			    AND bbi.leagueid IN (|)
+			    AND bi.buystacks > 0
+			    AND bi.clubid = ?) AS b
+		</sql>
+		<sql id="getLeagueidsbyClubid">
+		      select leagueid from t_league_member_info lmi,t_club_info ci  where  ci.clubid = lmi.memberclubid  and  lmi.memberclubid = ?
+		</sql>
+	</sqlGroup>
+	
+	<sqlGroup name="poker">
+	<!-- ###################特殊处理########################### -->
+		<sql id="getPokerList">
+			SELECT 	
+			roomid,
+			roomname,
+			 CONCAT(smallblind, '/', bigblind) AS blind,
+			createuser,
+			FROM_UNIXTIME(createtime / 1000) AS ctime,
+			FORMAT(createduration / 3600, 1) AS gtime,
+			totalgamenum AS hands,
+			gameroomtype,
+			leagueid,
+			overtag
+			from  t_bill_base_info  where 1=1 
+		</sql>
+		<!--  
+		<sql id="getPokerList">
+			SELECT 	
+			roomid,
+			roomname,
+			 CONCAT(smallblind, '/', bigblind) AS blind,
+			createuser,
+			nickname ,
+			FROM_UNIXTIME(createtime / 1000) AS ctime,
+			FORMAT(createduration / 3600, 1) AS gtime,
+			totalgamenum AS hands
+			from  t_bill_base_info  ,t_user_baseinfo  
+			where t_bill_base_info.createuser=t_user_baseinfo.uuid
+		</sql>-->
+		<!-- ###################特殊处理########################### -->
+		<sql id="getPokerById">
+			SELECT 	
+			roomid,
+			roomname,
+		    CONCAT(smallblind, '/', bigblind) AS blind,
+			createuser,
+			FROM_UNIXTIME(createtime / 1000) AS ctime,
+			FORMAT(createduration / 3600, 1) AS gtime,
+			frommsg,
+			fromroomid,
+			createroomtype,
+			totalgamenum,
+			leagueid,
+			gameroomtype,
+			overtag
+			from  t_bill_base_info    
+			where  roomid = ?
+		</sql>
+		<!--  
+		<sql id="getPokerById">
+			SELECT 	
+			roomid,
+			roomname,
+		    CONCAT(smallblind, '/', bigblind) AS blind,
+			createuser,
+			nickname ,
+			FROM_UNIXTIME(createtime / 1000) AS ctime,
+			FORMAT(createduration / 3600, 1) AS gtime,
+			frommsg,
+			fromroomid,
+			createroomtype
+			from  t_bill_base_info  ,t_user_baseinfo  
+			where t_bill_base_info.createuser=t_user_baseinfo.uuid
+			and roomid = ?
+		</sql>-->
+		<sql id="getPokerTotal">
+			SELECT 	
+			sum(remainstacks-buystacks) as total
+			from t_bill_info 
+			where 
+			roomid=?
+		</sql>
+		<sql id="getPokerBuysTotal">
+			SELECT 	
+			sum(buystacks) as total
+			from t_bill_info 
+			where 
+			roomid=?
+		</sql>
+		<sql id="getPokerSystemTotal">
+			SELECT 	
+			sum(insurancegetstacks) as total
+			from t_bill_info 
+			where 
+			roomid=? and uuid = 1000
+		</sql>
+		<!-- ###################特殊处理########################### -->
+		<sql id="getMemberlist">
+			select  
+			bi.uuid,roomid,bi.buystacks,bi.remainstacks,bi.insurancebuystacks,bi.insurancegetstacks,(bi.remainstacks-bi.buystacks) as bonus,bi.clubid,bi.clubname
+			from t_bill_info as bi 
+			where  buystacks>0 and roomid = ?
+		</sql>
+		<!--  
+		<sql id="getMemberlist">
+			select  
+			bi.uuid,roomid,bi.buystacks,bi.remainstacks,(bi.remainstacks-bi.buystacks) as bonus,ub.nickname
+			from t_bill_info as bi ,t_user_baseinfo as ub
+			where bi.uuid = ub.uuid and buystacks>0
+			and roomid = ?
+		</sql>-->
+	</sqlGroup>
+	
+	<sqlGroup name="epoker">
+	     <sql id="getEpokerlist">
+	     	select 
+	     	bbi.gameroomtype,bi.roomid,roomname,sum(if(bi.uuid = 1000 , 0 , bi.remainstacks-bi.buystacks+bi.insurancebuystacks-bi.insurancegetstacks )) as bonus,
+	     	sum(if(bi.uuid=1000, bi.insurancegetstacks- bi.insurancebuystacks, bi.remainstacks-bi.buystacks)) as bonus1,
+	     	sum(bi.insurancegetstacks - bi.insurancebuystacks) as bonus2
+			from t_bill_info bi ,t_bill_base_info bbi
+			where bi.roomid = bbi.roomid and bbi.overtag = 1
+			and  createtime BETWEEN ? AND ?
+            GROUP BY bi.roomid HAVING (bonus>0 or bonus &lt; -10)
+	     </sql>
+		 <sql id="getCountPoker">
+	     	select 
+	     	count(*) as total
+			from t_bill_base_info 
+			where createtime  BETWEEN ? AND ?
+	     </sql>
+		 <sql id="getCountEPoker">
+	     	select 
+	     	count(*) as total
+			from (
+				 select 
+		     	bi.roomid,sum(bi.remainstacks-bi.buystacks + bi.insurancebuystacks-bi.insurancegetstacks) as bonus
+				from t_bill_info bi ,t_bill_base_info bbi
+				where bi.roomid = bbi.roomid and bi.buystacks > 0
+				and  createtime BETWEEN ? AND ? 
+	            GROUP BY bi.roomid HAVING (bonus>0 or bonus &lt; -10)
+			)as t
+	     </sql>
+	</sqlGroup>
+	<sqlGroup name="userdata">
+	     <sql id="getTotalNum">
+	          select count(*) as num from t_user_address where date >= ? and date &lt;= ? ;
+	     </sql>
+	     <sql id="getChinaTotalNum">
+	          select count(*) as num from t_user_address where date >= ? and date &lt;= ? and country = 'CN'
+	     </sql>
+	     <sql id="getForeignTotalNum">
+	          select count(*) as num from t_user_address where date >= ? and date &lt;= ? and country != 'CN'
+	     </sql>
+	     <sql id="getGATTotalNum">
+	          select count(*) as num from t_user_address where date >= ? and date &lt;= ? and province in ('香港特别行政区','澳门特别行政区','台湾省')
+	     </sql>
+	     
+		 <sql id="getProvinceDataByNum">
+		      select province , count(*) as num from t_user_address where province != '' and date >= ? and date &lt;= ? group by province HAVING num > ? order by num desc
+	     </sql>
+	     <sql id="getChinaProvinceDataByNum">
+		      select province , count(*) as num from t_user_address where country = 'CN' and province != '' and date >= ? and date &lt;= ? group by province HAVING num > ? order by num desc
+	     </sql>
+	     <sql id="getForeignCountryDataByNum">
+		      select country , count(*) as num from t_user_address where country != 'CN'  and country != '' and date >= ? and date &lt;= ? group by country HAVING num > ? order by num desc
+	     </sql>
+	     <sql id="getGATProvinceDataByNum">
+		      select province , count(*) as num from t_user_address where province in ('香港特别行政区','澳门特别行政区','台湾省') and date >= ? and date &lt;= ? group by province HAVING num > ? order by num desc
+	     </sql>
+	     
+	     <sql id="getForeignProvinceDataByNum">
+	          select province, count(*) as num from t_user_address where country = ? and province != ''and date >= ? and date &lt;= ? group by province HAVING num > ? order by num desc
+	     </sql>
+	     
+	     <sql id="getCityDataByNum">
+	          select city, count(*) as num from t_user_address where province = ? and city != ''and date >= ? and date &lt;= ? group by city HAVING num > ? order by num desc
+	     </sql>
+	     
+	     
+	     <sql id="getProvinceTrend">
+		      select province,count(*) as num  from t_user_address where province != '' and date >= ? and date &lt;= ? group by province  order by num desc limit 10
+	     </sql>
+	     <sql id="getProvinceTrendData">
+		      select date,count(*) as num from t_user_address where province = ? and date >= ? and date &lt;= ? group by date 
+	     </sql>
+	     
+	     <sql id="getCityTrend">
+		      select city,count(*) as num  from t_user_address where city != '' and date >= ? and date &lt;= ? group by city  order by num desc limit 10
+	     </sql>
+	     <sql id="getCityTrendData">
+		      select date,count(*) as num from t_user_address where city = ? and date >= ? and date &lt;= ? group by date order by date asc
+	     </sql>
+	     
+	     <sql id="getCityMostByDay">
+		      select count(*) as num from t_user_address where city = ? group by date order by num desc limit 1
+	     </sql>
+	     <sql id="getForeignCountryTrend">
+		      select country,count(*) as num  from t_user_address where country != 'CN' and date >= ? and date &lt;= ? group by country order by num desc limit 10
+	     </sql>
+	     <sql id="getForeignProvinceTrend">
+		      select country,province,count(*) as num  from t_user_address where country != 'CN' and province != '' and date >= ? and date &lt;= ? group by province order by num desc limit 10
+	     </sql>
+	     <sql id="getCountryTrendData">
+		      select date,count(*) as num from t_user_address where country = ? and date >= ? and date &lt;= ? group by date order by date asc
+	     </sql>
+	     <sql id="getProvinceTrendData">
+		      select date,count(*) as num from t_user_address where province = ? and date >= ? and date &lt;= ? group by date order by date asc
+	     </sql>
+	     <sql id="getCountryMostByDay">
+		      select count(*) as num from t_user_address where country = ? group by date order by num desc limit 1
+	     </sql>
+	     <sql id="getProvinceMostByDay">
+		      select count(*) as num from t_user_address where province = ? group by date order by num desc limit 1
+	     </sql>
+	     <sql id="getUserAddressByDate">
+		      select * from t_user_address where uuid = ? and date = ?
+	     </sql>
+	</sqlGroup>
+	<sqlGroup name="addCoin">
+	     <sql id="getUserBaseInfoByUuid">
+		    select uuid, nickname,strid as phonenumber, pwd, viptype, gender, coin as diamond, popularity as depu_coin,androidcoin as android_diamond, androidpopularity as android_depu_coin, smallicon, description, idtype, countrycode
+        from t_user_baseinfo where uuid=?
+		 </sql>
+		 <sql id="getClubInfoByClubid">
+		    select  clubid, fund  from t_club_info where clubid=?
+		</sql>
+	</sqlGroup>
+	<sqlGroup name="mtt">
+	        <sql id="insertBlindsTable">
+	             insert into t_mtt_blinds_info (level,smallblinds,bigblinds,ante,duration,tableid) values (?,?,?,?,?,?)
+	        </sql>
+	        <sql id="deleteBlindsInfoBytableId">
+	             delete from t_mtt_blinds_info where tableid = ?
+	        </sql>
+	        <sql id="insertBonusTable">
+	             insert into t_bonus_info (level,type,bonus,tableId) values (?,?,?,?)
+	        </sql>
+	        <sql id="getBindsInfoByTableId">
+	             select * from t_binds_info where tableId = ?
+	        </sql>
+	        <sql id="getBonusInfoByTableId">
+	             select * from t_bonus_info where tableId = ?
+	        </sql>
+	</sqlGroup>
+	
+	<sqlGroup name="league">
+		<sql id="getLeagueList">
+		    select tli.leagueid,tli.leaguename,tli.leaguelord,FROM_UNIXTIME(tli.createtime / 1000) AS ctime ,tli.maxmembers,count(tlmi.memberclubid) as members from t_league_info as tli,t_league_member_info as tlmi where tli.leagueid = tlmi.leagueid group by tli.leagueid
+		</sql>
+		<sql id="getLeagueCurNum">
+		    select count(*) from t_league_member_info where leagueid = ?
+		</sql>
+		<sql id="getLeagueByLeagueid">
+		    select ci.clubid, ci.clubname,tli.leagueid,tli.leaguename,tli.leaguelord,tli.maxmembers, DATE(FROM_UNIXTIME(tli.createtime / 1000)) AS ctime from t_club_info as ci,t_league_info tli  where ci.clubid = tli.leaguelord and tli.leagueid=?
+		</sql>
+		<sql id="getMemberListByLeagueid">
+			 select ci.clubid, ci.clubname, ci.createUser, ci.fund ,ci.maxmembers
+	         from t_club_info ci,t_league_member_info lmi 
+	         where ci.clubid=lmi.memberclubid and lmi.leagueid=?
+		</sql>
+		<sql id="getPokerListForLeague">
+	 		SELECT bb.*,count(tbi.uuid)as players from 
+			t_bill_info tbi,
+			(
+			SELECT 	
+			bbi.roomid,
+			bbi.roomname,
+			 CONCAT(smallblind, '/', bigblind) AS blind,
+			bbi.createuser,
+			FROM_UNIXTIME(createtime / 1000) AS ctime,
+			FORMAT(createduration / 3600, 1) AS gtime,
+			totalgamenum AS hands,
+			fromroomid,leagueid
+			from  t_bill_base_info as bbi 
+			where 
+			bbi.leagueid=?
+			and bbi.createtime  BETWEEN ? AND ?
+			) as bb
+			where 
+			tbi.roomid=bb.roomid GROUP BY tbi.roomid
+		</sql>
+		<sql id="getClubByCreateuser">
+		    select clubid, clubname
+	        from t_club_info 
+	        where createuser = ?
+		</sql>
+		<sql id="getDistinctBigblindForLeague">
+			select DISTINCT(bigblind) as type  from t_bill_base_info 
+			where leagueid=?
+			and createtime  BETWEEN ? AND ?
+		</sql>
+		<sql id="getCountBigblindForLeague">
+			select count(1) as num ,DATE(FROM_UNIXTIME(createtime / 1000)) as  date,bigblind
+			from t_bill_base_info
+			where leagueid=?
+			and createtime  BETWEEN ? AND ? GROUP BY date,bigblind
+		</sql>
+		<sql id="getDistinctGtimeForLeague">
+			select DISTINCT(FORMAT(createduration / 3600, 1)) as type from t_bill_base_info 
+			where leagueid=? 
+			and createtime  BETWEEN ? AND ?
+		</sql>
+		<sql id="getCountGtimeForLeague">
+			select count(1) as num ,DATE(FROM_UNIXTIME(createtime / 1000)) as  date,FORMAT(createduration / 3600, 1) AS gtime
+			from t_bill_base_info
+			where leagueid=?
+			and createtime  BETWEEN ? AND ? GROUP BY date,gtime
+		</sql>
+		<sql id="getPokerNumForLeague">
+		    SELECT 	
+			count(*) as billnum
+			from  t_bill_base_info as bbi
+			where 
+			bbi.overtag = 1 and bbi.totalgamenum >0 and bbi.leagueid=?
+			and bbi.createtime  BETWEEN ? AND ?
+		</sql>
+	</sqlGroup>
+</sqlGroup>
