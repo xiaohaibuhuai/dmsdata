@@ -16,7 +16,7 @@ public class LeagueDataUtil {
      */
     public static CommonBean getTotalNumByArea(int leagueId,long beginDate,long endDate){
         CommonBean commonBean = new CommonBean();
-        List<Record>  list = Db.use(Consts.DB_POKER3).findByCache("getLeagueOntablesUserNumByLeagueidAndDate", beginDate+""+endDate,SqlKit.sql("stat.task.getLeagueOntablesUserNumByLeagueidAndDate"), beginDate,endDate);
+        List<Record>  list = Db.use(Consts.DB_POKER2).findByCache("getLeagueOntablesUserNumByLeagueidAndDate", beginDate+""+endDate,SqlKit.sql("stat.task.getLeagueOntablesUserNumByLeagueidAndDate"), beginDate,endDate);
         int CNNum = 0;
         int OtherNum = 0;
         

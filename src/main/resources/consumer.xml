@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xmlns="http://www.springframework.org/schema/beans"
+	xsi:schemaLocation="
+           http://code.alibabatech.com/schema/dubbo    http://code.alibabatech.com/schema/dubbo/dubbo.xsd
+           http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       ">
+
+	<!-- 消费方应用名，用于计算依赖关系，不是匹配条件，不要与提供方一样 -->
+	<dubbo:application name="oms-consumer" />
+	<!--  
+		<dubbo:consumer timeout="1000" retries="1" />-->
+	<!-- 使用multicast广播注册中心暴露发现服务地址 -->
+
+	<!--   本地环境 	127.0.0.1 
+	<dubbo:registry address="zookeeper://127.0.0.1:2181" />--> 
+	<!-- 测试环境  115.159.195.166   
+	<dubbo:registry address="zookeeper://sati2:2181" />-->
+	<!-- 正式环境 isis -->  
+	<dubbo:registry address="zookeeper://isis:2181" /> 
+
+	<!--    url="protobuf://115.159.99.63:10881" sati2==> url="protobuf://115.159.195.166:10882"   online -->
+
+	<!-- 生成远程服务代理，可以和本地bean一样使用demoService -->
+	<bean id="pbController" class="com.alibaba.dubbo.rpc.protocol.protobuf.ProtobufController"></bean>
+
+
+	<!-- 
+		<dubbo:reference id="texasPokerSNGCMSDubbo"
+		interface="com.texaspoker.moment.TexasPokerSNGCMSDubbo$SNGService$BlockingInterface" />
+		<dubbo:reference id="texasPokerCMSService"
+		interface="com.texaspoker.moment.TexasPokerCMSService$CMSService$BlockingInterface" />-->
+<!-- -->
+	<dubbo:reference id="apnsService"  interface="com.illumi.apns.service.ApnsServiceProto$ApnsService$BlockingInterface" />
+	 
+	<dubbo:reference id="pokerHistoryService" interface="com.texaspoker.moment.TexasPokerECMSDubbo$ECMSService$BlockingInterface" timeout="10000" check="false"/>
+	<!--
+	<dubbo:reference id="mttService" interface="com.texaspoker.moment.TexasPokerMTTGameService$MTTGameService$BlockingInterface"/>
+     -->
+	<bean id="dubboService" class="com.illumi.oms.service.DubboService">
+		<property name="pbController" ref="pbController"></property>
+                <property name="apnsService" ref="apnsService"></property>
+		<property name="pokerHistoryService" ref="pokerHistoryService"></property>
+		<!--  
+			<property name="texasPokerSNGCMSDubbo" ref="texasPokerSNGCMSDubbo"></property>
+			<property name="texasPokerCMSService" ref="texasPokerCMSService"></property>-->
+	</bean>
+</beans>

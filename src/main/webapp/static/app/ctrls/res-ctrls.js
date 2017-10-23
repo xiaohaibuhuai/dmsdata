@@ -20,7 +20,6 @@ MainApp.controller('ResCtrls', [ '$scope', function($scope) {
 		panelHeight : '500'
 	});
 
-
 	 treeGrid = $('#treeGrid').treegrid({
 		url : PATH+'/system/res/list',
 		idField : 'id',
@@ -56,7 +55,6 @@ MainApp.controller('ResCtrls', [ '$scope', function($scope) {
 			formatter:function(value,row){
 				if(row.type=='1')return '菜单';
 				if(row.type=='2')return'功能';
-				
 			}
 		},
 		{
@@ -68,6 +66,14 @@ MainApp.controller('ResCtrls', [ '$scope', function($scope) {
 			title : '上级资源ID',
 			width : 150,
 			hidden : true
+		} ,{
+			field : 'isdata',
+			title : '数据版',
+			width : 80,
+			formatter:function(value,row){
+				if(row.isdata=='1')return '是';
+				if(row.isdata=='0')return '否';
+			}
 		} ,{
 			field : 'action',
 			title : '操作',

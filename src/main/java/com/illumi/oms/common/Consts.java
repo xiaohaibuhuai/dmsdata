@@ -39,9 +39,6 @@ public class Consts
 	public static final int LANG_EN = 2;
 	public static final int LANG_ZHT = 3;
 	
-	//定时任务签字
-	public static final String JOB_PREFIX_APNS = "apns_";
-	
 	//数据源名称
 	public static final String DB_POKER = "pokerdb";
 	//数据源拆分库

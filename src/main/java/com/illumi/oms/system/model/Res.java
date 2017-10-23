@@ -35,20 +35,14 @@ public class Res extends EasyuiModel<Res>
 	{
 		// 根据用户角色来获取 列表
 		List<Tree> trees = new ArrayList<Tree>();
-
 		for (Res res : getChild(pid, type))
 		{
-
 			if(res.getId().equals(passId)) continue;
-			
 			Tree tree = new Tree(res.getId(), res.getPid(), res.getName(), res.getIconCls(), res, false);
 			tree.children = getTree(res.getId(), type,passId);
 			if (tree.children.size() > 0) tree.changeState();
-			
-
 			trees.add(tree);
 		}
-
 		return trees;
 	}
 
@@ -68,11 +62,7 @@ public class Res extends EasyuiModel<Res>
 		else if (type == TYPE_MEUE) list = dao.listOrderBySeq(" where  pid =? and type =? ", id, type);
 		else if (type == TYPE_PERMISSION) list = dao.listOrderBySeq(" where  pid =?  ", id);
 
-		
-//		L.i(" child id ="+id +"list ="+list);
-		
-		//if (id == null) return list;
-		 if (TYPE_PERMISSION == type) return list;
+		if (TYPE_PERMISSION == type) return list;
 		else
 		{
 			ListIterator<Res> itor = list.listIterator();
@@ -81,14 +71,10 @@ public class Res extends EasyuiModel<Res>
 				Res r = itor.next();
 				if (r.getStr("url") == null) continue;
 				if (!ext.hasPermission(r.getStr("url"))) {
-//					L.i("remove "+r.getStr("url"));
 					itor.remove();
-					
 				}
 			}
 		}
-		
-
 		return list;
 	}
 
@@ -113,7 +99,46 @@ public class Res extends EasyuiModel<Res>
 		return true;
 	}
 
+	public List<Tree> getDataTree(Integer pid, int type,Integer passId)
+    {
+        // 根据用户角色来获取 列表
+        List<Tree> trees = new ArrayList<Tree>();
+        for (Res res : getDataChild(pid, type))
+        {
+            if(res.getId().equals(passId)) continue;
+            Tree tree = new Tree(res.getId(), res.getPid(), res.getName(), res.getIconCls(), res, false);
+            tree.children = getTree(res.getId(), type,passId);
+            if (tree.children.size() > 0) tree.changeState();
+            trees.add(tree);
+        }
+        return trees;
+    }
 
+	public List<Res> getDataChild(Integer id, Integer type)
+    {
+        ShiroExt ext = new ShiroExt();
+        List<Res> list = null;
+        
+        if(type==null) return dao.list("where pid =?",id);
+        else if (id == null&&type == TYPE_MEUE) list = dao.listOrderBySeq(" where  pid is null and type =? and isdata = 1", type);
+        else if (id==null&& type == TYPE_PERMISSION) list = dao.listOrderBySeq("where pid is null and isdata = 1");
+        else if (type == TYPE_MEUE) list = dao.listOrderBySeq(" where  pid =? and type =? and isdata = 1", id, type);
+        else if (type == TYPE_PERMISSION) list = dao.listOrderBySeq(" where  pid =?  and isdata = 1", id);
 
+        if (TYPE_PERMISSION == type) return list;
+        else
+        {
+            ListIterator<Res> itor = list.listIterator();
+            while (itor.hasNext())
+            {
+                Res r = itor.next();
+                if (r.getStr("url") == null) continue;
+                if (!ext.hasPermission(r.getStr("url"))) {
+                    itor.remove();
+                }
+            }
+        }
+        return list;
+    }
 
 }

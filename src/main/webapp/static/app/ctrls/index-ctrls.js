@@ -283,7 +283,7 @@ MainApp.controller('IndexCtrls', [ '$scope', function($scope) {
 	
 		 
 			 // 加入 url tree 
-		    var layout_west_tree_url = PATH+'/system/res/tree';
+		    var layout_west_tree_url = PATH+'/system/res/datatree';
 			
 				  $('#layout_west_tree').tree({
 					url : layout_west_tree_url,

@@ -6,7 +6,6 @@ import org.beetl.ext.jfinal.BeetlRenderFactory;
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.wall.WallFilter;
 import com.illumi.oms.plugin.spring.SpringPlugin;
-import com.illumi.oms.service.SyncLeagueDataService;
 import com.illumi.oms.shiro.SessionHandler;
 import com.jayqqaa12.jbase.jfinal.ext.ShiroExt;
 import com.jayqqaa12.jbase.jfinal.ext.xss.XssHandler;
@@ -202,7 +201,7 @@ public class MyConfig extends JFinalConfig
 	 */
 	public static void main(String[] args)
 	{
-		JFinal.start("src/main/webapp", 2222, "/", 5);
+		JFinal.start("src/main/webapp", 2221, "/", 5);
 	}
 
 }

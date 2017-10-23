@@ -245,6 +245,12 @@
 			<artifactId>spring-context</artifactId>
 			<version>3.2.4.RELEASE</version>
 		</dependency>
+		<!-- ECMS DUBBO -->
+		<dependency>
+			<groupId>com.texaspoker.moment</groupId>
+			<artifactId>TexasPokerECMSServiceDubboAPI</artifactId>
+			<version>2.5.11.1-SNAPSHOT</version>
+		</dependency>
 		<!-- dubbo -->
 		<dependency>
 			<groupId>com.alibaba</groupId>

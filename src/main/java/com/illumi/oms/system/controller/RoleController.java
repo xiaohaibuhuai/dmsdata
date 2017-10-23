@@ -28,11 +28,9 @@ public class RoleController extends Controller<Role>
 
 	public void tree()
 	{
-
 		Integer pid = getParaToInt("id");
 		Integer passId = getParaToInt("passId");
 		renderJson(Role.dao.getTree(pid, passId));
-
 	}
 
 	public void grant()
@@ -45,7 +43,6 @@ public class RoleController extends Controller<Role>
 		
 		renderJsonResult(Role.dao.batchGrant(role.getId(), res_ids));
 		ShiroCache.clearAuthorizationInfoAll();
-
 	}
 
 	@Override

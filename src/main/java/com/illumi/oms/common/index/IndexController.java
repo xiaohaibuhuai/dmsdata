@@ -14,6 +14,7 @@ import com.illumi.oms.common.Consts;
 import com.illumi.oms.common.UrlConfig;
 import com.illumi.oms.common.validator.LoginValidator;
 import com.illumi.oms.plugin.spring.IocInterceptor;
+import com.illumi.oms.service.DubboService;
 import com.illumi.oms.system.controller.LogController;
 import com.illumi.oms.system.model.Log;
 import com.illumi.oms.system.model.User;
@@ -88,6 +89,8 @@ public class IndexController extends Controller {
         int state = 0;
         User user = User.dao.findFirst(SqlKit.sql("system.user.getLogin"), account);
         if (user != null) {
+//          DubboService dubboService = (DubboService) IocInterceptor.ctx.getBean("dubboService");
+//          state = dubboService.userLogin(account, string2MD5(result[1]));
             if (account.equals("17073549066")) {
                 state = 203513;
             } else {

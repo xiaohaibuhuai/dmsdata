@@ -21,12 +21,21 @@ public class ResController extends Controller<Res>
 	private static final Logger log = Logger.getLogger(ResController.class);
 	public void tree()
 	{
+	    log.info(StringUtil.report(this.keepModel(this.getClass())));
 		Integer pid = getParaToInt("id");
 		Integer passId = getParaToInt("passId");
 		int type = getParaToInt("type", Res.TYPE_MEUE);
 		renderJson(Res.dao.getTree(pid, type, passId));
-
 	}
+	
+	public void datatree()
+    {
+        log.info(StringUtil.report(this.keepModel(this.getClass())));
+        Integer pid = getParaToInt("id");
+        Integer passId = getParaToInt("passId");
+        int type = getParaToInt("type", Res.TYPE_MEUE);
+        renderJson(Res.dao.getDataTree(pid, type, passId));
+    }
 
 	public void list()
 	{
@@ -40,7 +49,6 @@ public class ResController extends Controller<Res>
 		User user = ShiroExt.getSessionAttr(Consts.SESSION_USER);
 		log.info(user.getStr("account")+"/"+user.getName()+",资源管理删除资源(/system/res/delete),请求参数/"+getParaToInt("id"));
 		renderJsonResult(Res.dao.deleteByIdAndPid(getParaToInt("id")));
-
 		removeAuthorization();
 	}
 
@@ -52,9 +60,7 @@ public class ResController extends Controller<Res>
 		Res res=getModel();
 		boolean result=res.save();
 		renderJsonResult(result);
-		
 		if(result) Role.dao.grant(1, res.getId()+"");
-		
 		removeAuthorization();
 	}
 
