@@ -142,17 +142,18 @@ MainApp.controller('PlayerCtrls', function($scope, TabService) {
 				title : '最近登录ip',
 				width : 80,
 				sortable : false
-			},{
-				field:'action',
-				title:'操作',
-				width:100,
-		        formatter:function(value, row, index) {
-			     		var str = '';
-			    	    if($scope.so_setpwd && row.state==1)str += $.formatString('<img ng-show="so_setpwd" style="float:left;margin-left: 4px;" onclick="$(this).scope().setPwdFun(\'{0}\');" src="{1}" title="设置密码"/>',row.uuid,PATH+'/static/js/ext/style/images/extjs_icons/bricks.png');
-			    	    if($scope.so_givevip) str += $.formatString('<img ng-show="so_givevip" style="float:left;margin-left: 4px;" onclick="$(this).scope().giveVipFun(\'{0}\');" src="{1}" title="赠送会员"/>',row.uuid,PATH+'/static/js/ext/style/images/extjs_icons/shield_go.png');
-			    	    return str + '';
-			    	}
-			    }
+			}
+//			,{
+//				field:'action',
+//				title:'操作',
+//				width:100,
+//		        formatter:function(value, row, index) {
+//			     		var str = '';
+//			    	    if($scope.so_setpwd && row.state==1)str += $.formatString('<img ng-show="so_setpwd" style="float:left;margin-left: 4px;" onclick="$(this).scope().setPwdFun(\'{0}\');" src="{1}" title="设置密码"/>',row.uuid,PATH+'/static/js/ext/style/images/extjs_icons/bricks.png');
+//			    	    if($scope.so_givevip) str += $.formatString('<img ng-show="so_givevip" style="float:left;margin-left: 4px;" onclick="$(this).scope().giveVipFun(\'{0}\');" src="{1}" title="赠送会员"/>',row.uuid,PATH+'/static/js/ext/style/images/extjs_icons/shield_go.png');
+//			    	    return str + '';
+//			    	}
+//			    }
 			] ],
 		onLoadSuccess : function() {
 			init=false
