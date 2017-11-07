@@ -1,0 +1,177 @@
+<!-- mtt 相关sql -->
+<sqlGroup name="mtt">
+	<sqlGroup name="blinds">
+		<sql id="insertBlindsTable">
+			insert into t_mtt_blinds_info
+			(level,smallblinds,bigblinds,ante,duration,tableid) values
+			(?,?,?,?,?,?)
+		</sql>
+		<sql id="deleteBlindsInfoBytableId">
+			delete from t_mtt_blinds_info where tableid = ?
+		</sql>
+
+        <sql id="sumDurationBytableId">
+			select sum(duration) as duration from t_mtt_blinds_info where tableid = ?
+		</sql>
+		<sql id="getTotalNumByTableId">
+			select count(*) from t_mtt_blinds_info where tableId = ?
+		</sql>
+		<sql id="getBlindsLevelsByTableId">
+			select level from t_mtt_blinds_info where tableId = ? order by level asc
+		</sql>
+	</sqlGroup>
+	<sqlGroup name="ticket">
+		<sql id="judugeTotalFeeById">
+			SELECT count(*) FROM t_mtt_ticket_type_info a, (SELECT *
+			FROM
+			t_mtt_ticket_type_info where typeid = ?) b where
+			a.prizepoolfee =
+			b.prizepoolfee and a.servicefee = b.servicefee and
+			a.totalfee =
+			b.totalfee and a.typeid = ?
+		</sql>
+		<sql id="getTicketFeeById">
+			SELECT zhname,prizepoolfee,servicefee,totalfee  FROM t_mtt_ticket_type_info where typeid = ?
+		</sql>
+		<sql id="getRemainNumByTypeid">
+			SELECT count(*) as remainnum  FROM t_mtt_ticket_info where typeid = ? and usedtag = 0
+		</sql>
+		<sql id="getRemainNumByTypeidAndUuid">
+			SELECT belonguuid as uuid,count(*) as remainnum  FROM t_mtt_ticket_info where  usedtag = 0  group by uuid 
+		</sql>
+		<sql id="getRemainNumByUuid">
+			SELECT b.*,count(*) as remainnum,a.expirationtime FROM t_mtt_ticket_info a,t_mtt_ticket_type_info b where a.typeid = b.typeid and a.usedtag = 0  group by a.typeid
+		</sql>		
+	</sqlGroup>
+	
+	<sqlGroup name="prize">
+		<sql id="getPrizeBaseInfo">
+			SELECT * FROM t_mtt_prize_base_info
+		</sql>
+		
+		<sql id="getFixedPrizeAllocationInfo">
+			SELECT a.schemename,b.type,b.inkindaward,b.popularity,b.ticketid FROM t_mtt_fixedprize_allocation_info a,t_mtt_fixedprize_info b where a.schemeid = b.schemeid and b.rankingmin = 1 and a.schemeid = ?
+		</sql>
+		
+		<sql id="getPrizeAllocationInfo">
+			SELECT * FROM t_mtt_prize_allocation_info where schemeid = ?
+		</sql>
+		<sql id="deleteFixedPrizeInfoBySchemeId">
+			delete from t_mtt_fixedprize_info where schemeid = ?
+		</sql>
+		<sql id="deleteCommonPrizeInfoBySchemeId">
+			delete from t_mtt_prize_info where schemeid = ?
+		</sql>
+		<sql id="insertCommonPrizeTable">
+			insert into t_mtt_prize_info (schemeid,entriesnummin,entriesnummax,rankingmin,rankingmax,credit) values (?,?,?,?,?,?)
+		</sql>
+		<sql id="getTotalNumBySchemeid">
+			select count(*) from t_mtt_prize_info where schemeid = ?
+        </sql>
+        <sql id="getFixedTotalNumBySchemeid">
+			select count(*) from t_mtt_fixedprize_info where schemeid = ?
+        </sql>
+        <sql id="getFixedPrizeInfosBySchemeId">
+			select rankingmin from t_mtt_fixedprize_info where schemeid = ? order by rankingmin asc
+		</sql>
+	</sqlGroup>
+	
+	
+	<sqlGroup name="redeemcode">
+		<sql id="getExchange">
+			SELECT * FROM t_mtt_exchange_manage
+		</sql>
+		<sql id="getUnReceivedRedeemCodeByExchangeid">
+			SELECT count(*) FROM t_mtt_redeemcode_info where exchangeid = ? and overtag = 0 
+		</sql>
+		<sql id="insertRedeemCodeInfo">
+			insert into t_mtt_redeemcode_info (redeemcode,typeid,exchangeid) values (?,?,?)
+		</sql>
+		<sql id="getRedeemCodeByExchangeid">
+			SELECT * from t_mtt_redeemcode_info
+		</sql>
+	</sqlGroup>
+	
+	<sqlGroup name="race">
+		<sql id="getRaceTotalNumByDate">
+			SELECT count(*) as num FROM t_race_mtt where startTime BETWEEN ? AND ?
+		</sql>
+		<sql id="getRaceRealeaseNumByDate">
+			SELECT count(*) as num FROM t_race_mtt where state = 1 and startTime BETWEEN ? AND ?
+		</sql>
+		<sql id="getRaceByDate">
+			SELECT * FROM t_race_mtt where startTime BETWEEN ? AND ?
+		</sql>
+		<sql id="getRaceByRoomid">
+			SELECT * FROM t_race_mtt where roomid = ?
+		</sql>
+		<sql id="getRaceTaskUndo">
+			SELECT * FROM t_race_mtt where state = 9 and startTime > ? and sendTime > ?
+		</sql>
+		<sql id="updateClubidsByRoomid">
+			UPDATE t_race_mtt SET clubidlist = ? WHERE roomid = ? limit 1
+		</sql>
+	</sqlGroup>
+	
+	<sqlGroup name="basebill">
+		<sql id="getBaseBillByRoomid">
+			SELECT * FROM t_mtt_bill_base_info where roomid = ?
+		</sql>
+	</sqlGroup>
+	
+	<sqlGroup name="fixedprize">
+		<sql id="getFixedPrize">
+			SELECT t1.*,t2.* FROM t_mtt_bill_base_info t1,t_mtt_rank_info t2 where t1.roomid = t2.roomid and t1.gamestatus =3 and t2.bonustype = 1 and t2.overtag = 0 
+		</sql>
+		<sql id="getUserAddress">
+			SELECT t1.* FROM t_mtt_prize_useraddress t1 where  t1.uuid = ? and t1.mttgameroomid = ?  order by id desc
+		</sql>
+		<sql id="getFixedLevelIdsByInkindaward">
+			SELECT CONCAT(GROUP_CONCAT(id), ',') as levelids FROM t_mtt_fixedprize_info where type = 1 and inkindaward like 
+		</sql>
+	</sqlGroup>
+	<sqlGroup name="mttrank">
+		<sql id="updateRankInfo">
+			update t_mtt_rank_info set ouuid = ?,utime = ?,status = ?,remark = ? where uuid = ? and roomid = ?
+		</sql>
+	</sqlGroup>
+	<sqlGroup name="poker">
+	    <sql id="getPokerList">
+			SELECT 	* from  t_mtt_bill_base_info  where 1=1 
+		</sql>
+		<sql id="getClipsByRoomid">
+			SELECT 	* from  t_mtt_bill_info  where remainstacks != 0
+		</sql>
+		<sql id="getRankByRoomid">
+			SELECT 	* from  t_mtt_rank_info  where 1=1 
+		</sql>
+		<sql id="getAllRankByRoomid">
+			SELECT 	* from  t_mtt_rank_info  where roomid = ? order by mttrank asc
+		</sql>
+		<sql id="sumPopularityByRoomid">
+			select sum(popularity) as totalpopularity from t_mtt_rank_info where bonustype = 3 and roomid = ?
+		</sql>
+		<sql id="countMTTNumByUUID">
+		    select count(*) as totalnum ,count(CASE WHEN bonustype in (1,2,3) THEN 1 END) as totalprizenum from t_mtt_rank_info where uuid = ?
+		</sql>
+	</sqlGroup>
+	<sqlGroup name="stat">
+		<sql id="getAllEntryNumByUuid">
+			select count(CASE WHEN action = 1 THEN 1 END) as signnum, count(CASE WHEN action = 0 THEN 1 END) as nosignnum, count(CASE WHEN action = 2 THEN 1 END) as entrynum from fromlog_mtt_entry  where uuid = ?
+		</sql>
+		<sql id="getEntryNumByUuidAndRoomid">
+			select count(CASE WHEN action = 1 THEN 1 END) as signnum, count(CASE WHEN action = 0 THEN 1 END) as nosignnum, count(CASE WHEN action = 2 THEN 1 END) as entrynum from fromlog_mtt_entry  where uuid = ? and mttid = ?
+		</sql>
+		<sql id="getNewEntryNumByUuidAndRoomid">
+			select reentrynum from t_mtt_rank_info where uuid = ? and roomid = ?
+		</sql>
+	</sqlGroup>
+</sqlGroup>
+
+
+
+
+
+
+
+
