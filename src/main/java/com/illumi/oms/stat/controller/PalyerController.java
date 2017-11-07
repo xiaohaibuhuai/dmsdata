@@ -31,7 +31,8 @@ import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
 
 
-@ControllerBind(controllerKey = "/stat/player" ,viewPath=UrlConfig.STAT)
+@ControllerBind(controllerKey = "/stat/p"
+		+ "layer" ,viewPath=UrlConfig.STAT)
 public class PalyerController extends EasyuiController<Record>
 {
 	private static final Logger log = Logger.getLogger(PalyerController.class);

@@ -21,7 +21,6 @@ import com.jfinal.ext.handler.FakeStaticHandler;
 import com.jfinal.ext.interceptor.SessionInViewInterceptor;
 import com.jfinal.ext.plugin.config.ConfigKit;
 import com.jfinal.ext.plugin.config.ConfigPlugin;
-import com.jfinal.ext.plugin.quartz.QuartzPlugin;
 import com.jfinal.ext.plugin.shiro.ShiroInterceptor;
 import com.jfinal.ext.plugin.shiro.ShiroPlugin;
 import com.jfinal.ext.plugin.sqlinxml.SqlInXmlPlugin;
@@ -61,13 +60,13 @@ public class MyConfig extends JFinalConfig
 		me.setError401View("/page/error/401.html");
 		me.setError403View("/page/error/403.html");
 		me.setError500View("/page/error/500.html");
-
+		
 //		new ConfigPlugin("config.txt").reload(false).start();
-		new ConfigPlugin("dev.txt").reload(false).start();
-//		new ConfigPlugin("test.txt").reload(false).start();
+//		new ConfigPlugin("dev.txt").reload(false).start();
+		new ConfigPlugin("test.txt").reload(false).start();
 		me.setDevMode(isDev);
 		// me.setViewType(ViewType.OTHER);
-
+		
 		// beel
 		me.setMainRenderFactory(new BeetlRenderFactory());
 		GroupTemplate gt = BeetlRenderFactory.groupTemplate;
@@ -89,7 +88,7 @@ public class MyConfig extends JFinalConfig
 	 */
 	public void configPlugin(Plugins me)
 	{
-
+	
 		// 配置Druid 数据库连接池插件
 		DruidPlugin dbPlugin = new DruidPlugin(ConfigKit.getStr("jdbcUrl"), ConfigKit.getStr("user"), ConfigKit.getStr("password"));
 		// 设置 状态监听与 sql防御
@@ -132,27 +131,12 @@ public class MyConfig extends JFinalConfig
         ActiveRecordPlugin arpMysql3 = new ActiveRecordPlugin("pokerdb3", pokerDbPlugin3);
         me.add(arpMysql3);
         arpMysql3.setCache(new EhCache());
-		// 配置更新
-		DruidPlugin proDbPlugin = new DruidPlugin(ConfigKit.getStr("pro.jdbcUrl"), ConfigKit.getStr("pro.user"), ConfigKit.getStr("pro.password")).set(5, 5, 50);
-		proDbPlugin.setMaxActive(20);
-		me.add(proDbPlugin);
-		ActiveRecordPlugin arpPro = new ActiveRecordPlugin("prodb", proDbPlugin);
-		me.add(arpPro);
-		arpPro.setCache(new EhCache());
-		
-		// 配置AutoTableBindPlugin插件
-		AutoTableBindPlugin proatbp = new AutoTableBindPlugin("prodbconfig",proDbPlugin);
-		if (isDev) proatbp.setShowSql(true);
-		proatbp.scanPackages("com.illumi.oms.mtt.model");
-		proatbp.autoScan(false);
-		me.add(proatbp);
-		
+	
 		//配置定时任务插件
-		QuartzPlugin quartzPlugin = new QuartzPlugin();
-		me.add(quartzPlugin);
-		
+//		QuartzPlugin quartzPlugin = new QuartzPlugin();
+//		me.add(quartzPlugin);
 		//Spring
-//		me.add(new SpringPlugin());
+		me.add(new SpringPlugin());
 		//me.add(new SpringPlugin("//home/dyp/data/git/mytest/oms/target/oms-web/WEB-INF/classes/applicationContext.xml"));
 	}
 

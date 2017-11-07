@@ -107,7 +107,7 @@ public class Res extends EasyuiModel<Res>
         {
             if(res.getId().equals(passId)) continue;
             Tree tree = new Tree(res.getId(), res.getPid(), res.getName(), res.getIconCls(), res, false);
-            tree.children = getTree(res.getId(), type,passId);
+            tree.children = getDataTree(res.getId(), type,passId);
             if (tree.children.size() > 0) tree.changeState();
             trees.add(tree);
         }
@@ -119,7 +119,7 @@ public class Res extends EasyuiModel<Res>
         ShiroExt ext = new ShiroExt();
         List<Res> list = null;
         
-        if(type==null) return dao.list("where pid =?",id);
+        if(type==null) return dao.list("where pid =? and isdata = 1",id);
         else if (id == null&&type == TYPE_MEUE) list = dao.listOrderBySeq(" where  pid is null and type =? and isdata = 1", type);
         else if (id==null&& type == TYPE_PERMISSION) list = dao.listOrderBySeq("where pid is null and isdata = 1");
         else if (type == TYPE_MEUE) list = dao.listOrderBySeq(" where  pid =? and type =? and isdata = 1", id, type);

@@ -1,24 +1,33 @@
 
 jdbcUrl = jdbc:mysql://127.0.0.1:3306/cms_support?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
 user = root
-password =rootroot
+password =000000
 dbType=mysql
 devMode = true
 decrypt=true
 
 poker.jdbcUrl = jdbc:mysql://127.0.0.1:3306/test_poker?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
 poker.user = root
-poker.password =rootroot
+poker.password =000000
 
 poker2.jdbcUrl = jdbc:mysql://127.0.0.1:3306/test_poker?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
 poker2.user = root
-poker2.password =rootroot
+poker2.password =000000
 
 
 poker3.jdbcUrl = jdbc:mysql://127.0.0.1:3306/test_poker?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
 poker3.user = root
-poker3.password =rootroot
+poker3.password =000000
 
 pro.jdbcUrl = jdbc:mysql://127.0.0.1:3306/test_poker?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
 pro.user = root
 pro.password =rootroot
+
+
+
+
+
+
+
+
+CheatFinderScriptPath=/data/work/share/query_1011.R

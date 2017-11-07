@@ -26,7 +26,7 @@ MainApp.controller('ClubCtrls',  function($scope,TabService) {
 			sortable : true,
 			align:'left',
 	         formatter:function(value, row, index) {
-		     	var str = row.clubid;
+		     var str = row.clubid;
 		    	 if($scope.so_view)	str= $.formatString('<a ng-show="so_view" href="#"  onclick="$(this).scope().viewFun(\'{0}\');"  >'+row.clubid+'</a>',row.clubid);
 		    	return str + '';
 		    }

@@ -6,6 +6,7 @@ public class UrlConfig {
 
   public static final String LOGIN = "/loginView";
   public static final String BASE = "/page";
+  
 
 
   // 子模块
@@ -24,6 +25,9 @@ public class UrlConfig {
   public static final String RACE = BASE + "/race";
   public static final String RECHARGE = BASE + "/recharge";
 
+  
+  
+  public static final String DATA = BASE+"/data";
 
 
   public static final String VIEW_COMMON_LOGIN = COMMON + "/login.html";

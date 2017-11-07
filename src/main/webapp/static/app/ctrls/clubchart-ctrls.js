@@ -9,6 +9,7 @@ MainApp.controller('ClubChartCtrls', [ '$scope', function($scope) {
 		            text: '每日俱乐部总数及活跃俱乐部曲线图',
 		            x: -20 //center
 		        },
+		        
 		        credits : {
 					enabled : false
 				},

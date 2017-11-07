@@ -14,10 +14,10 @@
 
 	<!--   本地环境 	127.0.0.1 
 	<dubbo:registry address="zookeeper://127.0.0.1:2181" />--> 
-	<!-- 测试环境  115.159.195.166   
-	<dubbo:registry address="zookeeper://sati2:2181" />-->
-	<!-- 正式环境 isis -->  
-	<dubbo:registry address="zookeeper://isis:2181" /> 
+	<!-- 测试环境  115.159.195.166   -->
+	<dubbo:registry address="zookeeper://sati2:2181" />
+	<!-- 正式环境 isis 
+	<dubbo:registry address="zookeeper://isis:2181" /> -->  
 
 	<!--    url="protobuf://115.159.99.63:10881" sati2==> url="protobuf://115.159.195.166:10882"   online -->
 
@@ -31,15 +31,15 @@
 		<dubbo:reference id="texasPokerCMSService"
 		interface="com.texaspoker.moment.TexasPokerCMSService$CMSService$BlockingInterface" />-->
 <!-- -->
-	<dubbo:reference id="apnsService"  interface="com.illumi.apns.service.ApnsServiceProto$ApnsService$BlockingInterface" />
+	<!-- <dubbo:reference id="apnsService"  interface="com.illumi.apns.service.ApnsServiceProto$ApnsService$BlockingInterface" /> -->
 	 
 	<dubbo:reference id="pokerHistoryService" interface="com.texaspoker.moment.TexasPokerECMSDubbo$ECMSService$BlockingInterface" timeout="10000" check="false"/>
 	<!--
 	<dubbo:reference id="mttService" interface="com.texaspoker.moment.TexasPokerMTTGameService$MTTGameService$BlockingInterface"/>
      -->
 	<bean id="dubboService" class="com.illumi.oms.service.DubboService">
-		<property name="pbController" ref="pbController"></property>
-                <property name="apnsService" ref="apnsService"></property>
+		<!-- <property name="pbController" ref="pbController"></property>
+                <property name="apnsService" ref="apnsService"></property> -->
 		<property name="pokerHistoryService" ref="pokerHistoryService"></property>
 		<!--  
 			<property name="texasPokerSNGCMSDubbo" ref="texasPokerSNGCMSDubbo"></property>

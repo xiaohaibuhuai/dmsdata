@@ -1,0 +1,87 @@
+@ var head={
+<title>俱乐部统计</title>
+@};  var ctrls= "ng-controller='CoinChartCtrls'" ; var body={
+
+
+
+<div id="cc" class="easyui-layout" style="width:100%;height:1400px;">
+<div id="tt" class="easyui-tabs"  style="height:550px;" data-options="region:'center',border:false,fit:true">
+
+@if( so.hasPermission("/stat/clubchart/sum")) {
+    <div title="24小时德扑币监控">
+        <div id='main'   style=" height: 520px;"></div>
+    </div>
+@}if(so.hasPermission("/stat/player/playerInfo")){
+ <div  ng-model="so_player_view" ng-init="so_player_view=true"></div>
+@}
+
+</div>
+
+    <div data-options="region:'south',split:true,border:false" style="width:100%;height:800px;">
+       <div class="easyui-layout" data-options="fit:true,border:false">
+       
+       
+			<div data-options="region:'west',border:false" style="width:650px">
+			<table id="dg1"  style="width:608px;height:304px"></table>
+			<!-- <table class="easyui-datagrid" title="24小时德扑币增加排名" style="width:600px;height:310px"
+			data-options="singleSelect:true,collapsible:true,url:'/data/coinchart/increaseRank',method:'get'">
+		<thead>
+			<tr>
+				<th data-options="field:'rank',width:80">排名</th>
+				<th data-options="field:'uuid',width:140,formatter:operation">UUID</th>
+				<th data-options="field:'showid',width:110,align:'right'">Showid</th>
+				<th data-options="field:'nickname',width:110,align:'right'">昵称</th>
+				<th data-options="field:'change',width:150">德扑币增加</th>
+			</tr>
+		</thead>
+	</table> -->
+			
+			
+			</div>
+			<div data-options="region:'center',border:false" style="width:650px">
+			<!-- <table class="easyui-datagrid" title="24小时德扑币减少排名" style="width:600px;height:310px"
+			data-options="singleSelect:true,collapsible:true,url:'/data/coinchart/reduceRank',method:'post'">
+		<thead>
+			<tr>
+				<th data-options="field:'rank',width:80">排名</th>
+				<th data-options="field:'uuid',width:140,formatter:operation">UUID</th>
+				<th data-options="field:'showid',width:110,align:'right'">Showid</th>
+				<th data-options="field:'nickname',width:110,align:'right'">昵称</th>
+				<th data-options="field:'change',width:150">德扑币减少</th>
+			</tr>
+		</thead>
+	</table> -->
+			<table id="dg2"  style="width:608px;height:304px"></table>
+			
+			</div>
+		</div>
+    
+    
+    
+    </div>
+   
+    
+ </div>  
+
+    
+
+@};var js={ 
+
+
+<script src="${CONTEXT_PATH}/static/js/Highcharts-4.2.3/js/highcharts.js"></script>
+<script src="${CONTEXT_PATH}/static/js/Highcharts-4.2.3/js/modules/exporting.js"></script>
+<script src="${CONTEXT_PATH}/static/app/ctrls/data/coinchart-ctrls.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+/* value：该行的值，即field:id所指向的值（json数据中若无对应，则为undefined） 
+row： 该行json数据值（可以通过row.id，row.a，row.b，row.c，….读取json数据） 
+index：该行在表单中的行数（行数从0开始） */
+function operation(value, row, index)
+{
+	
+  return "<a href='/stat/player/playerInfo?id=" + value + "'>"+value+"</a>";
+}
+</script>
+
+
+@}; include("../layout/_layout.html",{head:head,body:body,js:js,ctrls:ctrls}){}	
