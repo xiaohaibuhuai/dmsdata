@@ -18,4 +18,4 @@ poker3.jdbcUrl = jdbc:mysql://10.66.152.111:3306/test_poker?characterEncoding=ut
 poker3.user = illuminate_cms
 poker3.password = illuminate31415
 
-CheatFinderScriptPath=/data/work/share/query_1011.R
+CheatFinderScriptPath=/data/work/share/query_1010.R
