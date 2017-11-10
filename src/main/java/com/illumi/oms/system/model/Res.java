@@ -119,11 +119,11 @@ public class Res extends EasyuiModel<Res>
         ShiroExt ext = new ShiroExt();
         List<Res> list = null;
         
-        if(type==null) return dao.list("where pid =? and isdata = 1",id);
-        else if (id == null&&type == TYPE_MEUE) list = dao.listOrderBySeq(" where  pid is null and type =? and isdata = 1", type);
-        else if (id==null&& type == TYPE_PERMISSION) list = dao.listOrderBySeq("where pid is null and isdata = 1");
-        else if (type == TYPE_MEUE) list = dao.listOrderBySeq(" where  pid =? and type =? and isdata = 1", id, type);
-        else if (type == TYPE_PERMISSION) list = dao.listOrderBySeq(" where  pid =?  and isdata = 1", id);
+        if(type==null) return dao.list("where pid =? and isdata !=0",id);
+        else if (id == null&&type == TYPE_MEUE) list = dao.listOrderBySeq(" where  pid is null and type =? and isdata !=0", type);
+        else if (id==null&& type == TYPE_PERMISSION) list = dao.listOrderBySeq("where pid is null and isdata !=0 ");
+        else if (type == TYPE_MEUE) list = dao.listOrderBySeq(" where  pid =? and type =? and isdata !=0 ", id, type);
+        else if (type == TYPE_PERMISSION) list = dao.listOrderBySeq(" where  pid =?  and isdata !=0 ", id);
 
         if (TYPE_PERMISSION == type) return list;
         else
