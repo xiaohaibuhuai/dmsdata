@@ -212,7 +212,7 @@ public class GameStatisticJobService implements Job{
 			 if(resultype!=null&&num!=null) {
 				 blind.set(resultype, num);
 			 }
-			 log.error("获取blind数据出错");
+			// log.error("获取blind数据出错");
 			
 			
 		}
@@ -231,7 +231,7 @@ public class GameStatisticJobService implements Job{
 			 if(resultype!=null&&num!=null) {
 			 gameSnapShotDate.set(resultype, num);
 			 }
-			 log.error("获取数据出错");
+			// log.error("获取数据出错");
 		 }
 		
 	}
