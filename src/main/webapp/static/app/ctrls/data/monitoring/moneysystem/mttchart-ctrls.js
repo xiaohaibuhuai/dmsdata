@@ -2,7 +2,7 @@ MainApp.controller('MttChartCtrls', function($scope,TabService) {
 	
 	var initInc = false;
 //	   初始化图表
-	 $.post(PATH+'/data/mttchart/mttChange',function(data){
+	 $.post(PATH+'/data/monitoring/moneysystem/mttchart/mttChange',function(data){
 			
 		  $('#main').highcharts({
 			  chart: {
@@ -32,7 +32,7 @@ MainApp.controller('MttChartCtrls', function($scope,TabService) {
 		    parent.$.messager.progress('close');
 			} ,'json');
 	 
-	 $.post(PATH+'/data/mttchart/recharge',function(data){
+	 $.post(PATH+'/data/monitoring/moneysystem/mttchart/recharge',function(data){
 			
 		  $('#main2').highcharts({
 			  chart: {
@@ -101,7 +101,7 @@ MainApp.controller('MttChartCtrls', function($scope,TabService) {
  
 //初始化数据表格
  var  dg =$('#dg').datagrid({
-		url : PATH+'/data/coinchart/increaseRank',
+		url : PATH+'/data/monitoring/moneysystem/coinchart/increaseRank',
 		fit : false,
 		title:"24小时钻石增加排名",
 	//	fitColumns : true,
@@ -123,7 +123,7 @@ MainApp.controller('MttChartCtrls', function($scope,TabService) {
 	});
  
  var  dg2 =$('#dg2').datagrid({
-		url : PATH+'/data/coinchart/reduceRank',
+		url : PATH+'/data/monitoring/moneysystem/coinchart/reduceRank',
 		fit : false,
 		title:"24小时钻石增加排名",
 	//	fitColumns : true,
@@ -145,7 +145,7 @@ MainApp.controller('MttChartCtrls', function($scope,TabService) {
 	});
 
  var  dg3 =$('#dg3').datagrid({
-		url : PATH+'/data/coinchart/increaseRank',
+		url : PATH+'/data/monitoring/moneysystem/coinchart/increaseRank',
 		fit : false,
 		title:"24小时充值次数排名",
 	//	fitColumns : true,

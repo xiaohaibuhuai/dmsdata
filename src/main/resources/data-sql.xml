@@ -1,0 +1,115 @@
+<!-- 复杂的 sql 写在 这里  简单的 直接 拼接了    -->
+<sqlGroup name="data">
+    <sqlGroup name="billSnap">  
+      <sql id="getGameTypeList">
+      SELECT 
+           gameroomtype, count(*) num 
+      FROM 
+          t_bill_base_info 
+      WHERE 
+          createtime  BETWEEN ? AND ? 
+      group by gameroomtype
+      </sql>
+      
+      
+      <sql id="getGameTypeVaildList">
+      SELECT 
+          gameroomtype, count(*) num 
+      FROM 
+            t_bill_base_info 
+      WHERE 
+             createtime  BETWEEN ? AND ? and  totalgamenum>=10 
+      group by gameroomtype
+      </sql>
+      
+      
+      <sql id="getGameSNGCount">
+      SELECT 
+           count(roomid) num 
+      FROM 
+           t_sng_bill_base_info  
+      Where 
+           createtime BETWEEN ? AND ?
+      </sql>
+      
+      <sql id="getGameSNGVaildCount">
+      SELECT 
+          count(roomid) num 
+      FROM 
+          t_sng_bill_base_info  
+      WHERE 
+          createtime BETWEEN ? AND ? and totalgamenum>=10
+      </sql>
+      <sql id="getPlayerList">
+      SELECT
+         gameroomtype,count(distinct uuid) num 
+      FROM 
+         t_bill_info a join t_bill_base_info b on a.roomid=b.roomid  
+      WHERE  
+         createtime  BETWEEN ? AND ? and buystacks>0  
+      group by gameroomtype
+      </sql>
+      <sql id="getplayerSNGCount">
+      SELECT
+         count(distinct uuid) num 
+      FROM
+        t_bill_info a join t_sng_bill_base_info b on a.roomid=b.roomid  
+      WHERE
+      createtime  BETWEEN ? AND ? and buystacks>0
+      
+      </sql>
+      
+      <sql id="getBlindPlayerNumByType">
+      SELECT
+      bigblind,count(distinct uuid) num 
+      FROM 
+      t_bill_info a join t_bill_base_info b on a.roomid=b.roomid  
+      WHERE  
+      createtime  BETWEEN ? AND ? and buystacks>0 and gameroomtype=?  group by bigblind
+      </sql>
+      
+      <sql id="getBlindNumByType">
+      SELECT 
+          bigblind,COUNT(*) num 
+      FROM 
+          t_bill_base_info 
+      WHERE 
+          createtime  BETWEEN ? AND ? and gameroomtype = ?  
+      GROUP BY bigblind
+      </sql> 
+   
+   
+    </sqlGroup>
+    
+    <sqlGroup name="reportForms">
+      <sql id="getGameInfoByDate">
+        SELECT
+              * 
+        FROM
+             t_game_daily_snapshot 
+        WHERE isvalid= 0 and targetdate  BETWEEN ? AND ? 
+      </sql>
+      
+      <sql id="getGameValidInfoByDate">
+        SELECT
+             *
+        FROM
+             t_game_daily_snapshot 
+        WHERE isvalid= 1 and targetdate  BETWEEN ? AND ?
+      </sql>
+      
+      <sql id="getBlindInfoByType">
+        SELECT
+             *
+        FROM
+             t_blinds_daily_snapshot 
+        WHERE gameroomtype = ? and targetdate  BETWEEN ? AND ?
+      
+      
+      </sql>
+    
+    
+    </sqlGroup>
+    
+
+</sqlGroup>

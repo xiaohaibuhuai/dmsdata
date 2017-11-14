@@ -40,7 +40,6 @@ public class ELKUtils {
 		String urlheadTask="/ilumi_task_coinanddiamond_";
 	    String urlend="/_search";
 	    String urlTask = DateUtils.getUrl(nowTime,urlheadTask,urlend);
-	    
 	    String jsonString = "{\n" + "  \"query\": {\n" + "\"constant_score\": {\n" + "\"filter\": {\"range\": {\n" + "\"@timestamp\": {\n" + "\"gte\": "
 	    +startTime+",\n" + 
         		"\"lte\": "+nowTime+"\n" + 
@@ -213,7 +212,6 @@ public class ELKUtils {
 	    	    String time = new SimpleDateFormat("HH").format(new Date(timenum))+":00";
 	    	    //String time = new SimpleDateFormat("HH:mm").format(new Date(timenum));
 	    	    list.add(new ChartInfo(time, num));
-	    	    
 	     }
 	     return list;
 		}catch (Exception e) {
@@ -247,7 +245,8 @@ public class ELKUtils {
 	    	    rank.setUuid(uuid);
 	    	    rank.setChange(num);
 	    	    rank.setIsErro(isErro);
-	    	    //查数据库封装rank  耦合度很大。
+	    	    
+	    	    //查数据库再封装rank  耦合度很大。
 	    	    Record userTemp = Db.use(Consts.DB_POKER).findFirst(SqlKit.sql("stat.player.getPlayerByUuid"), uuid);
 	    	    rank.setNickname(userTemp.getStr("nickname"));
 	    	    rank.setShowid(userTemp.getLong("showid"));

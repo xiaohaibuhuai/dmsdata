@@ -2,7 +2,7 @@ MainApp.controller('CoinChartCtrls',  function($scope,TabService) {
 	
 	var initInc = false;
 	var  dg =$('#dg2').datagrid({
-		url : PATH+'/data/coinchart/reduceRank',
+		url : PATH+'/data/monitoring/moneysystem/coinchart/reduceRank',
 		fit : false,
 		title:"24小时德扑币减少排名",
 		border : true,
@@ -24,7 +24,7 @@ MainApp.controller('CoinChartCtrls',  function($scope,TabService) {
 	
 	
 	var  dg =$('#dg1').datagrid({
-		url : PATH+'/data/coinchart/increaseRank',
+		url : PATH+'/data/monitoring/moneysystem/coinchart/increaseRank',
 		fit : false,
 		title:"24小时德扑币减少排名",
 		border : true,
@@ -52,7 +52,7 @@ MainApp.controller('CoinChartCtrls',  function($scope,TabService) {
 	
 	
 	
-	 $.post(PATH+'/data/coinchart/sum',function(data){
+	 $.post(PATH+'/data/monitoring/moneysystem/coinchart/sum',function(data){
 			
 		  $('#main').highcharts({
 			  chart: {

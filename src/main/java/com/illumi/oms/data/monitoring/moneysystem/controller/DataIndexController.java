@@ -1,4 +1,4 @@
-package com.illumi.oms.data.controller;
+package com.illumi.oms.data.monitoring.moneysystem.controller;
 
 import java.util.HashMap;
 import java.util.List;
@@ -33,8 +33,8 @@ public class DataIndexController extends EasyuiController<Record>{
 		List<ChartInfo> chartlistLog = ELKUtils.getLogChartChangeInfo(target, time,timeformat);
 		List<ChartInfo> chartlistTask =ELKUtils.getTaskChartChangeInfo(target, time,timeformat);
 		Map<String,ChartInfo> map = new HashMap<>();
-		map.put("log", chartlistLog.get(1));
-		map.put("task", chartlistTask.get(1));
+		map.put("log", chartlistLog.get(0));
+		map.put("task", chartlistTask.get(0));
 		renderGson(map);
 	}
 }

@@ -1,4 +1,4 @@
-package com.illumi.oms.data.controller;
+package com.illumi.oms.data.monitoring.moneysystem.controller;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ import com.jayqqaa12.jbase.jfinal.ext.ctrl.EasyuiController;
 import com.jfinal.ext.route.ControllerBind;
 import com.jfinal.plugin.activerecord.Record;
 
-@ControllerBind(controllerKey = "/data/diamondchart" ,viewPath=UrlConfig.DATA)
+@ControllerBind(controllerKey = "/data/monitoring/moneysystem/diamondchart" ,viewPath=UrlConfig.DATA_MONITORING_MONEYSYSTEM)
 public class DiamondChartController extends EasyuiController<Record>{
 
 	

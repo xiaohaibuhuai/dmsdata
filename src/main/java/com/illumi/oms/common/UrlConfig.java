@@ -28,6 +28,13 @@ public class UrlConfig {
   
   
   public static final String DATA = BASE+"/data";
+  public static final String MONITORING = DATA+"/monitoring";
+  public static final String TAB = DATA+"/table";
+  
+  public static final String DATA_MONITORING_MONEYSYSTEM = MONITORING+"/moneysystem";
+  
+  
+  public static final String DATA_TAB_CASH = TAB+"/cash";
 
 
   public static final String VIEW_COMMON_LOGIN = COMMON + "/login.html";

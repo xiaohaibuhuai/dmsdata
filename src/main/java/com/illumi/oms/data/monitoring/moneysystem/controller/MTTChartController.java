@@ -1,4 +1,4 @@
-package com.illumi.oms.data.controller;
+package com.illumi.oms.data.monitoring.moneysystem.controller;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,7 @@ import com.jfinal.log.Logger;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
 
-@ControllerBind(controllerKey = "/data/mttchart", viewPath = UrlConfig.DATA)
+@ControllerBind(controllerKey = "/data/monitoring/moneysystem/mttchart", viewPath = UrlConfig.DATA_MONITORING_MONEYSYSTEM)
 public class MTTChartController extends EasyuiController<Record> {
 
 	

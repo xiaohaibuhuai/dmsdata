@@ -21,6 +21,7 @@ import com.jfinal.ext.handler.FakeStaticHandler;
 import com.jfinal.ext.interceptor.SessionInViewInterceptor;
 import com.jfinal.ext.plugin.config.ConfigKit;
 import com.jfinal.ext.plugin.config.ConfigPlugin;
+import com.jfinal.ext.plugin.quartz.QuartzPlugin;
 import com.jfinal.ext.plugin.shiro.ShiroInterceptor;
 import com.jfinal.ext.plugin.shiro.ShiroPlugin;
 import com.jfinal.ext.plugin.sqlinxml.SqlInXmlPlugin;
@@ -108,7 +109,7 @@ public class MyConfig extends JFinalConfig
 		// 配置AutoTableBindPlugin插件
 		AutoTableBindPlugin atbp = new AutoTableBindPlugin("dbconfig",dbPlugin);
 		if (isDev) atbp.setShowSql(true);
-		atbp.scanPackages("com.illumi.oms.common.index","com.illumi.oms.model","com.illumi.oms.system.model");
+		atbp.scanPackages("com.illumi.oms.common.index","com.illumi.oms.model","com.illumi.oms.system.model","com.illumi.oms.data.model");
 		atbp.autoScan(false);
 		me.add(atbp);
 		// sql记录
@@ -133,8 +134,8 @@ public class MyConfig extends JFinalConfig
         arpMysql3.setCache(new EhCache());
 	
 		//配置定时任务插件
-//		QuartzPlugin quartzPlugin = new QuartzPlugin();
-//		me.add(quartzPlugin);
+		QuartzPlugin quartzPlugin = new QuartzPlugin();
+		me.add(quartzPlugin);
 		//Spring
 		me.add(new SpringPlugin());
 		//me.add(new SpringPlugin("//home/dyp/data/git/mytest/oms/target/oms-web/WEB-INF/classes/applicationContext.xml"));
@@ -178,6 +179,8 @@ public class MyConfig extends JFinalConfig
      */
 	@Override
 	public void afterJFinalStart() {
+		
+		
 	}
 
 	/**

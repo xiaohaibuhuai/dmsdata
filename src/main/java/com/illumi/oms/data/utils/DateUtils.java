@@ -3,6 +3,7 @@ package com.illumi.oms.data.utils;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class DateUtils {
 	public static long changeHour(long time,int num) {
@@ -21,7 +22,6 @@ public class DateUtils {
 	}
 	
 	
-	
 	public static long changeMonth(long time,int num) {
 		Date date = null;
 		try {
@@ -37,7 +37,14 @@ public class DateUtils {
         return date.getTime();
 	}
 	
-	
+	/**
+	 * 获取当天零点零分零秒
+	 * @param args
+	 */
+	public static long  getZeroTime(long time) {
+		long zero=time/(1000*3600*24)*(1000*3600*24)-TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+		return zero;
+	}
 
 	
 	public static void main(String[] args) {
@@ -84,8 +91,6 @@ public class DateUtils {
 			return result;
 		}
 		result[0]=end;
-		
-		
 		return result;
 	}
 }

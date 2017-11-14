@@ -1,4 +1,4 @@
-package com.illumi.oms.data.controller;
+package com.illumi.oms.data.monitoring.moneysystem.controller;
 
 
 import java.util.ArrayList;
@@ -16,8 +16,8 @@ import com.jayqqaa12.jbase.jfinal.ext.ctrl.EasyuiController;
 import com.jfinal.ext.route.ControllerBind;
 import com.jfinal.log.Logger;
 import com.jfinal.plugin.activerecord.Record;
-
-@ControllerBind(controllerKey = "/data/coinchart", viewPath = UrlConfig.DATA)
+                                 
+@ControllerBind(controllerKey = "/data/monitoring/moneysystem/coinchart", viewPath = UrlConfig.DATA_MONITORING_MONEYSYSTEM)
 public class CoinChartController extends EasyuiController<Record>{
 
 	private static final Logger log = Logger.getLogger(CoinChartController.class);
@@ -101,15 +101,4 @@ public class CoinChartController extends EasyuiController<Record>{
 		data.setData(list);
 		renderGson(data);
 	}
-	
-	
-	
-
-
-
-
-    
-
-
-	
 }
