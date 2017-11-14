@@ -1,7 +1,5 @@
 package com.illumi.oms.task;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -27,16 +25,14 @@ public class GameStatisticJobService implements Job{
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
         log.info("记录每日开局快照任务开始...");
-		//获取昨天时间
-        //2017-10-18
-		 //long zeroTime = DateUtils.getZeroTime(new Date().getTime());
-         long zeroTime = 1508256000000l;
+		 //获取昨天时间
+         //long zeroTime = 1508256000000l;
+         long zeroTime = DateUtils.getZeroTime(new Date().getTime());
 		 long startTime = DateUtils.changeHour(zeroTime, -24);
-	     //long startTime = 1461829835073l;
-		//记录每日局数统计快照
-      //  statGameStatistic(startTime,zeroTime);
-        
-        defineExcuteByDay(startTime,zeroTime,30);
+		 //记录每日局数统计快照
+         statGameStatistic(startTime,zeroTime);
+        //定时任务循环
+        //defineExcuteByDay(startTime,zeroTime,30);
         
         
 		log.info("记录每日开局快照任务结束...");
@@ -108,10 +104,10 @@ public class GameStatisticJobService implements Job{
 		 gameValidSnapShotDate.set("g_sng", gameSNGVaildCount);
 		 
 		 boolean isuccess1 = gameSnapShotDate.saveAndCreateDate();
-		 log.info("GameSnapShot:"+isuccess1);
-		 
 		 boolean isuccess2 = gameValidSnapShotDate.saveAndCreateDate();
-		 log.info("ValidGameSnapShot:"+isuccess2);
+		 
+		 log.info("t_game_daily_snapshot[isvalid 0 :"+isuccess1+"|| isValid 1:"+isuccess2+"]");
+
 	}
 	
 	
@@ -171,7 +167,7 @@ public class GameStatisticJobService implements Job{
 		 setDate2blindSnapShot(blindNormalVaild,playerblindNumList3,TYPE_PLAYER);
 		 
 		 boolean isuccess3 = blindNormalVaild.saveAndCreateDate();
-		 log.info("blindNormalVaild:"+isuccess3);
+		 
 		 
 		 
 		 //奥马哈
@@ -183,7 +179,7 @@ public class GameStatisticJobService implements Job{
 		 setDate2blindSnapShot(blindOmaha,playerblindNumList5,TYPE_PLAYER);
 		 
 		 boolean isuccess5 = blindOmaha.saveAndCreateDate();
-		 log.info("blindOmaha:"+isuccess5);
+		 
 		 
 		 
 		 //奥马哈保险局
@@ -194,14 +190,7 @@ public class GameStatisticJobService implements Job{
 		 setDate2blindSnapShot(blindOmahaVaild,playerblindNumList6,TYPE_PLAYER);
 		 
 		 boolean isuccess6 = blindOmahaVaild.saveAndCreateDate();
-		 log.info("blindOmahaVaild:"+isuccess6);
-		 
-		 
-		 
-		 
-		 
-		 
-		 
+		 log.info("t_blinds_daily_snapshot["+"blindNormal:"+isuccess1+"|| blindNormalVaild:"+isuccess3+"|| blindOmaha:"+isuccess5+"|| blindOmahaVaild:"+isuccess6+"]");
 	}
 
 	private void setDate2blindSnapShot(BlindSnapShotDate blind, List<Record> list,String type) {
@@ -213,8 +202,6 @@ public class GameStatisticJobService implements Job{
 				 blind.set(resultype, num);
 			 }
 			// log.error("获取blind数据出错");
-			
-			
 		}
 		
 	}
@@ -234,11 +221,6 @@ public class GameStatisticJobService implements Job{
 			// log.error("获取数据出错");
 		 }
 		
-	}
-	
-	private String dateFormat(Long time) {
-		DateFormat df = new SimpleDateFormat("yy-MM-dd");
-		return df.format(time);
 	}
 	
 	// 盲注类型解析

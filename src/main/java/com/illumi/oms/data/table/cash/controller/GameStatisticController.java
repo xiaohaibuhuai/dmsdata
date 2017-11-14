@@ -26,8 +26,6 @@ public class GameStatisticController extends EasyuiController<Record>{
 		// long dateEnd = DateUtils.getZeroTime(new Date().getTime());
 		long dateEnd = 1508256000000l;
 		long dateStart = DateUtils.changeHour(dateEnd, -24 * 14);
-		System.out.println(dateEnd);
-		System.out.println(dateStart);
 		// 封装日期
 		List<String> dates = getDays(dateStart, 14);
 		String sqlSum = getgamenumSql();
@@ -128,9 +126,7 @@ public class GameStatisticController extends EasyuiController<Record>{
 		renderJson(data);
 		
 	}
-	
-	
-	
+
 	private String getGameValidSql() {
 		String sql = "select from_unixtime(createtime/1000, '%m月%d日') days,COUNT(*) as num from t_bill_base_info where  createtime  BETWEEN ? AND ? AND totalgamenum>=10 GROUP BY days";
 		return sql;
