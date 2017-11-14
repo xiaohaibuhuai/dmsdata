@@ -13,12 +13,12 @@ MainApp.controller('PlayerStatisticCtrls',  function($scope,TabService) {
 	    	{field:'targetdate',title:'日期',width:100,align:'left',formatter:function(val,rec){
                 return jsonYearMonthDay(val);
             }},
-	        {field : 'p_normal',title : '普通局',width : 130,align:'left',},
-	        {field:'p_normalins',title:'普通保险局',width:110,align:'left'},
-	        {field:'p_omaha',title:'奥马哈局',width:110,align:'left'},
-	        {field:'p_omahains',title:'奥马哈保险局',width:150,align:'left'},
-	        {field:'p_six',title:'6+局',width:150,align:'left'},
-	        {field:'p_sng',title:'SNG',width:150,align:'left'}
+	        {field : 'p_normal',title : '普通局',width : 120,align:'left',},
+	        {field:'p_normalins',title:'普通保险局',width:120,align:'left'},
+	        {field:'p_omaha',title:'奥马哈局',width:120,align:'left'},
+	        {field:'p_omahains',title:'奥马哈保险局',width:120,align:'left'},
+	        {field:'p_six',title:'6+局',width:120,align:'left'},
+	        {field:'p_sng',title:'SNG',width:120,align:'left'}
 	      ]],
 	});
     
