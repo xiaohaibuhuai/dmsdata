@@ -1,5 +1,6 @@
 package com.illumi.oms.data.table.cash.controller;
 
+import java.util.Collections;
 import java.util.List;
 
 import com.illumi.oms.common.UrlConfig;
@@ -59,6 +60,7 @@ public class PlayerStatisicController extends EasyuiController<Record>{
 		long dateStart = DateUtils.changeHour(dateEnd,-14*24);
 		// 2 查数据库
 		List<Record>  gameInfo= Db.find(SqlKit.sql("data.reportForms.getBlindInfoByType"),new Object[]{type,dateStart,dateEnd});
+		Collections.reverse(gameInfo); 
 		DataGrid<Record> data = new DataGrid<Record>();
 		data.setRows(gameInfo);
 		return data;

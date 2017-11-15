@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -40,6 +41,9 @@ public class GameStatisticController extends EasyuiController<Record> {
 		// 2 查数据库
 		List<Record> gameInfo = Db.find(SqlKit.sql("data.reportForms.getGameInfoByDate"),
 				new Object[] { dateStart, dateEnd });
+		
+		//倒序
+	    Collections.reverse(gameInfo); 
 		DataGrid<Record> data = new DataGrid<Record>();
 		data.setRows(gameInfo);
 
@@ -58,6 +62,8 @@ public class GameStatisticController extends EasyuiController<Record> {
 		// 2 查数据库
 		List<Record> gameValidInfo = Db.find(SqlKit.sql("data.reportForms.getGameValidInfoByDate"),
 				new Object[] { dateStart, dateEnd });
+		//倒序
+	    Collections.reverse(gameValidInfo); 
 		DataGrid<Record> data = new DataGrid<Record>();
 		data.setRows(gameValidInfo);
 
@@ -76,7 +82,7 @@ public class GameStatisticController extends EasyuiController<Record> {
 	}
 
 	/**
-	 * 去重
+	 * 去重 (如果某天没有记录 预留当天位置为null)
 	 * 
 	 * @param record
 	 * @param dates
@@ -85,7 +91,7 @@ public class GameStatisticController extends EasyuiController<Record> {
 	 */
 	private List<Long> parseRecord(List<Record> record, List<String> dates, int target) {
 		List<Long> list = new ArrayList<Long>();
-		// 如果不等
+		// 如果某天没有记录
 		if (record.size() != target) {
 			Map<String, Long> datesmap = new TreeMap<String, Long>();
 			for (String d : dates) {
