@@ -140,6 +140,7 @@ MainApp.controller('BlindStatisticCtrls',  function($scope,TabService) {
 	cause_name['1/2'] = '1/2';
 	cause_name['2/4'] = '2/4';
 	cause_name['5/10'] = '5/10';
+	cause_name['10/20'] = '10/20';
 	cause_name['20/40'] = '20/40';
 	cause_name['25/50'] = '25/50';
 	cause_name['50/100'] = '50/100';
