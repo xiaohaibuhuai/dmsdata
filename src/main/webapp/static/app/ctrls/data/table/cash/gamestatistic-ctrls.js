@@ -1,5 +1,4 @@
 MainApp.controller('GameStatisticCtrls',  function($scope,TabService) {
-	var initInc = false;
 	var  dg =$('#dg1').datagrid({
 		url : PATH+'/data/table/cash/gamestatistic/sum',
 		fit : false,

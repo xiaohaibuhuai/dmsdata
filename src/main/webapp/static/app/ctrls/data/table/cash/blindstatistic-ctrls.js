@@ -38,7 +38,7 @@ MainApp.controller('BlindStatisticCtrls',  function($scope,TabService) {
 	    	 {field:'targetdate',title:'普通保险局',width:90,align:'left',formatter:function(val,rec){
                  return jsonYearMonthDay(val);
              }},
-		        {field : 'g_b2',title : '1/2',width : 90,align:'left',},
+		        {field : 'g_b2',title : '1/2',width : 90,align:'left'},
 		        {field:'g_b4',title:'2/4',width:90,align:'left'},
 		        {field:'g_b10',title:'5/10',width:90,align:'left'},
 		        {field:'g_b20',title:'10/20',width:90,align:'left'},
@@ -122,70 +122,105 @@ MainApp.controller('BlindStatisticCtrls',  function($scope,TabService) {
 	 
 	}
 	
-//	 $.post(PATH+'/data/table/cash/gamestatistic/chart',function(d){
-//		  $('#main').highcharts({
-//			  chart: {
-//		            type: 'column'
-//		        },
-//		        title: {
-//		            text: '14天开局数变化柱图',
-//		 
-//		        },
-//		        yAxis: [{
-//		            min: 0,
-//		            title: {
-//		                text: '数量'
-//		            }
-//		        }, {
-//		            title: {
-//		                text: '百分比 (%)'
-//		            },
-//		            opposite: true
-//		        }],
-//		        
-//		        legend: {
-//		            shadow: false
-//		        },
-//		        tooltip: {
-//		            shared: true
-//		        },
-//		        plotOptions: {
-//		            column: {
-//		                grouping: false,
-//		                shadow: false,
-//		                borderWidth: 0
-//		            }
-//		        },
-//		        
-//		        xAxis: {
-//		            categories: d.categories
-//		        },        
-//		        series: [{
-//		            name: '每日开局总数',
-//		            color: 'rgba(165,170,217,1)',
-//		            data: d.series[0].sum,
-//		            pointPadding: 0.3,
-//		            pointPlacement: -0.2
-//		        }, {
-//		            name: '每日有效开局总数',
-//		            color: 'rgba(126,86,134,.9)',
-//		            data: d.series[0].valid,
-//		            pointPadding: 0.4,
-//		            pointPlacement: -0.2
-//		        }, {
-//		            name: '百分比',
-//		            color: 'rgba(216,191,216,1)',
-//		            data: d.series[0].per,
-//		            tooltip: {
-//		                valuePrefix: '%',
-//		            },
-//		            visible: false,
-//		            pointPadding: 0.4,
-//		            pointPlacement: 0.2,
-//		            yAxis: 1
-//		        }]
-//		    });
-//		    parent.$.messager.progress('close');
-//			} ,'json');
+
+	
+	
+	
+	$.post(PATH+'/data/table/cash/blindstatistic/sum',function(s){
+		var data = s;
+		var points = [],
+		region_p,
+		region_val,
+		region_i,
+		country_p,
+		country_i,
+		cause_p,
+		cause_i,
+		cause_name = [];
+	cause_name['1/2'] = '1/2';
+	cause_name['2/4'] = '2/4';
+	cause_name['5/10'] = '5/10';
+	cause_name['20/40'] = '20/40';
+	cause_name['25/50'] = '25/50';
+	cause_name['50/100'] = '50/100';
+	cause_name['100/200'] = '100/200';
+	cause_name['200/400'] = '200/400';
+	cause_name['300/600'] = '300/600';
+	cause_name['500/1000'] = '500/1000';
+	cause_name['1000/2000'] = '1000/2000';
+	
+	
+	region_i = 0;
+	for (var region in data) {
+		region_val = 0;
+		region_p = {
+			id: "id_" + region_i,
+			name: region,
+			color: Highcharts.getOptions().colors[region_i]
+		};
+		country_i = 0;
+		for (var country in data[region]) {
+			country_p = {
+				id: region_p.id + "_" + country_i,
+				name: country,
+				parent: region_p.id
+			};
+			points.push(country_p);
+			cause_i = 0;
+			for (var cause in data[region][country]) {
+				cause_p = {
+					id: country_p.id + "_" + cause_i,
+					name: cause_name[cause],
+					parent: country_p.id,
+					value: Math.round(+data[region][country][cause])
+				};
+				region_val += cause_p.value;
+				points.push(cause_p);
+				cause_i++;
+			}
+			country_i++;
+		}
+		region_p.value = Math.round(region_val / country_i);
+		points.push(region_p);
+		region_i++;
+	}
+		
+		
+	var chart = new Highcharts.Chart({
+		chart: {
+			renderTo: 'main'
+		},
+		series: [{
+			type: "treemap",
+			layoutAlgorithm: 'squarified',
+			allowDrillToNode: true,
+			dataLabels: {
+				enabled: false
+			},
+			levelIsConstant: false,
+			levels: [{
+				level: 1,
+				dataLabels: {
+					enabled: true
+				},
+				borderWidth: 3
+			}],
+			data: points
+		}],
+//		subtitle: {
+//			text: '点击下钻. 数据来源: <a href="https://apps.who.int/gho/data/node.main.12?lang=en">WHO</a>.'
+//		},
+		title: {
+			text: '14日各盲注牌局统计'
+		}
+	});
+	} ,'json');
+
+
+	
+	
+	
+	
+
 });
 

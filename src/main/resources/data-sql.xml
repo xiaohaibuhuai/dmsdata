@@ -7,7 +7,7 @@
       FROM 
           t_bill_base_info 
       WHERE 
-          createtime  BETWEEN ? AND ? 
+          createtime  BETWEEN ? AND ?  AND overtag = 1 
       group by gameroomtype
       </sql>
       
@@ -18,7 +18,7 @@
       FROM 
             t_bill_base_info 
       WHERE 
-             createtime  BETWEEN ? AND ? and  totalgamenum>=10 
+             createtime  BETWEEN ? AND ? and  totalgamenum>=10 AND overtag = 1 
       group by gameroomtype
       </sql>
       
@@ -29,7 +29,7 @@
       FROM 
            t_sng_bill_base_info  
       Where 
-           createtime BETWEEN ? AND ?
+           createtime BETWEEN ? AND ? AND overtag = 1 
       </sql>
       
       <sql id="getGameSNGVaildCount">
@@ -38,7 +38,7 @@
       FROM 
           t_sng_bill_base_info  
       WHERE 
-          createtime BETWEEN ? AND ? and totalgamenum>=10
+          createtime BETWEEN ? AND ? and totalgamenum>=10  AND overtag = 1 
       </sql>
       <sql id="getPlayerList">
       SELECT
@@ -46,7 +46,7 @@
       FROM 
          t_bill_info a join t_bill_base_info b on a.roomid=b.roomid  
       WHERE  
-         createtime  BETWEEN ? AND ? and buystacks>0  
+         createtime  BETWEEN ? AND ? and buystacks>0   AND overtag = 1 
       group by gameroomtype
       </sql>
       <sql id="getplayerSNGCount">
@@ -55,7 +55,7 @@
       FROM
         t_bill_info a join t_sng_bill_base_info b on a.roomid=b.roomid  
       WHERE
-      createtime  BETWEEN ? AND ? and buystacks>0
+      createtime  BETWEEN ? AND ? and buystacks>0 AND overtag = 1 
       
       </sql>
       
@@ -65,7 +65,8 @@
       FROM 
       t_bill_info a join t_bill_base_info b on a.roomid=b.roomid  
       WHERE  
-      createtime  BETWEEN ? AND ? and buystacks>0 and gameroomtype=?  group by bigblind
+      createtime  BETWEEN ? AND ? and buystacks>0 and gameroomtype=?   AND overtag = 1 
+      group by bigblind
       </sql>
       
       <sql id="getBlindNumByType">
@@ -74,7 +75,7 @@
       FROM 
           t_bill_base_info 
       WHERE 
-          createtime  BETWEEN ? AND ? and gameroomtype = ?  
+          createtime  BETWEEN ? AND ? and gameroomtype = ?  AND overtag = 1 
       GROUP BY bigblind
       </sql> 
    
