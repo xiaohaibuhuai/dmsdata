@@ -5,6 +5,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,8 +26,8 @@ public class GameStatisticController extends EasyuiController<Record> {
 
 	public void chart() {
 
-		// long dateEnd = DateUtils.getZeroTime(new Date().getTime());
-		long dateEnd = 1508256000000l;
+		long dateEnd = DateUtils.getZeroTime(new Date().getTime());
+		//long dateEnd = 1508256000000l;
 		Chart chart = getChartDateByDay(14, dateEnd);
 		renderGson(chart);
 	}
@@ -36,8 +37,8 @@ public class GameStatisticController extends EasyuiController<Record> {
 
 	public void sum() {
 		// 1 获取时间
-		// long dateEnd = DateUtils.getZeroTime(new Date().getTime());
-		long dateEnd = 1508256000000l;
+		long dateEnd = DateUtils.getZeroTime(new Date().getTime());
+		//long dateEnd = 1508256000000l;
 		long dateStart = DateUtils.changeHour(dateEnd, -14 * 24);
 		// 2 查数据库
 		List<Record> gameInfo = Db.find(SqlKit.sql("data.reportForms.getGameInfoByDate"),
@@ -57,8 +58,8 @@ public class GameStatisticController extends EasyuiController<Record> {
 	 */
 	public void valid() {
 		// 1获取时间
-		// long dateEnd = DateUtils.getZeroTime(new Date().getTime());
-		long dateEnd = 1508256000000l;
+		long dateEnd = DateUtils.getZeroTime(new Date().getTime());
+		//long dateEnd = 1508256000000l;
 		long dateStart = DateUtils.changeHour(dateEnd, -14 * 24);
 		// 2 查数据库
 		List<Record> gameValidInfo = Db.find(SqlKit.sql("data.reportForms.getGameValidInfoByDate"),
