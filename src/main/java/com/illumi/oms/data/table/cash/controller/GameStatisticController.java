@@ -5,6 +5,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -142,10 +143,19 @@ public class GameStatisticController extends EasyuiController<Record> {
 				pre.add(null);
 			}
 		}
+		 //{y:29.7,extra:'hhh', suffix: '%'}, 
+		List<Map<String,Object>> validPrelist=new ArrayList<Map<String,Object>>();
+		for(int i=0,n=valid.size();i<n;i++) {
+			Map<String,Object> map = new HashMap<>();
+			map.put("y", valid.get(i));
+			map.put("ext", pre.get(i));
+			validPrelist.add(map);
+		}
+		
 		List<Object> series = new ArrayList<Object>();
 		series.add(sum);
-		series.add(valid);
-		series.add(pre);
+		series.add(validPrelist);
+		//series.add(pre);
 		Chart chart = new Chart();
 		chart.setCategories(dates);
 		chart.setSeries(series);

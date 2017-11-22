@@ -66,18 +66,26 @@ MainApp.controller('GameStatisticCtrls',  function($scope,TabService) {
 		            title: {
 		                text: '数量'
 		            }
-		        }, {
-		            title: {
-		                text: '百分比 (%)'
-		            },
-		            opposite: true
-		        }],
+		        }, ],
 		        
 		        legend: {
 		            shadow: false
 		        },
 		        tooltip: {
-		            shared: true
+		            shared: true,
+		            formatter : function (){ // 提示框格式化字符串
+		                 var s = '<b>'+this.x+'</b>';
+		                 $.each(this.points ,function(index,value){
+		                	     if(this.series.name=='每日有效开局总数'){
+		                	    	 s+='<br />' + this.series.name + ':' + this.y+" (%"+this.point.ext+")";
+		                	     }else{
+		                	    	 s += '<br />' + this.series.name + ':' + this.y;
+		                	     }
+		                    
+		                 });
+		                 return s;
+		             },
+		            
 		        },
 		        plotOptions: {
 		            column: {
@@ -101,19 +109,21 @@ MainApp.controller('GameStatisticCtrls',  function($scope,TabService) {
 		            color: 'rgba(126,86,134,.9)',
 		            data: d.series[1],
 		            pointPadding: 0.4,
-		            pointPlacement: -0.2
-		        }, {
-		            name: '百分比',
-		            color: 'rgba(216,191,216,1)',
-		            data: d.series[2],
-		            tooltip: {
-		                valueSuffix: '%',
-		            },
-		            visible: false,
-		            pointPadding: 0.4,
-		            pointPlacement: 0.2,
-		            yAxis: 1
-		        }]
+		            pointPlacement: -0.2,
+		        }, 
+//		        {
+//		            name: '百分比',
+//		            color: 'rgba(216,191,216,1)',
+//		            data: d.series[2],
+//		            tooltip: {
+//		                valueSuffix: '%',
+//		            },
+//		            visible: false,
+//		            pointPadding: 0.4,
+//		            pointPlacement: 0.2,
+//		            yAxis: 1
+//		        }
+		        ]
 		    });
 		    parent.$.messager.progress('close');
 			} ,'json');
