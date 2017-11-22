@@ -1,6 +1,7 @@
 package com.illumi.oms.data.utils;
 
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,10 +29,14 @@ import com.jfinal.plugin.activerecord.Record;
 
 public class ELKUtils {
 
-	
-	/**
-	 * 获取变化率数据从Log  
-	 */
+	public static void main(String[] args) {
+		 //long nowTime =1509552000000l;
+		long nowTime =1509465600000l;
+		 String head[]= {"ilumi_task_coinanddiamond_","ilumi_payment_"};
+		 DateFormat df = new SimpleDateFormat("yyyy-MM");
+		 String urlTask = getUrl(nowTime,head,"/_search",df);
+		 System.out.println(urlTask);
+	}
 	public static List<ChartInfo> getTaskChartChangeInfo(String target,long time,String timeformat) {
 		long nowTime = new Date().getTime();
 		//long startTime = DateUtils.changeHour(nowTime, hourtime);
@@ -39,7 +44,8 @@ public class ELKUtils {
 		String urlMethod="GET";
 		String urlheadTask="/ilumi_task_coinanddiamond_";
 	    String urlend="/_search";
-	    String urlTask = DateUtils.getUrl(nowTime,urlheadTask,urlend);
+	    DateFormat df = new SimpleDateFormat("yyyy-MM");
+	    String urlTask = getUrl(nowTime,urlheadTask,urlend,df);
 	    String jsonString = "{\n" + "  \"query\": {\n" + "\"constant_score\": {\n" + "\"filter\": {\"range\": {\n" + "\"@timestamp\": {\n" + "\"gte\": "
 	    +startTime+",\n" + 
         		"\"lte\": "+nowTime+"\n" + 
@@ -77,12 +83,14 @@ public class ELKUtils {
 		}
 	public static List<ChartInfo> getLogChartChangeInfo(String target,long time,String timeformat) {
 		long nowTime = new Date().getTime();
-//		long startTime = DateUtils.changeHour(nowTime, hourtime);
 		long startTime = nowTime + time;
 		String urlMethod="GET";
-	    String urlheadLog="/ilumi_transctionlog_";
+	    //String urlheadLog="/ilumi_transctionlog_";
+	    
+	    String[] urlheadLog= {"/ilumi_transctionlog_","ilumi_payment_"};
 	    String urlend="/_search";
-	    String urlLog = DateUtils.getUrl(nowTime,urlheadLog,urlend);
+	    DateFormat df = new SimpleDateFormat("yyyy-MM");
+	    String urlLog = getUrl(nowTime,urlheadLog,urlend,df);
 	    
 	    String jsonString = "{\n" + 
 				"  \"query\": {\n" + 
@@ -123,20 +131,9 @@ public class ELKUtils {
 		return getChartChangeInfo(jsonString, urlMethod, urlLog, target);
 	    
 		}
-	
-	
-	/**
-	 * 获取变化率数据 
-	 * @param jsonString
-	 * @param urlMethod
-	 * @param url
-	 * @param target
-	 * @return
-	 */
 	public static List<ChartInfo> getChartChangeInfo(String jsonString,String urlMethod,String url,String target) {
-	    //"/ilumi_transctionlog_2017-10-11,ilumi_transctionlog_2017-10-12/_search";
 	    try {
-	    Response response = ELKUtils.getDate(jsonString, urlMethod, url);
+	    Response response = ELKUtils.getData(jsonString, urlMethod, url);
 	    List<ChartInfo> list = ELKUtils.paseChartJson(response,target);
 	    return list;
 	    }catch (Exception e) {
@@ -144,20 +141,52 @@ public class ELKUtils {
 		}
 			return null;
 		}
-	
-	
-	/**
-	 * 排名信息
-	 * @param jsonString
-	 * @param urlMethod
-	 * @param url
-	 * @param target
-	 * @return
-	 */
-	
+	//排名信息获取
+	public static List<RankInfo> getRankInfo(String target,long time,String order){
+		long nowTime = new Date().getTime();
+		long startTime = nowTime + time;
+		String urlMethod = "POST";
+		String urlhead = "ilumi_transctionlog_";
+		String urlend = "/_search?request_cache=false";
+		String url = getUrl(startTime, urlhead, urlend, new SimpleDateFormat("yyyy-MM"));
+		String jsonString="{\n" + 
+				"  \"query\": {\n" + 
+				"    \"constant_score\": {\n" + 
+				"      \"filter\": {\"range\": {\n" + 
+				"        \"@timestamp\": {\n" + 
+				"          \"gte\": \""+startTime+"\",\n" + 
+				"          \"lte\": \""+nowTime+"\"\n" + 
+				"        }\n" + 
+				"      }}\n" + 
+				"    }\n" + 
+				"  },\n" + 
+				"  \"aggs\":{\n" + 
+				"    \"sum\":{\n" + 
+				"     \"terms\": {\n" + 
+				"       \"field\": \"uuid\",\n" + 
+				"       \"show_term_doc_count_error\": true,\n" + 
+				"       \"shard_size\": 100000,\n" + 
+				"       \"order\": {\n" + 
+				"         \"money_sum\": \""+order+"\"\n" + 
+				"       }\n" + 
+				"      },\"aggs\": {\n" + 
+				"        \"money_sum\": {\n" + 
+				"          \"sum\": {\n" + 
+				"            \"field\": \""+target+"_change_no\"\n" + 
+				"          }\n" + 
+				"        }\n" + 
+				"      }\n" + 
+				"    }\n" + 
+				"  }\n" + 
+				"}";
+		 
+		
+		return  getRankInfo(jsonString, urlMethod, url, target);
+	}
+	//重载
 	public  static  List<RankInfo>  getRankInfo(String jsonString,String urlMethod,String url,String target) {
 		try {
-		    Response response = ELKUtils.getDate(jsonString, urlMethod, url);
+		    Response response = ELKUtils.getData(jsonString, urlMethod, url);
 		    List<RankInfo> list = ELKUtils.paseRankJson(response,target);
 		    return list;
 		    }catch (Exception e) {
@@ -165,7 +194,6 @@ public class ELKUtils {
 			}
 				return null;
 	}
-	
 	/**
 	 * 链接ELK 
 	 * @param jsonString
@@ -174,7 +202,7 @@ public class ELKUtils {
 	 * @return
 	 * @throws IOException  是否该抛异常
 	 */
-	private static Response getDate(String jsonString,String method,String url)  {
+	public static Response getData(String jsonString,String method,String url)   {
 		try {
 		    HttpHost httpHost = new HttpHost("10.105.92.212",9200,"http");
 	        RestClient restClient = RestClient.builder(httpHost).build();
@@ -182,15 +210,98 @@ public class ELKUtils {
 	        HttpEntity entity = new NStringEntity(jsonString, ContentType.APPLICATION_JSON);
 	        Response response = restClient.performRequest(method,url,params,entity);
 		    return response;
-		}catch (Exception e) {
+		}catch(Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		return  null;
+		
+	}
+      /**
+       * 获取解析后的url    天数为两天 月份可能为两月
+       * @param startTime
+       * @return 年月日
+       */
+  	public static String getUrl(long startTime, String urlhead, String urlend,DateFormat df) {
+  		String url =null;
+  		String[] urlarr = getUrlDate(startTime,df);
+  	    if(urlarr[1]!=null) {
+  	      url = urlhead+urlarr[0]+","+urlhead+urlarr[1]+urlend;
+  	    }else {
+  	      url = urlhead+urlarr[0]+urlend;
+  	    }
+  		return url;
+  	}
+  	/**
+  	 * 重载  多个url库
+  	 * @param startTime
+  	 * @param urlhead
+  	 * @param urlend
+  	 * @return
+  	 */
+  	private static String getUrl(long startTime,String[] urlheads,String urlend,DateFormat dateformat) {
+  		String url ="";
+  		
+  		for(int i=0;i<urlheads.length;i++) {
+  			String[] urlarr = getUrlDate(startTime,dateformat);
+  	  	    if(urlarr[1]!=null) {
+  	  	    	  //判断结尾
+  	  	      url += urlheads[i]+urlarr[0]+","+urlheads[i]+urlarr[1];
+  	  	    	  if(i!=urlheads.length-1) {
+  	  	      url += ",";
+  	  	      }
+  	  	    }else {
+  	  	    	  //判断结尾
+  	  	      url += urlheads[i]+urlarr[0];
+  	  	    	  if(i!=urlheads.length-1) {
+  	  	    		url +=",";
+  	  	    	  } 
+  	  	    }
+  		}
+  		url+=urlend;
+  		return url;
+  	}
+  	/**
+  	 * 会返回三天的日期
+  	 * @param startTime
+  	 * @param urlheads
+  	 * @param urlend
+  	 * @return
+  	 */
+  	public static String getUrlThreeDay(long startTime,String urlheads,String urlend) {
+  		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+  		String nowDay = df.format(startTime);
+  		String lastDay = df.format(DateUtils.changeHour(startTime, -24));
+  		String nextDay = df.format(DateUtils.changeHour(startTime, +24));
+  		String url="";
+  		url += urlheads+lastDay+","+urlheads+nowDay+","+urlheads+nextDay+urlend;
+  		return url;
+  	}
+  	/**
+     * 优化查询    判断上一天是否是上一个月    
+     *            日期为天直接返回上一天
+     * @param startTime
+     * @return 年月日
+     */
+	private static  String[] getUrlDate(long startTime,DateFormat df) {
+		//SimpleDateFormat df = new SimpleDateFormat("yyyy-MM");
+		String end = df.format(new Date(startTime));
+		String start = df.format(new Date(DateUtils.changeHour(startTime, -24)));
+		String[] result =  new String[2];
+		
+		if(!end.equals(start)) {
+			result[0] =start;
+			result[1] = end;
+			return result;
+		}
+		result[0]=end;
+		return result;
 	}
 	/**
 	 * 解析图表Json
 	 * @param response
-	 * @return CoinChartInfo
+	 * @return CoinChartInfo   
+	 * 
+	 * 解析： aggregations获取 arr   
 	 */
 	private static List<ChartInfo> paseChartJson(Response response,String target) {
 		try {
@@ -219,15 +330,14 @@ public class ELKUtils {
 		}
 		return null;
 	}
-	
-	
-	//解析排名Json
-      private static List<RankInfo> paseRankJson(Response response, String target) {try {
+	//解析排名Json  解析：aggregations
+    private static List<RankInfo> paseRankJson(Response response, String target) {
+    	try {
 		String jsonstring = EntityUtils.toString(response.getEntity());
 	    JSONObject jsonObj =JSON.parseObject(jsonstring);
 	     JSONObject ag = jsonObj.getJSONObject("aggregations");
-	     JSONObject name = ag.getJSONObject("NAME");
-	     JSONArray arry = name.getJSONArray("buckets");
+	     JSONObject sum = ag.getJSONObject("sum");
+	     JSONArray arry = sum.getJSONArray("buckets");
 	     
 	     List<RankInfo> list = new ArrayList<>();
 	     
@@ -236,7 +346,7 @@ public class ELKUtils {
 	    	    
 	    	    //String time = temp.getString("key_as_string");
 	    	    Long uuid = temp.getLong("key");
-	    	    Long  num = temp.getJSONObject(target).getLong("value");
+	    	    Long  num = temp.getJSONObject(target+"_sum").getLong("value");
 	    	    int 	isErro=temp.getInteger("doc_count_error_upper_bound");
 	    	    /**
 	    	     * 打日志   如果isErro为1  出错
@@ -246,12 +356,14 @@ public class ELKUtils {
 	    	    rank.setChange(num);
 	    	    rank.setIsErro(isErro);
 	    	    
-	    	    //查数据库再封装rank  耦合度很大。
+	    	    //查数据库再封装rank  
 	    	    Record userTemp = Db.use(Consts.DB_POKER).findFirst(SqlKit.sql("stat.player.getPlayerByUuid"), uuid);
+	    	    rank.setRank(i+1);
+	    	    if(userTemp!=null) {
 	    	    rank.setNickname(userTemp.getStr("nickname"));
 	    	    rank.setShowid(userTemp.getLong("showid"));
-	    	    rank.setRank(i+1);
-	    	   // rank.setUuid(uuid);
+	    	    }
+	    	    list.add(rank);
 	    	    
 	     }
 	     return list;
@@ -260,5 +372,5 @@ public class ELKUtils {
 		}
 		return null;
 		}
-
+    //解析牌谱查询
 }
