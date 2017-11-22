@@ -19,8 +19,7 @@ public class PlayerStatisicController extends EasyuiController<Record>{
 
 	//各牌局类型14日玩家统计
 	public void getGamePlayer() {
-		long dateEnd = DateUtils.getZeroTime(new Date().getTime());
-		//long dateEnd = 1508256000000l;
+		long dateEnd = DateUtils.getCurrentZeroTime();
 		long dateStart = DateUtils.changeHour(dateEnd,-14*24);
 		//2 查数据库
 		List<Record>  gameValidInfo= Db.find(SqlKit.sql("data.reportForms.getGameInfoByDate"),new Object[]{dateStart,dateEnd});
@@ -57,8 +56,7 @@ public class PlayerStatisicController extends EasyuiController<Record>{
   	
   	
   	private DataGrid<Record> getBlindDateByType(int type) {
-		long dateEnd = DateUtils.getZeroTime(new Date().getTime());
-		//long dateEnd = 1508256000000l;
+  		long dateEnd = DateUtils.getCurrentZeroTime();
 		long dateStart = DateUtils.changeHour(dateEnd,-14*24);
 		// 2 查数据库
 		List<Record>  gameInfo= Db.find(SqlKit.sql("data.reportForms.getBlindInfoByType"),new Object[]{type,dateStart,dateEnd});

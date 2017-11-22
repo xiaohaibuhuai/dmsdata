@@ -25,9 +25,7 @@ import com.jfinal.plugin.activerecord.Record;
 public class GameStatisticController extends EasyuiController<Record> {
 
 	public void chart() {
-
-		long dateEnd = DateUtils.getZeroTime(new Date().getTime());
-		//long dateEnd = 1508256000000l;
+	    long dateEnd = DateUtils.getCurrentZeroTime();
 		Chart chart = getChartDateByDay(14, dateEnd);
 		renderGson(chart);
 	}
@@ -37,8 +35,7 @@ public class GameStatisticController extends EasyuiController<Record> {
 
 	public void sum() {
 		// 1 获取时间
-		long dateEnd = DateUtils.getZeroTime(new Date().getTime());
-		//long dateEnd = 1508256000000l;
+		long dateEnd = DateUtils.getCurrentZeroTime();
 		long dateStart = DateUtils.changeHour(dateEnd, -14 * 24);
 		// 2 查数据库
 		List<Record> gameInfo = Db.find(SqlKit.sql("data.reportForms.getGameInfoByDate"),
@@ -58,8 +55,7 @@ public class GameStatisticController extends EasyuiController<Record> {
 	 */
 	public void valid() {
 		// 1获取时间
-		long dateEnd = DateUtils.getZeroTime(new Date().getTime());
-		//long dateEnd = 1508256000000l;
+		long dateEnd = DateUtils.getCurrentZeroTime();
 		long dateStart = DateUtils.changeHour(dateEnd, -14 * 24);
 		// 2 查数据库
 		List<Record> gameValidInfo = Db.find(SqlKit.sql("data.reportForms.getGameValidInfoByDate"),
@@ -73,6 +69,9 @@ public class GameStatisticController extends EasyuiController<Record> {
 
 	}
 
+	
+	
+	
 	private String getGameValidSql() {
 		String sql = "select from_unixtime(createtime/1000, '%m月%d日') days,COUNT(*) as num from t_bill_base_info where  createtime  BETWEEN ? AND ? AND totalgamenum>=10 GROUP BY days";
 		return sql;

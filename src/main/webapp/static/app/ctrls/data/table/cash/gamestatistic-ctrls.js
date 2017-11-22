@@ -77,8 +77,10 @@ MainApp.controller('GameStatisticCtrls',  function($scope,TabService) {
 		                 var s = '<b>'+this.x+'</b>';
 		                 $.each(this.points ,function(index,value){
 		                	     if(this.series.name=='每日有效开局总数'){
+		                	    	 if(this.y!=null){
 		                	    	 s+='<br />' + this.series.name + ':' + this.y+" (%"+this.point.ext+")";
-		                	     }else{
+		                	    	 }
+		                	    	 }else{
 		                	    	 s += '<br />' + this.series.name + ':' + this.y;
 		                	     }
 		                    

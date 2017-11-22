@@ -29,8 +29,7 @@ public class BlindStatisicController extends EasyuiController<Record>{
     //热力图
 	public void sum() {
 		//获取当天的零点时间
-		long dateEnd = DateUtils.getZeroTime(new Date().getTime());
-		//long dateEnd=1508256000000l;
+		 long dateEnd = DateUtils.getCurrentZeroTime();
 		if(chartMap!=null&&!isOverTimeMap(dateEnd)) {
 			log.info("从chartMap中获取数据||"+formatTime(time));
 			renderJson(chartMap);
@@ -93,9 +92,7 @@ public class BlindStatisicController extends EasyuiController<Record>{
 	
 	
 	private List<Record> getBlindDateByType(int type) {
-		long dateEnd = DateUtils.getZeroTime(new Date().getTime());
-        //long dateEnd=1508256000000l;
-		//long dateEnd = 1461829835073l;
+		long dateEnd = DateUtils.getCurrentZeroTime();
 		List<Record> gameInfo = null;
 		if(map.containsKey(type)&&!isOverTimeMap(dateEnd)) {
 		 gameInfo = map.get(type);
