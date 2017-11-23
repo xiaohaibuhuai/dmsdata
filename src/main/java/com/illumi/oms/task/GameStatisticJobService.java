@@ -30,9 +30,9 @@ public class GameStatisticJobService implements Job{
          long zeroTime = DateUtils.getCurrentZeroTime();
 		 long startTime = DateUtils.changeHour(zeroTime, -24);
 		 //记录每日局数统计快照
-          	//statGameStatistic(startTime,zeroTime);
+          	statGameStatistic(startTime,zeroTime);
         //定时任务循环
-          defineExcuteByDay(startTime,zeroTime,30);
+         // defineExcuteByDay(startTime,zeroTime,30);
         
         
 		log.info("记录每日开局快照任务结束...");
