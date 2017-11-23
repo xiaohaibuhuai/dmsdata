@@ -13,9 +13,11 @@ import com.illumi.oms.data.utils.ELKUtils;
 import com.illumi.oms.system.model.Chart;
 import com.illumi.oms.system.model.DataGrid;
 import com.jayqqaa12.jbase.jfinal.ext.ctrl.EasyuiController;
+import com.jfinal.ext.render.excel.PoiRender;
 import com.jfinal.ext.route.ControllerBind;
 import com.jfinal.log.Logger;
 import com.jfinal.plugin.activerecord.Record;
+import com.jfinal.render.Render;
                                  
 @ControllerBind(controllerKey = "/data/monitoring/moneysystem/coinchart", viewPath = UrlConfig.DATA_MONITORING_MONEYSYSTEM)
 public class CoinChartController extends EasyuiController<Record>{
@@ -67,17 +69,10 @@ public class CoinChartController extends EasyuiController<Record>{
    */
 	public void increaseRank() {
 		DataGrid data = new DataGrid();
-		List<RankInfo> list = new ArrayList<>();
-		list.add(new RankInfo(1, 12l, 123, "23", 12));
-		list.add(new RankInfo(2, 1008l, 123, "23", 12));
-		list.add(new RankInfo(3, 14, 123, "23", 12));
-		list.add(new RankInfo(4, 14, 123, "23", 12));
-		list.add(new RankInfo(5, 122, 123, "23", 12));
-		list.add(new RankInfo(6, 47, 123, "23", 12));
-		list.add(new RankInfo(7, 75, 123, "23", 12));
-		list.add(new RankInfo(8, 89, 123, "23", 12));
-		list.add(new RankInfo(9, 96, 123, "23", 12));
-		list.add(new RankInfo(10, 365, 123, "23", 12));
+		String target="money";
+		String order="desc";
+		long time = -60*60*1000*24;
+		List<RankInfo> list = ELKUtils.getRankInfo(target,time,order);
 		data.setData(list);
 		renderGson(data);
 	}
@@ -87,18 +82,13 @@ public class CoinChartController extends EasyuiController<Record>{
 	 */
 	public void reduceRank() {
 		DataGrid data = new DataGrid();
-		List<RankInfo> list = new ArrayList<>();
-		list.add(new RankInfo(1, 11658, 123, "23", 12));
-		list.add(new RankInfo(2, 63474, 123, "23", 12));
-		list.add(new RankInfo(3, 10028, 123, "23", 12));
-		list.add(new RankInfo(4, 73978, 123, "23", 12));
-		list.add(new RankInfo(5, 16, 123, "23", 12));
-		list.add(new RankInfo(6, 17, 123, "23", 12));
-		list.add(new RankInfo(7, 56, 123, "23", 12));
-		list.add(new RankInfo(8, 10028, 123, "23", 12));
-		list.add(new RankInfo(9, 10086, 123, "23", 12));
-		list.add(new RankInfo(10, 30065, 123, "23", 12));
+		String target="money";
+		String order="asc";
+		long time = -60*60*1000*24;
+		List<RankInfo> list = ELKUtils.getRankInfo(target,time,order);
 		data.setData(list);
+		
+		Render poirender = PoiRender.me(list).fileName("carInfo.xls").headers("asddsa").sheetName("试题表").columns("adsa");
 		renderGson(data);
 	}
 }
