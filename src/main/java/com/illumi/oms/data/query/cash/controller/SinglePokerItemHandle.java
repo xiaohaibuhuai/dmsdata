@@ -271,7 +271,16 @@ public class SinglePokerItemHandle {
 
 	private SinglePokerItemInfo paseInsresult(Map<String, Object> m, String type) {
 		SinglePokerItemInfo sinfo = basePase(m, type);
-		sinfo.setValue(m.get("insresult_number").toString());
+		if(m.get("Uuid").equals("1000")) {
+			return null;
+		}
+		
+		
+		if(m.get("insresult_number").toString().equals("0")) {
+			sinfo.setValue("保险未碎");
+		}else {
+			sinfo.setValue(m.get("insresult_number").toString());	
+		}
 		return sinfo;
 	}
 
@@ -283,7 +292,9 @@ public class SinglePokerItemHandle {
 
 	private SinglePokerItemInfo paseInsbuy(Map<String, Object> m, String type) {
 		SinglePokerItemInfo sinfo = basePase(m, type);
-
+		if(m.get("Uuid").equals("1000")) {
+			return null;
+		}
 		sinfo.setValue(m.get("insbuy_number").toString());
 
 		return sinfo;
