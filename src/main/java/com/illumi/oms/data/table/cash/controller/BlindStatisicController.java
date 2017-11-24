@@ -102,7 +102,7 @@ public class BlindStatisicController extends EasyuiController<Record>{
 			long dateStart = DateUtils.changeHour(dateEnd,-14*24);
 			gameInfo= Db.find(SqlKit.sql("data.reportForms.getBlindInfoByType"),new Object[]{type,dateStart,dateEnd});
 			//倒序
-			Collections.reverse(gameInfo); 
+			//Collections.reverse(gameInfo); 
 			map.put(type, gameInfo);
 			//设置查询时间
 	        time=dateEnd;

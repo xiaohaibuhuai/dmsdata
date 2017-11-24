@@ -23,6 +23,9 @@ public class PlayerStatisicController extends EasyuiController<Record>{
 		long dateStart = DateUtils.changeHour(dateEnd,-14*24);
 		//2 查数据库
 		List<Record>  gameValidInfo= Db.find(SqlKit.sql("data.reportForms.getGameInfoByDate"),new Object[]{dateStart,dateEnd});
+		
+		//Collections.reverse(gameValidInfo); 倒序
+		
 		DataGrid<Record> data = new DataGrid<Record>();
 		data.setRows(gameValidInfo);
 		
@@ -60,7 +63,8 @@ public class PlayerStatisicController extends EasyuiController<Record>{
 		long dateStart = DateUtils.changeHour(dateEnd,-14*24);
 		// 2 查数据库
 		List<Record>  gameInfo= Db.find(SqlKit.sql("data.reportForms.getBlindInfoByType"),new Object[]{type,dateStart,dateEnd});
-		Collections.reverse(gameInfo); 
+		
+		//Collections.reverse(gameInfo);  倒叙 
 		DataGrid<Record> data = new DataGrid<Record>();
 		data.setRows(gameInfo);
 		return data;

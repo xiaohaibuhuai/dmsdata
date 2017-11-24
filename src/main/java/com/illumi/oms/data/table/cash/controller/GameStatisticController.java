@@ -42,7 +42,7 @@ public class GameStatisticController extends EasyuiController<Record> {
 				new Object[] { dateStart, dateEnd });
 		
 		//倒序
-	    Collections.reverse(gameInfo); 
+	    //Collections.reverse(gameInfo); 
 		DataGrid<Record> data = new DataGrid<Record>();
 		data.setRows(gameInfo);
 
@@ -61,7 +61,7 @@ public class GameStatisticController extends EasyuiController<Record> {
 		List<Record> gameValidInfo = Db.find(SqlKit.sql("data.reportForms.getGameValidInfoByDate"),
 				new Object[] { dateStart, dateEnd });
 		//倒序
-	    Collections.reverse(gameValidInfo); 
+	    //Collections.reverse(gameValidInfo); 
 		DataGrid<Record> data = new DataGrid<Record>();
 		data.setRows(gameValidInfo);
 

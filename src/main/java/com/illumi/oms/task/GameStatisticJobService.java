@@ -30,9 +30,9 @@ public class GameStatisticJobService implements Job{
          long zeroTime = DateUtils.getCurrentZeroTime();
 		 long startTime = DateUtils.changeHour(zeroTime, -24);
 		 //记录每日局数统计快照
-          	statGameStatistic(startTime,zeroTime);
+         //statGameStatistic(startTime,zeroTime);
         //定时任务循环
-         // defineExcuteByDay(startTime,zeroTime,30);
+        defineExcuteByDay(startTime,zeroTime,30);
         
         
 		log.info("记录每日开局快照任务结束...");
@@ -262,11 +262,25 @@ public class GameStatisticJobService implements Job{
 	
 	
 	private void defineExcuteByDay(long startTime, long zeroTime, int num) {
-        // 往前N天数据封装
+//        // 往前N天数据封装
+//        for(int i=0;i<num;i++) {
+//        	statGameStatistic(startTime,zeroTime);
+//        zeroTime = startTime;
+//        startTime = DateUtils.changeHour(startTime, -24);
+//        }
+        
+        //1 找到30天之前的时间
+        
+        for(int i=0;i<num;i++) {
+        	     zeroTime = startTime;
+             startTime = DateUtils.changeHour(startTime, -24);
+        }
+        
+        
         for(int i=0;i<num;i++) {
         	statGameStatistic(startTime,zeroTime);
-        zeroTime = startTime;
-        startTime = DateUtils.changeHour(startTime, -24);
+        	zeroTime = DateUtils.changeHour(startTime, +24);
+        startTime = zeroTime;
         }
 	}
 
