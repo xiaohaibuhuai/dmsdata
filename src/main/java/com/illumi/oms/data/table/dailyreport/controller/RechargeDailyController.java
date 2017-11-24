@@ -17,11 +17,11 @@ import com.illumi.oms.data.utils.ExcelController;
 import com.illumi.oms.data.utils.ExcelUtil;
 
 import com.jfinal.ext.route.ControllerBind;
-
+                                  
 @ControllerBind(controllerKey = "/data/table/dailyreport/rechargedaily", viewPath = UrlConfig.DATA_TAB_DAILYREPORT)
 public class RechargeDailyController extends ExcelController {
 
-	public void download() throws FileNotFoundException, IOException {
+	public void download() {
 		String[] head = { "日期", "服务费", "互动道具", "魔法表情", "翻翻看", "弹幕", "扑克机", "加勒比", "牛牛—一粒大米", "八八碰—一粒大米", "打赏牌谱",
 				"德扑币报名MTT", "汇总" };
 		String[] head1 = { "日期", "联盟局", "修改昵称", "延时道具", "MTT门票", "俱乐部推送", "俱乐部改名", "汇总" };
@@ -35,12 +35,19 @@ public class RechargeDailyController extends ExcelController {
 		List<Map<String, String>> list = getList();
 		List<Map<String, String>> list2 = getList2();
 
+		if(list==null) {
+			System.out.println("null");
+		}
+		if(list2==null) {
+			System.out.println("null");
+		}
+		
 		ExcelTableSheet sheet = new ExcelTableSheet("每日德扑币消耗", head, list, "第一页");
 		ExcelTableSheet sheet2 = new ExcelTableSheet("每日钻石消耗汇总", head1, list2, "第二页");
 
 		XSSFWorkbook xs = ExcelUtil.getXSSFWorkbook(sheet, sheet2);
 
-		renderNewExcel(xs, "统计表");
+		renderNewExcel(xs, "充值日报");
 	}
 
 	private List<Map<String, String>> getList2() {
@@ -67,7 +74,7 @@ public class RechargeDailyController extends ExcelController {
 
 		table.add(map);
 		table.add(map1);
-		return null;
+		return table;
 	}
 
 	private List<Map<String, String>> getList() {

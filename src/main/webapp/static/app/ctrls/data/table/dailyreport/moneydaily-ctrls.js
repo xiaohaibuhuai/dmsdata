@@ -85,7 +85,7 @@ MainApp.controller('MoneyDailyCtrls',  function($scope,TabService) {
       		            column: {
       		                stacking: 'normal',
       		                dataLabels: {
-      		                    enabled: true,
+      		                    enabled: false,
       		                    color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white',
       		                    style: {
       		                        textShadow: '0 0 3px black'
@@ -121,7 +121,7 @@ MainApp.controller('MoneyDailyCtrls',  function($scope,TabService) {
     		          	categories: data.categories
     		        },
     		        yAxis: {
-    		            min: -33,
+    		            //min: -33,
     		            title: {
     		                text: '门票存量(张)'
     		            },
@@ -155,7 +155,7 @@ MainApp.controller('MoneyDailyCtrls',  function($scope,TabService) {
     		            column: {
     		                stacking: 'normal',
     		                dataLabels: {
-    		                    enabled: true,
+    		                    enabled: false,
     		                    color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white',
     		                    style: {
     		                        textShadow: '0 0 3px black'
@@ -228,43 +228,6 @@ MainApp.controller('MoneyDailyCtrls',  function($scope,TabService) {
 	 
 	}
     
-	
-    
-//    //excel表格导出
-//     $("#down").click(function(){
-//    	 
-//    	 if($("#h_dateStart").val()==""||$("#h_dateEnd").val()==""||$("#h_type").val()==""){
-//    		 alert("当前没有数据");
-//    		 return;
-//    	 }
-//    	 	//alert($("#h_dateStart").val()+$("#h_dateEnd").val()+$("#h_type").val());
-//    	  var url = '/data/table/dailyreport/rechargedaily/download';
-//    	  var xhr = new XMLHttpRequest();
-//    	  xhr.open('GET', url, true);    // 也可以使用POST方式，根据接口
-//    	  xhr.responseType = "blob";  // 返回类型blob
-//    	  // 定义请求完成的处理函数，请求前也可以增加加载框/禁用下载按钮逻辑
-//    	  xhr.onload = function () {
-//    	    // 请求完成
-//    	    if (this.status === 200) {
-//    	      // 返回200
-//    	      var blob = this.response;
-//    	      var reader = new FileReader();
-//    	      reader.readAsDataURL(blob);  // 转换为base64，可以直接放入a表情href
-//    	      reader.onload = function (e) {
-//    	        // 转换完成，创建一个a标签用于下载
-//    	        var a = document.createElement('a');
-//    	       // a.download = 'data.xlsx';
-//    	        a.href = e.target.result;
-//    	        $("#link").append(a);  // 修复firefox中无法触发click
-//    	        a.click();
-//    	        $(a).remove();
-//    	      }
-//    	    }
-//    	  };
-//    	  // 发送ajax请求
-//    	  xhr.send()
-//    	})
-    
     $("#down").click(function(){
     	if($("#h_dateStart").val()==""||$("#h_dateEnd").val()==""||$("#h_type").val()==""){
    		 alert("当前没有数据");
@@ -272,10 +235,6 @@ MainApp.controller('MoneyDailyCtrls',  function($scope,TabService) {
    	 }
     	
     	$('#exportForm').form('submit',{url:PATH+'/data/table/dailyreport/moneydaily/download'});
-    
-    	
-    	
-    	
     })
 
 });

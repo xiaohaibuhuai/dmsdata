@@ -175,13 +175,14 @@ MainApp.controller('BlindStatisticCtrls',  function($scope,TabService) {
 					parent: country_p.id,
 					value: Math.round(+data[region][country][cause])
 				};
-				region_val += cause_p.value;
+				region_val += cause_p.value;   //最里层的值
 				points.push(cause_p);
 				cause_i++;
 			}
 			country_i++;
 		}
-		region_p.value = Math.round(region_val / country_i);
+		//region_p.value = Math.round(region_val / country_i);   平均值
+		region_p.value = region_val;  // 总值
 		points.push(region_p);
 		region_i++;
 	}

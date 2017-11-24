@@ -53,14 +53,26 @@ MainApp.controller('SinglePokerCtrls',  function($scope,$http) {
 		    	  if(callback.flopPokerDes!=null){
 		    		  var result = sign+"Flop发牌:"+callback.flopPokerDes+sign+"<br/>";
 		    		  if(callback.flop!=null){
+		    			  var insresult="0";
 		    		  $.each(callback.flop,function(n,value) {   
 			    		  var item = ""; 
-			    		  var v=""
+			    		  var v="";
 			    		  if(value.value!=null){
 			    			  v=value.value;
 			    		  }
-			          item+=value.time+": "+value.nickName+"(ID:"+value.uuid+")"+" "+value.key+": "+v+"<br/>"
-			          result +=item;  
+//			    		  item+=value.time+": "+value.nickName+"(ID:"+value.uuid+")"+" "+value.key+": "+v+"<br/>";
+//			    		  result +=item; 
+			          if(value.key=="碎保险"){
+			        	  insresult+=value.time+": "+value.nickName+"(ID:"+value.uuid+")"+" "+value.key+": "+v+"<br/>";
+			          }else{
+			          
+			          item+=value.time+": "+value.nickName+"(ID:"+value.uuid+")"+" "+value.key+": "+v+"<br/>";
+			          if(value.key=="买保险"&&insresult!="0"){
+			            	        	 item+=insresult;
+			           }
+			          result +=item; 
+			          }
+			           
 			    	  });  
 		    		  }
 		    		  $("#result").append(result);
@@ -77,8 +89,21 @@ MainApp.controller('SinglePokerCtrls',  function($scope,$http) {
 				    		  if(value.value!=null){
 				    			  v=value.value;
 				    		  }
-			          item+=value.time+": "+value.nickName+"(ID:"+value.uuid+")"+" "+value.key+": "+v+"<br/>"
-			          result +=item;  
+			    		  var insresult="0";
+			    		  if(value.key=="碎保险"){
+				        	  insresult+=value.time+": "+value.nickName+"(ID:"+value.uuid+")"+" "+value.key+": "+v+"<br/>";
+				          }else{
+				          
+				          item+=value.time+": "+value.nickName+"(ID:"+value.uuid+")"+" "+value.key+": "+v+"<br/>";
+				          if(value.key=="买保险"&&insresult!="0"){
+				        	
+				            	        	 item+=insresult;
+				           }
+				          result +=item; 
+				          }
+			    		  
+//			          item+=value.time+": "+value.nickName+"(ID:"+value.uuid+")"+" "+value.key+": "+v+"<br/>"
+//			          result +=item;  
 			    	  });  
 		    		  }
 		    		  $("#result").append(result);
@@ -96,8 +121,21 @@ MainApp.controller('SinglePokerCtrls',  function($scope,$http) {
 				    		  if(value.value!=null){
 				    			  v=value.value;
 				    		  }
-			          item+=value.time+": "+value.nickName+"(ID:"+value.uuid+")"+" "+value.key+": "+v+"<br/>"
-			          result +=item;  
+			    		  
+			    		  var insresult="0";
+			    		  if(value.key=="碎保险"){
+				        	  insresult+=value.time+": "+value.nickName+"(ID:"+value.uuid+")"+" "+value.key+": "+v+"<br/>";
+				          }else{
+				          
+				          item+=value.time+": "+value.nickName+"(ID:"+value.uuid+")"+" "+value.key+": "+v+"<br/>";
+				          if(value.key=="买保险"&&insresult!="0"){
+				        	
+				            	        	 item+=insresult;
+				           }
+				          result +=item; 
+				          }
+//			          item+=value.time+": "+value.nickName+"(ID:"+value.uuid+")"+" "+value.key+": "+v+"<br/>"
+//			          result +=item;  
 			    	  });   
 		    		  }
 		    		  $("#result").append(result); 

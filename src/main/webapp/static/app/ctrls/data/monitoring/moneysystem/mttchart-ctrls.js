@@ -79,7 +79,7 @@ MainApp.controller('MttChartCtrls', function($scope,TabService) {
 		            column: {
 		                stacking: 'normal',
 		                dataLabels: {
-		                    enabled: true,
+		                    enabled: false,
 		                    color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white',
 		                    style: {
 		                        textShadow: '0 0 3px black'
