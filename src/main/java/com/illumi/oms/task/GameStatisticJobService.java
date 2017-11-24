@@ -277,7 +277,7 @@ public class GameStatisticJobService implements Job{
         }
         
         
-        for(int i=0;i<num;i++) {
+        for(int i=0;i<=num;i++) {
         	statGameStatistic(startTime,zeroTime);
         	zeroTime = DateUtils.changeHour(startTime, +24);
         startTime = zeroTime;
