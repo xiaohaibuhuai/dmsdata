@@ -61,7 +61,7 @@ MainApp.controller('CheatFinderCtrls',  function($scope,$http) {
 		              var id = "c" + self.uuid + "_" + partner.uuid;
 		              singleHtml += '<div class="username_bg user_bg_line">'
 		              singleHtml += '<div class="clearfix">'
-		              singleHtml += '<span class="username1">' + self.nickname + '(' + self.showid + ')</span>'
+		              singleHtml += '<span class="username1">' + self.nickname + '(' + self.uuid + ')</span>'
 		              singleHtml += '</div>'
 		              singleHtml += '<div class="user_progress_border">'
 		              singleHtml += '<div class="user_progress_bgc">'
@@ -71,7 +71,7 @@ MainApp.controller('CheatFinderCtrls',  function($scope,$http) {
 		              singleHtml += '</div>'
 		              singleHtml += '</div>'
 		              singleHtml += '<div class="clearfix">'
-		              singleHtml += '<span class="username2">' + partner.nickname + '(' + partner.showid + ',同桌数:'
+		              singleHtml += '<span class="username2">' + partner.nickname + '(' + partner.uuid + ',同桌数:'
 		                  + partner.sameTime + ')</span>'
 		              singleHtml += '</div>'
 		              singleHtml += '</div>'
@@ -104,7 +104,7 @@ MainApp.controller('CheatFinderCtrls',  function($scope,$http) {
 		                
 		                multipleHtml += '<div class="username_bg user_bg_line">';
 		                multipleHtml += '<div class="clearfix">';
-		                multipleHtml += '<span class="username1">' + coupleList[j].a.nickname + '(' + coupleList[j].a.showid
+		                multipleHtml += '<span class="username1">' + coupleList[j].a.nickname + '(' + coupleList[j].a.uuid
 		                    + ')</span>';
 		                multipleHtml += '</div>';
 		                multipleHtml += '<div class="user_progress_border">';
@@ -115,7 +115,7 @@ MainApp.controller('CheatFinderCtrls',  function($scope,$http) {
 		                multipleHtml += '</div>';
 		                multipleHtml += '</div>';
 		                multipleHtml += '<div class="clearfix">';
-		                multipleHtml += '<span class="username2">' + coupleList[j].b.nickname + '(' + coupleList[j].b.showid
+		                multipleHtml += '<span class="username2">' + coupleList[j].b.nickname + '(' + coupleList[j].b.uuid
 		                    + ')</span>';
 		                multipleHtml += '</div>';
 		                multipleHtml += '</div>';
