@@ -365,7 +365,7 @@ public class RechargeDailyController extends ExcelController {
 				"            \"filter\": {\n" + 
 				"              \"terms\": {\n" + 
 				"                \"Uuid\": [\n" + 
-				"                  \""+uuids+"\"\n" + 
+                "                  "+uuids+"\n" + 
 				"                ]\n" + 
 				"              }\n" + 
 				"            },\n" + 
