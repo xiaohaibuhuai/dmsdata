@@ -214,17 +214,16 @@ public class RechargeDailyController extends ExcelController {
 		}
 		
 		List<Record> uuids = Db.use(Consts.DB_POKER2).find(SqlKit.sql("data.reportForms.getForeignUUID"));
-		
+		log.info("uuids Num:"+uuids.size());
 		String jsonString = getRequestAbroadJson(dateStart,dateEnd,uuids);
 		String urlhead = "ilumi_payment_";
 		String urlend = "/_search?size=30";
 		String method = "GET";
 		String url = ELKUtils.getUrl4SeletedTime(timeStart, timeEnd, urlhead, urlend);
 		
-		
+		System.out.println("*************ELK请求************");
 		System.out.println(url);
 		System.out.println(jsonString);
-		System.out.println("*************ELK请求************");
 		
 		Response response = ELKUtils.getData(jsonString, method, url);
 		

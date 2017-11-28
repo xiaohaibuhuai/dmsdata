@@ -342,7 +342,8 @@ public class ELKUtils {
 	public static Map<Long,Map<String, Long>> paseDailyResponse(Response response, String target) {
 		try {
 			String jsonstring = EntityUtils.toString(response.getEntity());
-			
+			System.out.println("***************Response Json***************");
+			System.out.println(jsonstring);
 			
 			JSONObject jsonObj = JSON.parseObject(jsonstring);
 			JSONObject ag = jsonObj.getJSONObject("aggregations");
