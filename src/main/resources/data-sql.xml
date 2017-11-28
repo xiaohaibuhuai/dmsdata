@@ -108,6 +108,12 @@
       
       
       </sql>
+      
+      <sql id = "getForeignUUID">
+      
+      select uuid from t_user_baseinfo where idtype = "ID_TYPE_FACEBOOK" or  countrycode != 86;
+      
+      </sql>
     </sqlGroup>
     
     <sqlGroup name="SinglePoker">

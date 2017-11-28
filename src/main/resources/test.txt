@@ -11,7 +11,7 @@ poker.jdbcUrl = jdbc:mysql://10.66.154.31:3306/test_poker?characterEncoding=utf8
 poker.user = illuminate_cms
 poker.password =illuminate31415
 
-poker2.jdbcUrl = jdbc:mysql://10.66.154.31:3306/test_poker1019?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
+poker2.jdbcUrl = jdbc:mysql://10.66.154.31:3306/test_poker1024?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
 poker2.user = illuminate_cms
 poker2.password =illuminate31415
 

@@ -1,7 +1,7 @@
 package com.illumi.oms.data.utils;
+
 import java.util.List;
 import java.util.Map;
-
 
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
@@ -15,100 +15,133 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.illumi.oms.data.model.ExcelTableSheet;
 
-
-
 /**
  * 
  *
  */
 public class ExcelUtil {
-   
-	
-	public static XSSFWorkbook getXSSFWorkbook(ExcelTableSheet... sheets) {
+
+	/**
+	 * 翻译 头部 会调用对应的map
+	 * 
+	 * @param transform
+	 * @param sheets
+	 * @return
+	 */
+	public static XSSFWorkbook getXSSFWorkbook(Map<String, String> transformMap, ExcelTableSheet... sheets) {
 		try {
-		XSSFWorkbook workBook = new XSSFWorkbook();
-		for(ExcelTableSheet sheet:sheets) {
-			creatSheet(workBook, sheet.getTitle(),sheet.getHead(), sheet.getRows(), sheet.getSheetname());
-		}
-		// 文件输出流
-	
-		return workBook;
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
-        return null;
-	}
-	
-	
-	public static XSSFWorkbook getXSSFWorkbookSingle(String title,String[] head,  List<Map<String,String>> list) {
-		try {
-		XSSFWorkbook workBook = new XSSFWorkbook();
-		creatSheet(workBook, title,head, list,"sheet1");
-		// 文件输出流
-		return workBook;
-		}catch(Exception e) {
+			XSSFWorkbook workBook = new XSSFWorkbook();
+			for (ExcelTableSheet sheet : sheets) {
+				creatSheet(workBook, sheet.getTitle(), sheet.getHead(), sheet.getRows(), sheet.getSheetname(),
+						transformMap);
+			}
+			// 文件输出流
+
+			return workBook;
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
-	
-	
-	
-	private static void creatSheet(XSSFWorkbook workBook, String titlename,String[] head, List<Map<String,String>> list,String sheetname) {
+
+	public static XSSFWorkbook getXSSFWorkbook(ExcelTableSheet... sheets) {
+		try {
+			XSSFWorkbook workBook = new XSSFWorkbook();
+			for (ExcelTableSheet sheet : sheets) {
+				creatSheet(workBook, sheet.getTitle(), sheet.getHead(), sheet.getRows(), sheet.getSheetname(), null);
+			}
+			// 文件输出流
+
+			return workBook;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public static XSSFWorkbook getXSSFWorkbookSingle(String title, String[] head, List<Map<String, Object>> list) {
+		try {
+			XSSFWorkbook workBook = new XSSFWorkbook();
+			creatSheet(workBook, title, head, list, "sheet1", null);
+			// 文件输出流
+			return workBook;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/**
+	 * 0.1版本 有bu'f
+	 * 
+	 * @param workBook
+	 * @param titlename
+	 * @param head
+	 * @param list
+	 * @param sheetname
+	 * @param tansformMap
+	 */
+
+	private static void creatSheet(XSSFWorkbook workBook, String titlename, String[] head,
+			List<Map<String, Object>> list, String sheetname, Map<String, String> tansformMap) {
 		XSSFSheet sheet = workBook.createSheet(sheetname);// 创建一个工作薄对象
-		//0初始sheet
-		initSheet(sheet,head.length);
+		// 0初始sheet
+		initSheet(sheet, head.length);
 		XSSFCellStyle style = initStyle(workBook);
 		// 1 设置行数
-		  //第一行大标题
-		  //sheet.addMergedRegion()
-		 //row.setHeightInPoints(23);// 设置行高23像素 
+		// 第一行大标题
+		// sheet.addMergedRegion()
+		// row.setHeightInPoints(23);// 设置行高23像素
 		XSSFRow row0 = sheet.createRow(0);
 		XSSFCell titleCell = row0.createCell(0);
 		titleCell.setCellStyle(style);
 		titleCell.setCellValue(titlename);
-		sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, head.length-1));
-        
-		//第二行头部
+		sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, head.length - 1));
+
+		// 第二行头部
 		XSSFRow row1 = sheet.createRow(1);
-		for(int j=0,n=head.length;j<n;j++) {
+		for (int j = 0, n = head.length; j < n; j++) {
 			XSSFCell cell = row1.createCell(j);
-			//设置样式
+			// 设置样式
 			cell.setCellStyle(style);
 			cell.setCellValue(head[j]);
-			}
-		
-		
-		
-		for(int i=0,l=list.size();i<l;i++) {
-			XSSFRow row = sheet.createRow(i+2);// 创建一个行对象
-			//2创建单元格
-			for(int j=0,n=head.length;j<n;j++) {
-			XSSFCell cell = row.createCell(j);
-			//设置样式
-			cell.setCellStyle(style);
-			
-			
-			//
-			if(list.get(i).containsKey(head[j])) {
-				cell.setCellValue(list.get(i).get(head[j]));
-			}else {
-				cell.setCellValue(0);
-			}
-			
-			}
 		}
 
+		for (int i = 0, l = list.size(); i < l; i++) {
+			XSSFRow row = sheet.createRow(i + 2);// 创建一个行对象
+			// 2创建单元格
+			for (int j = 0, n = head.length; j < n; j++) {
+				XSSFCell cell = row.createCell(j);
+				// 设置样式
+				cell.setCellStyle(style);
+
+				if (tansformMap == null) {
+					//
+					if (list.get(i).containsKey(head[j])) {
+						cell.setCellValue(list.get(i).get(head[j]).toString());
+					} else {
+						cell.setCellValue(0);
+					}
+				} else {
+					if (list.get(i).containsKey(tansformMap.get(head[j]))) {
+						cell.setCellValue(list.get(i).get(tansformMap.get(head[j])).toString());
+					} else {
+						cell.setCellValue(0);
+					}
+
+				}
+
+			}
+		}
 
 	}
 
-	private static void initSheet(XSSFSheet sheet,int size) {
-		for(int i=0;i<size;i++) {
-			
+	private static void initSheet(XSSFSheet sheet, int size) {
+		for (int i = 0; i < size; i++) {
+
 			sheet.setColumnWidth(i, 5000);// 设置第二列的宽度为
 		}
-	
-		
+
 	}
 
 	private static XSSFCellStyle initStyle(XSSFWorkbook workBook) {
@@ -144,8 +177,8 @@ public class ExcelUtil {
 
 		// style.setBorderRight(HSSFCellStyle.BORDER_MEDIUM);// 右边边框
 
-		// 格式化日期 
-		//style.setDataFormat(HSSFDataFormat.getBuiltinFormat("m/d/yy h:mm"));
+		// 格式化日期
+		// style.setDataFormat(HSSFDataFormat.getBuiltinFormat("m/d/yy h:mm"));
 		return style;
 	}
 }

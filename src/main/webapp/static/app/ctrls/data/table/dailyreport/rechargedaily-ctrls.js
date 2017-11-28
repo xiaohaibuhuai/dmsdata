@@ -19,7 +19,7 @@ MainApp.controller('RechargeDailyCtrls',  function($scope,TabService) {
   	  
   	  //1 
   	  $.ajax({
-		    url : PATH+'/data/table/dailyreport/moneydaily/money',
+		    url : PATH+'/data/table/dailyreport/rechargedaily/rechargeChart',
 		    method : 'POST',
 		    dataType : "json",
 		    data:"dateStart="+dateStart+"&dateEnd="+dateEnd+"&type="+type,
@@ -41,7 +41,7 @@ MainApp.controller('RechargeDailyCtrls',  function($scope,TabService) {
     		            type: 'column'
     		        },
     		        title: {
-    		            text: '24小时各门票存量对比图'
+    		            text: '充值汇总图'
     		        },
     		        xAxis: {
     		          	categories: data.categories
@@ -101,21 +101,26 @@ MainApp.controller('RechargeDailyCtrls',  function($scope,TabService) {
  
   	  //数据表格
   	  var  dg =$('#dg1').datagrid({
-  			url : PATH+'/data/table/cash/gamestatistic/sum',
+  			url : PATH+'/data/table/dailyreport/rechargedaily/dataGrid?'+"dateStart="+dateStart+"&dateEnd="+dateEnd+"&type="+type,
   			fit : false,
-  			title:"1.各牌局类型14日开局总数统计",
+  			title:"每日充值汇总表",
   			border : true,
   			singleSelect : true,
   		    columns:[[
   		    	    {field:'targetdate',title:'日期',width:100,align:'left',formatter:function(val,rec){
   	                return jsonYearMonthDay(val);
-  	            }},
-  		        {field : 'g_normal',title : '普通局',width : 120,align:'left',},
-  		        {field:'g_normalins',title:'普通保险局',width:120,align:'left'},
-  		        {field:'g_omaha',title:'奥马哈局',width:120,align:'left'},
-  		        {field:'g_omahains',title:'奥马哈保险局',width:120,align:'left'},
-  		        {field:'g_six',title:'6+局',width:120,align:'left'},
-  		        {field:'g_sng',title:'SNG',width:120,align:'left'}
+  	            },sortable:true },
+  		        {field:'101',title : '苹果充值',width : 120,align:'left',},
+  		        {field:'201',title:'步步德普',width:120,align:'left'},
+  		        {field:'202',title:'九格创想',width:120,align:'left'},
+  		        {field:'302',title:'微信公众号',width:120,align:'left'},
+  		        {field:'303',title:'微信CMS',width:120,align:'left'},
+  		        {field:'401',title:'支付宝大额',width:120,align:'left'},
+  		        {field:'402',title:'支付宝公众号',width:120,align:'left'},
+  		        {field:'403',title:'支付宝CMS',width:120,align:'left'},
+  		        {field:'301',title:'安卓微信充值',width:120,align:'left'},
+  		        {field:'sum',title:'汇总',width:120,align:'left'}
+  		    
   		      ]],
   		});
   	   

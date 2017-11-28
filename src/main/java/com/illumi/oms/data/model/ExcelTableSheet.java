@@ -7,11 +7,11 @@ public class ExcelTableSheet {
 	    private String title;
 		private String sheetname;
 		private String[] head; //表头
-		private List<Map<String,String>> rows;//每一行数据    map("列名"，"值")
+		private List<Map<String,Object>> rows;//每一行数据    map("列名"，"值")
 		
 		
 		public ExcelTableSheet() {}
-		public ExcelTableSheet(String title,String[] head, List<Map<String, String>> rows,String sheetname) {
+		public ExcelTableSheet(String title,String[] head, List<Map<String, Object>> rows,String sheetname) {
 			super();
 			this.title = title;
 			this.sheetname = sheetname;
@@ -36,10 +36,10 @@ public class ExcelTableSheet {
 		public void setHead(String[] head) {
 			this.head = head;
 		}
-		public List<Map<String, String>> getRows() {
+		public List<Map<String, Object>> getRows() {
 			return rows;
 		}
-		public void setRows(List<Map<String, String>> rows) {
+		public void setRows(List<Map<String, Object>> rows) {
 			this.rows = rows;
 		}
 		
