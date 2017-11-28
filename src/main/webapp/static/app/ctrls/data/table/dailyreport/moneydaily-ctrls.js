@@ -34,6 +34,8 @@ MainApp.controller('MoneyDailyCtrls',  function($scope,TabService) {
   		    	if(data=="0"){
   		    		alert("搜索无结果");
   		    		return;
+  		    	}else if(data="3"){
+  		    		alert("日期格式不对")
   		    	}
   		    	
   		    	//设置隐藏域值
