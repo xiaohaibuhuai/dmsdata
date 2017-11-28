@@ -137,7 +137,9 @@ public class RechargeDailyController extends ExcelController {
 	private String getRequestJson(String stime, String etime) {
 		String json = "{\n" + "  \"query\": {\n" + "    \"constant_score\": {\n" + "      \"filter\": {\"range\": {\n"
 				+ "        \"@timestamp\": {\n" + "          \"gte\": \"" + stime + "\",\n" + "          \"lte\": \""
-				+ etime + "\",\n" + "          \"time_zone\":\"+08:00\"\n" + "\n" + "        }\n" + "      }}\n"
+				+ etime + "\",\n" 
+				+ "          \"time_zone\":\"+08:00\"\n" +
+				"\n" + "        }\n" + "      }}\n"
 				+ "    }\n" + "  },\n" + "  \"aggs\": {\n" + "    \"NAME\": {\n" + "      \"date_histogram\": {\n"
 				+ "        \"field\": \"@timestamp\",\n" + "        \"interval\": \"day\",\n"
 				+ "          \"time_zone\":\"+08:00\"\n" + "      }, \"aggs\": {   \n" + "        \"sum\":{\n"
@@ -350,7 +352,8 @@ public class RechargeDailyController extends ExcelController {
 				"            \"range\": {\n" + 
 				"              \"@timestamp\": {\n" + 
 				"                \"gte\": \""+dateStart+"\",\n" + 
-				"                \"lte\": \""+dateEnd+"\"\n" + 
+				"                \"lte\": \""+dateEnd+"\",\n" + 
+				"                \"time_zone\":\"+08:00\"\n" + 
 				"              }\n" + 
 				"            }\n" + 
 				"          },\n" + 
@@ -362,7 +365,7 @@ public class RechargeDailyController extends ExcelController {
 				"            \"filter\": {\n" + 
 				"              \"terms\": {\n" + 
 				"                \"Uuid\": [\n" + 
-				"                  "+uuids+"\n" + 
+				"                  \""+uuids+"\"\n" + 
 				"                ]\n" + 
 				"              }\n" + 
 				"            },\n" + 
