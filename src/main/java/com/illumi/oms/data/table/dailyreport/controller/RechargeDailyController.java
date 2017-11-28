@@ -381,7 +381,7 @@ public class RechargeDailyController extends ExcelController {
 				"      }, \"aggs\": {   \n" + 
 				"        \"sum\":{\n" + 
 				"     \"terms\": {\n" + 
-				"       \"field\": \"action_name\",\n" + 
+				"       \"field\": \"ChannelId\",\n" + 
 				"       \"show_term_doc_count_error\": true,\n" + 
 				"       \"shard_size\": 30,\n" + 
 				"       \"order\": {\n" + 
@@ -390,7 +390,7 @@ public class RechargeDailyController extends ExcelController {
 				"      },\"aggs\": {\n" + 
 				"        \"money_sum\": {\n" + 
 				"          \"sum\": {\n" + 
-				"            \"field\": \"money_change_no\"\n" + 
+				"            \"field\": \"cach_earn_no\"\n" + 
 				"          }\n" + 
 				"        }\n" + 
 				"      }\n" + 
