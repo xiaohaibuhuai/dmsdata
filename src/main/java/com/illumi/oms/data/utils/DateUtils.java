@@ -25,13 +25,9 @@ public class DateUtils {
 	
 	//获取当前时间
 	public static Long getCurrentZeroTime() {
-//		long dateEnd = DateUtils.getZeroTime(new Date().getTime());
-//		long dateEnd = DateUtils.changeMonth(DateUtils.getZeroTime(new Date().getTime()), -3);
-//		long dateEnd=1508256000000l;
-		
-		return DateUtils.getZeroTime(1472313600000l);
+		//return DateUtils.getZeroTime(1472313600000l);
 		//return changeMonth(DateUtils.getZeroTime(new Date().getTime()), -3);
-		//return changeMonth(DateUtils.getZeroTime(new Date().getTime()), -3);
+		return changeMonth(DateUtils.getZeroTime(new Date().getTime()), -3);
 	}
 	
 	
