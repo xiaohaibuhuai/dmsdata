@@ -28,6 +28,7 @@ public class DateUtils {
 		//return DateUtils.getZeroTime(1472313600000l);
 		//return changeMonth(DateUtils.getZeroTime(new Date().getTime()), -3);
 		return changeMonth(DateUtils.getZeroTime(new Date().getTime()), -3);
+		//return DateUtils.getZeroTime((new Date().getTime()));
 	}
 	
 	
