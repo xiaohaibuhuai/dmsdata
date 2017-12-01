@@ -24,7 +24,7 @@ MainApp.controller('MoneyDailyCtrls',  function($scope,TabService) {
     	  
     	  //1 
     	  $.ajax({
-  		    url : PATH+'/data/table/dailyreport/moneydaily/money',
+  		    url : PATH+'/data/table/dailyreport/moneydaily/moneyChart',
   		    method : 'POST',
   		    dataType : "json",
   		    data:"dateStart="+dateStart+"&dateEnd="+dateEnd+"&type="+type,
@@ -34,14 +34,13 @@ MainApp.controller('MoneyDailyCtrls',  function($scope,TabService) {
   		    	if(data=="0"){
   		    		alert("搜索无结果");
   		    		return;
-  		    	}else if(data="3"){
-  		    		alert("日期格式不对")
   		    	}
   		    	
   		    	//设置隐藏域值
   		    	$("#h_dateStart").val(dateStart)
   		    	$("#h_dateEnd").val(dateEnd)
   		    $("#h_type").val(type)
+  		    
   		    	$('#chart1').highcharts({
       			  chart: {
       		            type: 'column'
@@ -58,30 +57,33 @@ MainApp.controller('MoneyDailyCtrls',  function($scope,TabService) {
       		                text: '门票存量(张)'
       		            },
       		            stackLabels: {
-      		                enabled: true,
+      		                enabled: false,
       		                style: {
       		                    fontWeight: 'bold',
       		                    color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
       		                }
       		            }
       		        },
-      		        legend: {
-      		            align: 'right',
-      		            x: -30,
-      		            verticalAlign: 'top',
-      		            y: 25,
-      		            floating: true,
-      		            backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
-      		            borderColor: '#CCC',
-      		            borderWidth: 1,
-      		            shadow: false
-      		        },
+      		      legend: {
+  		            align: 'right',
+  		            x: +8,
+  		            verticalAlign: 'top',
+  		            y: 25,
+  		            floating: true,
+  		            backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
+  		            borderColor: '#CCC',
+  		            borderWidth: 1,
+  		            itemStyle : {
+  		                'fontSize' : '11px'
+  		            },
+  		            shadow: false
+  		        },
       		        tooltip: {
-      		            formatter: function () {
-      		                return '<b>' + this.x + '</b><br/>' +
-      		                    this.series.name + ': ' + this.y + '<br/>' +
-      		                    '总量: ' + this.point.stackTotal;
-      		            }
+      		          formatter: function () {
+  		                return '<b>' + this.x + '</b><br/>' +
+  		                    this.series.name + ': ' + this.y +'('+Highcharts.numberFormat(this.percentage,2)+"%"+')'+ '<br/>' +
+  		                    '总量: ' + this.point.stackTotal;
+  		            }
       		        },
       		        plotOptions: {
       		            column: {
@@ -110,7 +112,7 @@ MainApp.controller('MoneyDailyCtrls',  function($scope,TabService) {
     	  
     	  
     	  //2
-    	  $.post(PATH+'/data/table/dailyreport/moneydaily/diamond',function(data){
+    	  $.post(PATH+'/data/table/dailyreport/moneydaily/diamondChart?'+"dateStart="+dateStart+"&dateEnd="+dateEnd+"&type="+type,function(data){
     			
     		  $('#chart2').highcharts({
     			  chart: {
@@ -128,7 +130,7 @@ MainApp.controller('MoneyDailyCtrls',  function($scope,TabService) {
     		                text: '门票存量(张)'
     		            },
     		            stackLabels: {
-    		                enabled: true,
+    		                enabled: false,
     		                style: {
     		                    fontWeight: 'bold',
     		                    color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
@@ -147,11 +149,11 @@ MainApp.controller('MoneyDailyCtrls',  function($scope,TabService) {
     		            shadow: false
     		        },
     		        tooltip: {
-    		            formatter: function () {
-    		                return '<b>' + this.x + '</b><br/>' +
-    		                    this.series.name + ': ' + this.y + '<br/>' +
-    		                    '总量: ' + this.point.stackTotal;
-    		            }
+    		        	  formatter: function () {
+      		                return '<b>' + this.x + '</b><br/>' +
+      		                    this.series.name + ': ' + this.y +'('+Highcharts.numberFormat(this.percentage,2)+"%"+')'+ '<br/>' +
+      		                    '总量: ' + this.point.stackTotal;
+      		            }
     		        },
     		        plotOptions: {
     		            column: {
@@ -174,41 +176,48 @@ MainApp.controller('MoneyDailyCtrls',  function($scope,TabService) {
     	  
     	  //数据表格
     	  var  dg =$('#dg1').datagrid({
-    			url : PATH+'/data/table/cash/gamestatistic/sum',
+    			url : PATH+'/data/table/dailyreport/moneydaily/moneyDataGrid?'+"dateStart="+dateStart+"&dateEnd="+dateEnd+"&type="+type,
     			fit : false,
-    			title:"1.各牌局类型14日开局总数统计",
+    			title:"每日德普币消耗汇总表",
     			border : true,
     			singleSelect : true,
     		    columns:[[
     		    	    {field:'targetdate',title:'日期',width:100,align:'left',formatter:function(val,rec){
     	                return jsonYearMonthDay(val);
     	            }},
-    		        {field : 'g_normal',title : '普通局',width : 120,align:'left',},
-    		        {field:'g_normalins',title:'普通保险局',width:120,align:'left'},
-    		        {field:'g_omaha',title:'奥马哈局',width:120,align:'left'},
-    		        {field:'g_omahains',title:'奥马哈保险局',width:120,align:'left'},
-    		        {field:'g_six',title:'6+局',width:120,align:'left'},
-    		        {field:'g_sng',title:'SNG',width:120,align:'left'}
+    		        {field : 'service',title : '服务费',width : 120,align:'left',},
+    		        {field:'Interprops',title:'互动道具',width:120,align:'left'},
+    		        {field:'magic',title:'魔法表情',width:120,align:'left'},
+    		        {field:'lookover',title:'翻翻看',width:120,align:'left'},
+    		        {field:'barrage',title:'弹幕',width:120,align:'left'},
+    		        {field:'pokermachine',title:'扑克机',width:120,align:'left'},
+    		        {field:'caribbean',title:'加勒比',width:120,align:'left'},
+    		        {field:'cow',title:'牛牛_一粒大米',width:120,align:'left'},
+    		        {field:'eight',title:'八八碰_一粒大米',width:120,align:'left'},
+    		        {field:'rewardpoker',title:'打赏牌谱',width:120,align:'left'},
+    		        {field:'mttsign',title:'德扑币报名MTT',width:120,align:'left'},
+    		        {field:'sum',title:'汇总',width:120,align:'left'}
     		      ]],
     		});
     	    
     	  //数据表格
     	    var  dg =$('#dg2').datagrid({
-    			url : PATH+'/data/table/cash/gamestatistic/sum',
+    			url : PATH+'/data/table/dailyreport/moneydaily/diamondDataGrid?'+"dateStart="+dateStart+"&dateEnd="+dateEnd+"&type="+type,
     			fit : false,
-    			title:"1.各牌局类型14日开局总数统计",
+    			title:"每日钻石消耗汇总表",
     			border : true,
     			singleSelect : true,
     		    columns:[[
     		    	    {field:'targetdate',title:'日期',width:100,align:'left',formatter:function(val,rec){
     	                return jsonYearMonthDay(val);
     	            }},
-    		        {field : 'g_normal',title : '普通局',width : 120,align:'left',},
-    		        {field:'g_normalins',title:'普通保险局',width:120,align:'left'},
-    		        {field:'g_omaha',title:'奥马哈局',width:120,align:'left'},
-    		        {field:'g_omahains',title:'奥马哈保险局',width:120,align:'left'},
-    		        {field:'g_six',title:'6+局',width:120,align:'left'},
-    		        {field:'g_sng',title:'SNG',width:120,align:'left'}
+    		        {field : 'alliance',title : '联盟局',width : 120,align:'left',},
+    		        {field:'changename',title:'修改昵称',width:120,align:'left'},
+    		        {field:'delayprops',title:'延时道具',width:120,align:'left'},
+    		        {field:'ticketmtt',title:'MTT门票',width:120,align:'left'},
+    		        {field:'clubpush',title:'俱乐部推送',width:120,align:'left'},
+    		        {field:'changecname',title:'俱乐部改名',width:120,align:'left'},
+    		        {field:'sum',title:'汇总',width:120,align:'left'}
     		      ]],
     		});
     })

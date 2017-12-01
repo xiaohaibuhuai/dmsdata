@@ -41,7 +41,7 @@ MainApp.controller('RechargeDailyCtrls',  function($scope,TabService) {
     		            type: 'column'
     		        },
     		        title: {
-    		            text: '充值汇总图'
+    		            text: '充值汇总'
     		        },
     		        xAxis: {
     		          	categories: data.categories
@@ -49,10 +49,10 @@ MainApp.controller('RechargeDailyCtrls',  function($scope,TabService) {
     		        yAxis: {
     		          //  min: 0,
     		            title: {
-    		                text: '门票存量(张)'
+    		                text: '充值数(元)'
     		            },
     		            stackLabels: {
-    		                enabled: true,
+    		                enabled: false,
     		                style: {
     		                    fontWeight: 'bold',
     		                    color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
@@ -61,19 +61,22 @@ MainApp.controller('RechargeDailyCtrls',  function($scope,TabService) {
     		        },
     		        legend: {
     		            align: 'right',
-    		            x: -30,
+    		            x: +8,
     		            verticalAlign: 'top',
     		            y: 25,
     		            floating: true,
     		            backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
     		            borderColor: '#CCC',
     		            borderWidth: 1,
+    		            itemStyle : {
+    		                'fontSize' : '11px'
+    		            },
     		            shadow: false
     		        },
     		        tooltip: {
     		            formatter: function () {
     		                return '<b>' + this.x + '</b><br/>' +
-    		                    this.series.name + ': ' + this.y + '<br/>' +
+    		                    this.series.name + ': ' + this.y +'('+Highcharts.numberFormat(this.percentage,2)+"%"+')'+ '<br/>' +
     		                    '总量: ' + this.point.stackTotal;
     		            }
     		        },

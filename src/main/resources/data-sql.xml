@@ -146,5 +146,36 @@
      
      
      </sql>
+    </sqlGroup >
+    
+    <sqlGroup name="dailyReport">
+    <sql  id = "getRechargeByDay">
+       SELECT 
+       * 
+       FROM 
+       t_recharge_daily_snapshot
+       WHERE 
+       type = ? and targetdate  BETWEEN ? AND ?
+    </sql>
+    <sql id ="getMoneyByDay">
+     SELECT 
+       * 
+       FROM 
+       t_money_daily_snapshot
+       WHERE 
+       type = ? and targetdate  BETWEEN ? AND ?
+    </sql>
+    
+    
+    <sql id ="getDiamondByDay">
+     SELECT 
+       * 
+       FROM 
+       t_diamond_daily_snapshot
+       WHERE 
+       type = ? and targetdate  BETWEEN ? AND ?
+    </sql>
+    
+    
     </sqlGroup>
 </sqlGroup>

@@ -28,27 +28,27 @@ public class ExcelUtil {
 	 * @param sheets
 	 * @return
 	 */
-	public static XSSFWorkbook getXSSFWorkbook(Map<String, String> transformMap, ExcelTableSheet... sheets) {
-		try {
-			XSSFWorkbook workBook = new XSSFWorkbook();
-			for (ExcelTableSheet sheet : sheets) {
-				creatSheet(workBook, sheet.getTitle(), sheet.getHead(), sheet.getRows(), sheet.getSheetname(),
-						transformMap);
-			}
-			// 文件输出流
-
-			return workBook;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+//	public static XSSFWorkbook getXSSFWorkbook(Map<String, String> transformMap, ExcelTableSheet... sheets) {
+//		try {
+//			XSSFWorkbook workBook = new XSSFWorkbook();
+//			for (ExcelTableSheet sheet : sheets) {
+//				creatSheet(workBook, sheet.getTitle(), sheet.getHead(), sheet.getRows(), sheet.getSheetname(),
+//						transformMap);
+//			}
+//			// 文件输出流
+//
+//			return workBook;
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		return null;
+//	}
 
 	public static XSSFWorkbook getXSSFWorkbook(ExcelTableSheet... sheets) {
 		try {
 			XSSFWorkbook workBook = new XSSFWorkbook();
 			for (ExcelTableSheet sheet : sheets) {
-				creatSheet(workBook, sheet.getTitle(), sheet.getHead(), sheet.getRows(), sheet.getSheetname(), null);
+				creatSheet(workBook, sheet.getTitle(), sheet.getHead(), sheet.getRows(), sheet.getSheetname(), sheet.getTransformMap());
 			}
 			// 文件输出流
 
@@ -155,7 +155,7 @@ public class ExcelUtil {
 
 		font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);// 设置粗体
 
-		// font.setFontName("黑体");// 设置为黑体字
+		 font.setFontName("黑体");// 设置为黑体字
 
 		style.setFont(font);// 将字体加入到样式对象
 

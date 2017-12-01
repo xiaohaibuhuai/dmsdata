@@ -6,9 +6,8 @@
 				<table class="table table-hover table-condensed" >
 					<tr>
 					    <th>时间</th>
-					    <td >
-					    <input name="dateStart" id="dateStart" placeholder="点击选择时间" onclick="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd'})" readonly="readonly" />
-						至  <input name="dateEnd" id="dateEnd" placeholder="点击选择时间"  onclick="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'dateStart\')}',maxDate:'2020-10-01'})" readonly="readonly" />
+					    <td colspan="2"><input name="dateStart" id="dateStart" placeholder="点击选择时间" onclick="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd'})" readonly="readonly" />
+						至  <input name="dateEnd" placeholder="点击选择时间" id="dateEnd" onclick="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'dateStart\')}'})" readonly="readonly" />
 						</td>
 				         <td>
 				            <select id="type">
@@ -24,9 +23,9 @@
 					    <td>
 					     <button  id="down"  type="button" >导出excel</button>
 					     <form id="exportForm" method="post">
-					     <input type="hidden" id="h_dateStart" name="h_dateStart">
-					     <input type="hidden" id="h_dateEnd" name="h_dateEnd">
-					     <input type="hidden" id="h_type" name="h_type">
+					     <input type="hidden" id="h_dateStart" name="dateStart">
+					     <input type="hidden" id="h_dateEnd" name="dateEnd">
+					     <input type="hidden" id="h_type" name="type">
 					     </form>
 					    </td>
 					</tr>

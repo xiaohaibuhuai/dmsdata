@@ -37,6 +37,12 @@ public class ELKUtils {
 	
 	public static void main(String[] args) {
 	
+		String[] urlhead = { "ilumi_transactionlog_","ilumi_minigame_","iii_ddd_bbb_"};
+		String urlend = "/_search?size=30";
+		
+		String d = getUrl4SeletedTime(1504381500000l,1511811900000l, urlhead, urlend);
+		
+		System.out.println(d);
 	}
 
 	public static List<ChartInfo> getTaskChartChangeInfo(String target, long time, String timeformat) {
@@ -209,6 +215,68 @@ public class ELKUtils {
 		return null;
 	}
 
+	public static String getUrl4SeletedTime(long startTime, long endTime, String[] urlhead, String urlend) {
+		
+		String url ="";
+		DateFormat df = new SimpleDateFormat("yyyy-MM");
+		String stime = df.format(startTime);
+		String etime = df.format(endTime);
+		
+		if (stime.equals(etime)) {
+			String temp="";
+			for(int i = 0;i < urlhead.length ; i++) {
+				if(i==urlhead.length-1) {
+					temp+=urlhead[i]+stime;
+				}else {
+					temp+=urlhead[i]+stime+",";
+				}
+				url=temp+urlend;
+				return url;
+			}	
+		}else {
+			// 判断相差的日期
+			try {
+				int count = DateUtils.countMonths(stime, etime, "yyyy-MM");
+				String[] urldate = new String[count + 1];
+
+				for (int i = 0; i <= count; i++) {
+					// 开始时间改变月份
+					urldate[i] = stime;
+					stime = df.format(DateUtils.changeMonth(df.parse(stime).getTime(), 1));
+				}
+				// 拼装url
+				String temp="";
+				boolean flag=false;
+				for(int i=0;i<urlhead.length;i++) {
+					
+					if(i==urlhead.length-1) {
+						flag=true;
+					}
+					for (int n = 0; n < urldate.length; n++) {
+						
+						if(flag) {
+							if(n==urldate.length-1) {
+								temp+=urlhead[i]+urldate[n];
+							}else {
+								temp+=urlhead[i]+urldate[n]+",";
+							}
+						}else {
+							temp+=urlhead[i]+urldate[n]+",";
+						}
+					}
+					url=temp+urlend;
+					
+				}
+				return url;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}	
+		}
+		
+		
+		
+		return null;
+	}
 	/**
 	 * 获取解析后的url 天数为两天 月份可能为两月
 	 * 
@@ -234,7 +302,7 @@ public class ELKUtils {
 	 * @param urlend
 	 * @return
 	 */
-	private static String getUrl(long startTime, String[] urlheads, String urlend, DateFormat dateformat) {
+	public static String getUrl(long startTime, String[] urlheads, String urlend, DateFormat dateformat) {
 		String url = "";
 
 		for (int i = 0; i < urlheads.length; i++) {
@@ -342,8 +410,8 @@ public class ELKUtils {
 	public static Map<Long,Map<String, Long>> paseDailyResponse(Response response, String target) {
 		try {
 			String jsonstring = EntityUtils.toString(response.getEntity());
-			System.out.println("***************Response Json***************");
-			System.out.println(jsonstring);
+//			System.out.println("***************Response Json***************");
+//			System.out.println(jsonstring);
 			
 			JSONObject jsonObj = JSON.parseObject(jsonstring);
 			JSONObject ag = jsonObj.getJSONObject("aggregations");
@@ -351,7 +419,6 @@ public class ELKUtils {
 			JSONArray arry = na.getJSONArray("buckets");
 			
 			Map<Long,Map<String, Long>> mmap = new HashMap<Long,Map<String, Long>>();
-			
 			for (int i = 0, len = arry.size(); i < len; i++) {
 				JSONObject temp = arry.getJSONObject(i);
 				//日期

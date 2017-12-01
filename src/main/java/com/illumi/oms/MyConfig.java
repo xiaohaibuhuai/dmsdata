@@ -109,7 +109,7 @@ public class MyConfig extends JFinalConfig
 		// 配置AutoTableBindPlugin插件
 		AutoTableBindPlugin atbp = new AutoTableBindPlugin("dbconfig",dbPlugin);
 		if (isDev) atbp.setShowSql(true);
-		atbp.scanPackages("com.illumi.oms.common.index","com.illumi.oms.model","com.illumi.oms.system.model","com.illumi.oms.data.model");
+		atbp.scanPackages("com.illumi.oms.common.index","com.illumi.oms.model","com.illumi.oms.system.model");
 		atbp.autoScan(false);
 		me.add(atbp);
 		// sql记录
@@ -132,12 +132,27 @@ public class MyConfig extends JFinalConfig
         ActiveRecordPlugin arpMysql3 = new ActiveRecordPlugin("pokerdb3", pokerDbPlugin3);
         me.add(arpMysql3);
         arpMysql3.setCache(new EhCache());
+        
+        
+        //data查询库
+        DruidPlugin pokerDataPlugin = new DruidPlugin(ConfigKit.getStr("pokerdata.jdbcUrl"), ConfigKit.getStr("pokerdata.user"), ConfigKit.getStr("pokerdata.password"));
+		me.add(pokerDataPlugin);
+		ActiveRecordPlugin arpMysql4 = new ActiveRecordPlugin("pokerdata", pokerDataPlugin);
+		me.add(arpMysql4);
+		arpMysql4.setCache(new EhCache());
 	
+		
+		AutoTableBindPlugin proatbp = new AutoTableBindPlugin("pokerDataConfig",pokerDataPlugin);
+		if (isDev) proatbp.setShowSql(true);
+		proatbp.scanPackages("com.illumi.oms.data.model");
+		proatbp.autoScan(false);
+		me.add(proatbp);
+		
 		//配置定时任务插件
 		QuartzPlugin quartzPlugin = new QuartzPlugin();
 		me.add(quartzPlugin);
 		//Spring
-		me.add(new SpringPlugin());
+		//me.add(new SpringPlugin());
 		//me.add(new SpringPlugin("//home/dyp/data/git/mytest/oms/target/oms-web/WEB-INF/classes/applicationContext.xml"));
 	}
 
