@@ -18,7 +18,8 @@ MainApp.controller('PlayerStatisticCtrls',  function($scope,TabService) {
 	        {field:'p_omaha',title:'奥马哈局',width:120,align:'left'},
 	        {field:'p_omahains',title:'奥马哈保险局',width:120,align:'left'},
 	        {field:'p_six',title:'6+局',width:120,align:'left'},
-	        {field:'p_sng',title:'SNG',width:120,align:'left'}
+	        {field:'p_sng',title:'SNG',width:120,align:'left'},
+	        {field:'p_sum',title:'统计',width:120,align:'left'}
 	      ]],
 	});
     

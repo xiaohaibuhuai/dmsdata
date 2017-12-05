@@ -152,7 +152,7 @@ public class MyConfig extends JFinalConfig
 		QuartzPlugin quartzPlugin = new QuartzPlugin();
 		me.add(quartzPlugin);
 		//Spring
-		//me.add(new SpringPlugin());
+		me.add(new SpringPlugin());
 		//me.add(new SpringPlugin("//home/dyp/data/git/mytest/oms/target/oms-web/WEB-INF/classes/applicationContext.xml"));
 	}
 

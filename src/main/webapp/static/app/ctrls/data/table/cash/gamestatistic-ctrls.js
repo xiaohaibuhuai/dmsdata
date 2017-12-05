@@ -14,7 +14,8 @@ MainApp.controller('GameStatisticCtrls',  function($scope,TabService) {
 	        {field:'g_omaha',title:'奥马哈局',width:120,align:'left'},
 	        {field:'g_omahains',title:'奥马哈保险局',width:120,align:'left'},
 	        {field:'g_six',title:'6+局',width:120,align:'left'},
-	        {field:'g_sng',title:'SNG',width:120,align:'left'}
+	        {field:'g_sng',title:'SNG',width:120,align:'left'},
+	        {field:'g_sum',title:'统计',width:120,align:'left'}
 	      ]],
 	});
 	
@@ -34,7 +35,8 @@ MainApp.controller('GameStatisticCtrls',  function($scope,TabService) {
 		        {field:'g_omaha',title:'奥马哈局',width:120,align:'left'},
 		        {field:'g_omahains',title:'奥马哈保险局',width:120,align:'left'},
 		        {field:'g_six',title:'6+局',width:120,align:'left'},
-		        {field:'g_sng',title:'SNG',width:120,align:'left'}
+		        {field:'g_sng',title:'SNG',width:120,align:'left'},
+		        {field:'g_sum',title:'统计',width:120,align:'left'}
 	      ]],
 	});
 	

@@ -157,9 +157,27 @@
        WHERE 
        type = ? and targetdate  BETWEEN ? AND ?
     </sql>
+    
+    <sql  id = "getRechargeNumByDay">
+       SELECT 
+       sum(sum) 
+       FROM 
+       t_recharge_daily_snapshot
+       WHERE 
+       type = ? and targetdate  BETWEEN ? AND ?
+    </sql>
     <sql id ="getMoneyByDay">
      SELECT 
        * 
+       FROM 
+       t_money_daily_snapshot
+       WHERE 
+       type = ? and targetdate  BETWEEN ? AND ?
+    </sql>
+    
+    <sql id ="getMoneyNumByDay">
+       SELECT 
+       sum(sum)
        FROM 
        t_money_daily_snapshot
        WHERE 
@@ -176,6 +194,53 @@
        type = ? and targetdate  BETWEEN ? AND ?
     </sql>
     
+    <sql id="getDiamondNumByDay">
+       SELECT 
+       sum(sum)
+       FROM 
+       t_diamond_daily_snapshot
+       WHERE 
+       type = ? and targetdate  BETWEEN ? AND ?
+    </sql>
+    
+    <sql id ="getAddDiamondByDay">
+     SELECT 
+       * 
+       FROM 
+       t_diamond_recharge_daily_snapshot
+       WHERE 
+       type = ? and targetdate  BETWEEN ? AND ?
+    </sql>
+    
+    <sql id="getAddDiamondNumByDay">
+       SELECT 
+       sum(sum)
+       FROM 
+       t_diamond_recharge_daily_snapshot
+       WHERE 
+       type = ? and targetdate  BETWEEN ? AND ?
+    </sql>
+    
+    
+    
+     <sql id="getGameInfoByDay">
+        SELECT
+          targetdate,g_normal,g_normalins,g_omahains,g_six,g_sng,g_sum      
+        FROM
+             t_game_daily_snapshot 
+        WHERE 
+             isvalid= ? and targetdate  BETWEEN ? AND ? 
+      </sql>
+   
+     
+     <sql id="getGameNumByDay">
+        SELECT
+        sum(g_sum)      
+        FROM
+             t_game_daily_snapshot 
+        WHERE isvalid= ? and targetdate  BETWEEN ? AND ? 
+      </sql>
+     
     
     </sqlGroup>
 </sqlGroup>

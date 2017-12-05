@@ -6,8 +6,8 @@
 				<table class="table table-hover table-condensed" >
 					<tr>
 					    <th>时间</th>
-					    <td colspan="2"><input name="dateStart" id="dateStart" placeholder="点击选择时间" onclick="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd'})" readonly="readonly" />
-						至  <input name="dateEnd" placeholder="点击选择时间" id="dateEnd" onclick="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'dateStart\')}'})" readonly="readonly" />
+					    <td colspan="2"><input name="dateStart" id="dateStart" placeholder="点击选择时间" onclick="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd',maxDate:'%yyyy-%MM-%dd'})" readonly="readonly" />
+						至  <input name="dateEnd" placeholder="点击选择时间" id="dateEnd" onclick="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'dateStart\')}',maxDate:'%yyyy-%MM-%dd'})" readonly="readonly" />
 						</td>
 				         <td>
 				            <select id="type">

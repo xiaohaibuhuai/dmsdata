@@ -6,6 +6,11 @@ dbType=mysql
 devMode = true
 decrypt=true
 
+pokerdata.jdbcUrl = jdbc:mysql://127.0.0.1:3306/cms_support?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
+pokerdata.user = root
+pokerdata.password =000000
+
+
 poker.jdbcUrl = jdbc:mysql://127.0.0.1:3306/test_poker?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
 poker.user = root
 poker.password =000000
