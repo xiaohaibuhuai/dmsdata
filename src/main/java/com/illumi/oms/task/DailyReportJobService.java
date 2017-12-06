@@ -12,13 +12,15 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 import com.illumi.oms.common.Consts;
-import com.illumi.oms.data.model.DiamondSnapShotDate;
-import com.illumi.oms.data.model.MoneySnapShotDate;
-import com.illumi.oms.data.model.RechargeSnapShotDate;
+import com.illumi.oms.data.model.SnapShot.DiamondRechargeSnapShotDate;
+import com.illumi.oms.data.model.SnapShot.DiamondSnapShotDate;
+import com.illumi.oms.data.model.SnapShot.MoneySnapShotDate;
+import com.illumi.oms.data.model.SnapShot.RechargeSnapShotDate;
 import com.illumi.oms.data.utils.ArithUtils;
 import com.illumi.oms.data.utils.DateUtils;
 import com.illumi.oms.data.utils.ELKUtils;
 import com.illumi.oms.data.utils.LogMapperUtils;
+import com.jayqqaa12.jbase.jfinal.ext.model.EasyuiModel;
 import com.jfinal.ext.plugin.sqlinxml.SqlKit;
 import com.jfinal.log.Logger;
 import com.jfinal.plugin.activerecord.Db;
@@ -52,12 +54,14 @@ public class DailyReportJobService implements Job{
 		//0 查一天 起始时间和结束时间一致
 		try {
 		//1 执行recharge充值日报
-		rechargeJob(zeroTime,zeroTime);
+		//rechargeJob(zeroTime);
 		//2 执行diamond
-		diamondJob(zeroTime,zeroTime);
+		//diamondJob(zeroTime,zeroTime);
 		//3 执行德扑币
-		moneyJob(zeroTime,zeroTime);
+		//moneyJob(zeroTime,zeroTime);
 		
+		//4执行德扑币充值日报
+		rechargeDiamondJob(zeroTime);
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -67,7 +71,63 @@ public class DailyReportJobService implements Job{
 	
 	
 
-	private void rechargeJob(long startTime, long zeroTime) {
+
+
+
+
+	private void rechargeDiamondJob(long zeroTime) {
+		String termsFiled = "ChannelId";
+		String sumFiled  = "diamond_change_no";
+		String urlhead = "ilumi_payment_";
+		String urlend = "/_search?size=30";
+		String method = "GET";
+		String url = urlhead+new SimpleDateFormat("yyyy-MM").format(zeroTime)+urlend;
+		Response fullData = ResponseFullData(zeroTime, zeroTime, termsFiled, sumFiled,url,method);
+		//全部
+		Map<Long, Map<String, Long>> fullMap = ELKUtils.paseDailyResponse(fullData, "money");
+		//填充数据
+		DiamondRechargeSnapShotDate all = fillDiamondRechargeData(fullMap,0,DiamondRechargeSnapShotDate.class);
+		
+		
+		//国外
+		Response abroadData = ResponseAbroadData(zeroTime, zeroTime, termsFiled, sumFiled,url,method);
+		Map<Long, Map<String, Long>> abroadMap = ELKUtils.paseDailyResponse(abroadData, "money");
+		DiamondRechargeSnapShotDate abroad = null;
+		if(abroadMap.values().size()!=0) {
+		 abroad = fillDiamondRechargeData(abroadMap,2,DiamondRechargeSnapShotDate.class);
+		}else {
+			abroad = new DiamondRechargeSnapShotDate();
+			abroad.set("targetdate", all.get("targetdate"));
+			abroad.set("type", 2);
+			for(String s : rechargeMapperArr) {	
+				abroad.set(s,0);
+			}
+		}
+		//国内
+		DiamondRechargeSnapShotDate  domestic = new DiamondRechargeSnapShotDate();
+		domestic.set("targetdate", all.get("targetdate"));
+		domestic.set("type", 1);
+		for(String s : rechargeMapperArr) {	
+			String str1 = all.get(s)+"";
+			double a = Double.parseDouble(str1.equals("null")?"0.0":str1);
+			String str2 = abroad.get(s)+"";
+			double b = Double.parseDouble(str2.equals("null")?"0.0":str2);
+			domestic.set(s, ArithUtils.sub(a, b));
+		}
+		
+		
+		boolean isuccess1 = all.saveAndCreateDate();
+		boolean isuccess2 = abroad.saveAndCreateDate();
+		boolean isuccess3 = domestic.saveAndCreateDate();		
+		log.info("t_Recharge_daily_snapshot[type 0 :"+isuccess1+"|| type 1:"+isuccess2+"||type 2 "+isuccess3+"]"+"日期:"+DateUtils.getDateFormat4Day().format(zeroTime));
+		
+		
+	}
+
+
+
+
+	private void rechargeJob(long zeroTime) {
 		String termsFiled = "ChannelId";
 		String sumFiled  = "cach_earn_no";
 		String urlhead = "ilumi_payment_";
@@ -77,19 +137,19 @@ public class DailyReportJobService implements Job{
 		
 	
 		
-		Response fullData = ResponseFullData(startTime, zeroTime, termsFiled, sumFiled,url,method);
+		Response fullData = ResponseFullData(zeroTime, zeroTime, termsFiled, sumFiled,url,method);
 		//全部
 		Map<Long, Map<String, Long>> fullMap = ELKUtils.paseDailyResponse(fullData, "money");
 		//填充数据
-		RechargeSnapShotDate all = fillRechargeData(fullMap,0);
+		RechargeSnapShotDate all = fillRechargeData(fullMap,0,RechargeSnapShotDate.class);
 		
 		
 		//国外
-		Response abroadData = ResponseAbroadData(startTime, zeroTime, termsFiled, sumFiled,url,method);
+		Response abroadData = ResponseAbroadData(zeroTime, zeroTime, termsFiled, sumFiled,url,method);
 		Map<Long, Map<String, Long>> abroadMap = ELKUtils.paseDailyResponse(abroadData, "money");
 		RechargeSnapShotDate abroad = null;
 		if(abroadMap.values().size()!=0) {
-		 abroad = fillRechargeData(abroadMap,2);
+		 abroad = fillRechargeData(abroadMap,2,RechargeSnapShotDate.class);
 		}else {
 			abroad = new RechargeSnapShotDate();
 			abroad.set("targetdate", all.get("targetdate"));
@@ -114,7 +174,7 @@ public class DailyReportJobService implements Job{
 		boolean isuccess1 = all.saveAndCreateDate();
 		boolean isuccess2 = abroad.saveAndCreateDate();
 		boolean isuccess3 = domestic.saveAndCreateDate();		
-		log.info("t_Recharge_daily_snapshot[type 0 :"+isuccess1+"|| type 1:"+isuccess2+"||type 2 "+isuccess3+"]");
+		log.info("t_Recharge_daily_snapshot[type 0 :"+isuccess1+"|| type 1:"+isuccess2+"||type 2 "+isuccess3+"]"+"日期:"+DateUtils.getDateFormat4Day().format(zeroTime));
 		
 	}
 	private void moneyJob(long startTime, long zeroTime) {
@@ -157,7 +217,7 @@ public class DailyReportJobService implements Job{
 		boolean isuccess1 = all.saveAndCreateDate();
 		boolean isuccess2 = abroad.saveAndCreateDate();
 		boolean isuccess3 = domestic.saveAndCreateDate();		
-		log.info("t_money_daily_snapshot[type 0 :"+isuccess1+"|| type 1:"+isuccess2+"||type 2 "+isuccess3+"]");
+		log.info("t_money_daily_snapshot[type 0 :"+isuccess1+"|| type 1:"+isuccess2+"||type 2 "+isuccess3+"]"+"日期:"+DateUtils.getDateFormat4Day().format(zeroTime));
 		
 	}
 	private void diamondJob(long startTime, long zeroTime) {
@@ -239,11 +299,49 @@ public class DailyReportJobService implements Job{
       }
 		return ds;
 	}
-
-
+	
+	
+	
+	 //钻石充值   Long
+    private <T extends EasyuiModel>T fillDiamondRechargeData(Map<Long, Map<String, Long>> fullMap, Integer type,Class<T> clazz) {
+	   T rs = null;
+	try {
+		rs = clazz.newInstance();
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	   rs.set("type",type);
+	   String[] arrs= {"101","102","201","202","301","302","303","401","402","403","sum"};
+	   Long sum = 0l;
+	   //只有一个map
+	   for(Entry<Long, Map<String, Long>> e :fullMap.entrySet()) {
+		   rs.set("targetdate", e.getKey());
+		   Map<String, Long> value = e.getValue();
+		   for(String s :arrs) {
+			   if(value.containsKey(s)) {
+				   long div = value.get(s);
+				   rs.set(s, div);
+				   sum=div+sum;
+			   }else {
+				   rs.set(s, 0);
+			   }
+			   
+		   }
+		   rs.set("sum",sum);
+	       return  rs;   
+	   } 
+		return rs;
+	}
+	
+	
     //充值
-    private RechargeSnapShotDate fillRechargeData(Map<Long, Map<String, Long>> fullMap, Integer type) {
-	   RechargeSnapShotDate rs = new RechargeSnapShotDate();
+    private <T extends EasyuiModel>T fillRechargeData(Map<Long, Map<String, Long>> fullMap, Integer type,Class<T> clazz) {
+	   T rs = null;
+	try {
+		rs = clazz.newInstance();
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
 	   rs.set("type",type);
 	   String[] arrs= {"101","102","201","202","301","302","303","401","402","403","sum"};
 	   Double sum = 0.0;
@@ -331,6 +429,8 @@ public class DailyReportJobService implements Job{
 	private List<Record> initUuid() {
 		if(uuids==null) {
 			uuids = Db.use(Consts.DB_POKER2).find(SqlKit.sql("data.reportForms.getForeignUUID"));
+			System.out.println("********访问数据库*********");
+			
 		}
 		return uuids;
 	}
@@ -449,7 +549,7 @@ public class DailyReportJobService implements Job{
 				"  }\n" + 
 				"  \n" + 
 				"}";
-
+  
 		return json;
 }
 
@@ -503,16 +603,19 @@ public class DailyReportJobService implements Job{
     }
     */
     
-    
+    /**
+     * 
+     * @param zeroTime
+     * @param num
+     */
     public void defineExcuteByDay(long zeroTime, int num) {
     	
-    	  for(int i=0;i<num;i++) {
-   	     
+    	  for(int i=0;i<num-1;i++) {
     		  zeroTime = DateUtils.changeHour(zeroTime, -24);
        }
    
-   
-      for(int i=0;i<=num;i++) {
+      
+      for(int i=0;i<num;i++) {
    	    startJob(zeroTime);
    	    zeroTime = DateUtils.changeHour(zeroTime, +24);
      }

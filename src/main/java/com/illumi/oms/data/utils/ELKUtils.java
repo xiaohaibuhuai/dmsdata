@@ -76,7 +76,7 @@ public class ELKUtils {
 		String urlMethod = "GET";
 		// String urlheadLog="/ilumi_transctionlog_";
 
-		String[] urlheadLog = { "/ilumi_transctionlog_", "ilumi_payment_" };
+		String[] urlheadLog = { "/ilumi_transactionlog_", "ilumi_payment_" };
 		String urlend = "/_search";
 		DateFormat df = new SimpleDateFormat("yyyy-MM");
 		String urlLog = getUrl(nowTime, urlheadLog, urlend, df);
@@ -114,7 +114,7 @@ public class ELKUtils {
 		long nowTime = new Date().getTime();
 		long startTime = nowTime + time;
 		String urlMethod = "POST";
-		String urlhead = "ilumi_transctionlog_";
+		String urlhead = "ilumi_transactionlog_";
 		String urlend = "/_search?request_cache=false";
 		String url = getUrl(startTime, urlhead, urlend, new SimpleDateFormat("yyyy-MM"));
 		String jsonString = "{\n" + "  \"query\": {\n" + "    \"constant_score\": {\n"
@@ -127,6 +127,8 @@ public class ELKUtils {
 				+ "          \"sum\": {\n" + "            \"field\": \"" + target + "_change_no\"\n" + "          }\n"
 				+ "        }\n" + "      }\n" + "    }\n" + "  }\n" + "}";
 
+		System.out.println(jsonString);
+		System.out.println(url);
 		return getRankInfo(jsonString, urlMethod, url, target);
 	}
 
@@ -468,7 +470,8 @@ public class ELKUtils {
 
 				// String time = temp.getString("key_as_string");
 				Long uuid = temp.getLong("key");
-				Long num = temp.getJSONObject(target + "_sum").getLong("value");
+				//Long num = temp.getJSONObject(target + "_sum").getLong("value");
+				Long num = temp.getJSONObject( "money_sum").getLong("value");
 				int isErro = temp.getInteger("doc_count_error_upper_bound");
 				/**
 				 * 打日志 如果isErro为1 出错
@@ -483,19 +486,19 @@ public class ELKUtils {
 				rank.setRank(i + 1);
 				if (userTemp != null) {
 					rank.setNickname(userTemp.getStr("nickname"));
-					rank.setShowid(userTemp.getLong("showid"));
+					rank.setShowid(userTemp.getStr("showid"));
 				}
 				list.add(rank);
 
 			}
 			return list;
 		} catch (Exception e) {
-		//	e.printStackTrace();
+			e.printStackTrace();
 		}
 		return null;
 	}
 
-	// 解析牌谱查询
+	
 	
 	
 	

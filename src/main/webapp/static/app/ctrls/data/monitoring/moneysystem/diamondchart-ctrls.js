@@ -97,7 +97,7 @@ MainApp.controller('DiamondChartCtrls', function($scope,TabService) {
 	
 //初始化数据表格
 	 var  dg =$('#dg').datagrid({
-			url : PATH+'/data/monitoring/moneysystem/coinchart/increaseRank',
+			url : PATH+'/data/monitoring/moneysystem/diamondchart/increaseDiamond',
 			fit : false,
 			title:"24小时钻石增加排名",
 		//	fitColumns : true,
@@ -119,7 +119,7 @@ MainApp.controller('DiamondChartCtrls', function($scope,TabService) {
 		});
 	 
 	 var  dg2 =$('#dg2').datagrid({
-			url : PATH+'/data/monitoring/moneysystem/coinchart/increaseRank',
+			url : PATH+'/data/monitoring/moneysystem/diamondchart/reduceDiamond',
 			fit : false,
 			title:"24小时钻石增加排名",
 		//	fitColumns : true,

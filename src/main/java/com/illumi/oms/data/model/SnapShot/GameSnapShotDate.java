@@ -1,4 +1,4 @@
-package com.illumi.oms.data.model;
+package com.illumi.oms.data.model.SnapShot;
 
 import com.illumi.oms.model.LeagueData;
 import com.jayqqaa12.jbase.jfinal.ext.model.EasyuiModel;

@@ -6,16 +6,17 @@ import java.util.Map;
 public class DataBaseMapperUtils {
 
 	
-	public static Map<String,String> getGameStatrtMap(){
+	//玩家活跃 和牌局统计表
+	public static Map<String,String> getGameMap(String type){
 		Map<String, String> map = new HashMap<String, String>();
-		map.put("普通局","g_normal");
-		map.put("普通保险局","g_normalins");
-		map.put("奥马哈局","g_omaha");
-		map.put("奥马哈保险局","g_omahains");
-		map.put("6+局","g_six");
-		map.put("SNG局","g_sng");
+		map.put("普通局",type+"_normal");
+		map.put("普通保险局",type+"_normalins");
+		map.put("奥马哈局",type+"_omaha");
+		map.put("奥马哈保险局",type+"_omahains");
+		map.put("6+局",type+"_six");
+		map.put("SNG局",type+"_sng");
 		map.put("日期", "targetdate");
-		map.put("汇总", "g_sum");
+		map.put("汇总", type+"_sum");
 		return map;
 	}
 	public static Map<String,String> getConsumeDiamondlMap(){

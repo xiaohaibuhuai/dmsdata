@@ -3,13 +3,13 @@ package com.illumi.oms.data.model;
 public class RankInfo{
 	private int rank;
 	private long uuid;
-	private long showid;
+	private String showid;
 	private String nickname;
 	private long  change;
 	private int isErro;
 	
 	
-	public RankInfo(int rank, long uuid, long showid, String nickname, long change) {
+	public RankInfo(int rank, long uuid, String showid, String nickname, long change) {
 		super();
 		this.rank = rank;
 		this.uuid = uuid;
@@ -36,11 +36,11 @@ public class RankInfo{
 		this.uuid = uuid;
 	}
 
-	public long getShowid() {
+	public String getShowid() {
 		return showid;
 	}
 
-	public void setShowid(long showid) {
+	public void setShowid(String showid) {
 		this.showid = showid;
 	}
 

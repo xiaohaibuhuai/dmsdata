@@ -1,18 +1,25 @@
 package com.illumi.oms.task;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 import com.illumi.oms.common.Consts;
-import com.illumi.oms.data.model.BlindSnapShotDate;
-import com.illumi.oms.data.model.GameSnapShotDate;
+import com.illumi.oms.data.model.SnapShot.BlindSnapShotDate;
+import com.illumi.oms.data.model.SnapShot.GameExtSnapShotDate;
+import com.illumi.oms.data.model.SnapShot.GameSnapShotDate;
+import com.illumi.oms.data.utils.ArithUtils;
+import com.illumi.oms.data.utils.DataBaseMapperUtils;
 import com.illumi.oms.data.utils.DateUtils;
 import com.jayqqaa12.jbase.jfinal.ext.model.Db;
+import com.jayqqaa12.jbase.jfinal.ext.model.EasyuiModel;
 import com.jfinal.ext.plugin.sqlinxml.SqlKit;
 import com.jfinal.log.Logger;
 import com.jfinal.plugin.activerecord.Record;
@@ -22,6 +29,8 @@ public class GameStatisticJobService implements Job {
 	private static final Logger log = Logger.getLogger(GameStatisticJobService.class);
 	private String TYPE_GAME = "g";
 	private String TYPE_PLAYER = "p";
+	private String TYPE_HAND = "h";
+	private String TYPE_SERVICE = "s";
 
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
@@ -39,11 +48,10 @@ public class GameStatisticJobService implements Job {
 
 	}
 
-	private void statGameStatistic(long startTime, long zeroTime) {
+	public void statGameStatistic(long startTime, long zeroTime) {
 		try {
-			// 牌局表
+			// 牌局表  
 			gameDataHandle(startTime, zeroTime);
-
 			// 盲注表
 			blindDataHandle(startTime, zeroTime);
 		} catch (Exception e) {
@@ -51,6 +59,11 @@ public class GameStatisticJobService implements Job {
 		}
 
 	}
+
+//	private void gameExtendHandle(long startTime, long zeroTime) {
+//		
+//		
+//	}
 
 	private void gameDataHandle(long startTime, long zeroTime) {
 		// t_game_daily_snapshot 快照表
@@ -83,18 +96,18 @@ public class GameStatisticJobService implements Job {
 				new Object[] { startTime, zeroTime });
 		playerSNGCount = Db.use(Consts.DB_POKER2).queryLong(SqlKit.sql("data.billSnap.getplayerSNGCount"),
 				new Object[] { startTime, zeroTime });
-		// 1 封装普通局 isvalid=0 (包含人数)
+// 1 封装普通局 isvalid=0 (包含人数)
 		GameSnapShotDate gameSnapShotDate = new GameSnapShotDate();
 		// 是否有效
 		gameSnapShotDate.set("isvalid", 0); // 0 全部 1 有效
 		// 时间
 		gameSnapShotDate.set("targetdate", startTime);
 		// 封装各种局统计数量
-		setDate2GameSnapShot(gameSnapShotDate, gameTypeList, TYPE_GAME);
+		setDate2GameSnapShot(gameSnapShotDate, gameTypeList, "num",TYPE_GAME);
 		// 封装SNG局数统计
 		gameSnapShotDate.set("g_sng", gameSNGCount);
 		// 封装各种局活跃人数统计
-		setDate2GameSnapShot(gameSnapShotDate, playerList, TYPE_PLAYER);
+		setDate2GameSnapShot(gameSnapShotDate, playerList, "num",TYPE_PLAYER);
 		// 封装SNG局活跃人数
 		gameSnapShotDate.set("p_sng", playerSNGCount);
 		// 封装游戏总数
@@ -102,14 +115,14 @@ public class GameStatisticJobService implements Job {
 		// 封装活跃总数
 		setNum2GameSnapShot(gameSnapShotDate, TYPE_PLAYER);
 
-		// 2封装有效局数 isvalid=1 ( 不包含人数)
+// 2封装有效局数 isvalid=1 ( 不包含人数)
 		GameSnapShotDate gameValidSnapShotDate = new GameSnapShotDate();
 		// 是否有效
 		gameValidSnapShotDate.set("isvalid", 1); // 0 全部 1 有效
 		// 时间
 		gameValidSnapShotDate.set("targetdate", startTime);
 		// 封装各种局统计数量 有效
-		setDate2GameSnapShot(gameValidSnapShotDate, gameTypeVaildList, TYPE_GAME);
+		setDate2GameSnapShot(gameValidSnapShotDate, gameTypeVaildList, "sum",TYPE_GAME);
 		// 封装SNG有效数
 		gameValidSnapShotDate.set("g_sng", gameSNGVaildCount);
 		// 封装游戏总数
@@ -117,17 +130,67 @@ public class GameStatisticJobService implements Job {
 		// 封装活跃总数
 		// setNum2GameSnapShot(gameValidSnapShotDate,TYPE_PLAYER);
 
+		
+  //3 手数和服务费
+		GameExtSnapShotDate  gameExtSnapShotDate =  new GameExtSnapShotDate();
+		//时间
+		gameExtSnapShotDate.set("targetdate", startTime);
+		//手数
+		setDate2GameSnapShot(gameExtSnapShotDate, gameTypeList, "sum",TYPE_HAND);
+		//服务
+		setDate2GameSnapShot(gameExtSnapShotDate, playerList, "sum",TYPE_SERVICE);
+		
+		//SNG 手数
+	
+	    BigDecimal handSNG = Db.use(Consts.DB_POKER2).queryBigDecimal(SqlKit.sql("data.billSnap.getHandSNGNum"),
+					new Object[] { startTime, zeroTime });
+		//Long handNum = Long.parseLong(String.valueOf(handSNG).equals("null")?"0":String.valueOf(handSNG));
+	  //  System.out.println("SNG手数"+handSNG);
+		
+		 gameExtSnapShotDate.set(TYPE_HAND+"_sng", handSNG==null?0:handSNG);
+		//SNG  服务费
+		 BigDecimal serviceSNG = Db.use(Consts.DB_POKER2).queryBigDecimal(SqlKit.sql("data.billSnap.getServiceSNGNum"),
+					new Object[] { startTime, zeroTime });
+		 gameExtSnapShotDate.set(TYPE_SERVICE+"_sng", serviceSNG==null?0:serviceSNG);
+		// System.out.println("SNG服务费"+serviceSNG);
+		//服务费*0.1 
+		 handeServiceCharge(gameExtSnapShotDate);
+		 
+		 //总数
+		 setNum2GameSnapShot(gameExtSnapShotDate, TYPE_HAND);
+		 setNum2GameSnapShot(gameExtSnapShotDate, TYPE_SERVICE);
+		 
+		 
+		 
 		boolean isuccess1 = gameSnapShotDate.saveAndCreateDate();
 		boolean isuccess2 = gameValidSnapShotDate.saveAndCreateDate();
+		boolean isuccess3 = gameExtSnapShotDate.saveAndCreateDate();
 
 		
 		String t = DateUtils.getDateFormat4Day().format(startTime);
-		log.info("t_game_daily_snapshot[isvalid 0 :" + isuccess1 + "|| isValid 1:" + isuccess2 + "]"+"time:"+t);
+		log.info("t_game_daily_snapshot[isvalid 0 :" + isuccess1 + "|| isValid 1:" + isuccess2 +"]"+"t_game_ext_daily_snapshot: "+isuccess3+"  time:"+t);
 
 	}
 
+	private void handeServiceCharge(GameExtSnapShotDate gameExtSnapShotDate) {
+	 String[] attrNames = gameExtSnapShotDate.getAttrNames();
+	 for(String s:attrNames) {
+			if(s.equals(TYPE_SERVICE+"_normal")||
+			   s.equalsIgnoreCase(TYPE_SERVICE+"_normalins")||
+			   s.equals(TYPE_SERVICE+"_omaha")||s.equals(TYPE_SERVICE+"_omahains")||
+			   s.equals(TYPE_SERVICE+"_six")||s.equals(TYPE_SERVICE+"_sng")){
+				Object obj = gameExtSnapShotDate.get(s);
+				Long value = Long.parseLong(String.valueOf(obj).equals("null")?"0":String.valueOf(obj));
+				//除以10
+				
+				gameExtSnapShotDate.set(s, value/10);
+			 }
+		}
+	
+}
+
 	// 总数
-	private void setNum2GameSnapShot(GameSnapShotDate gameSnapShotDate, String type) {
+	private void setNum2GameSnapShot(EasyuiModel gameSnapShotDate, String type) {
 		Long result = 0l;
 		String[] attrNames = gameSnapShotDate.getAttrNames();
 		for(String s:attrNames) {
@@ -136,7 +199,8 @@ public class GameStatisticJobService implements Job {
 			   s.equalsIgnoreCase(type+"_normalins")||
 			   s.equals(type+"_omaha")||s.equals(type+"_omahains")||
 			   s.equals(type+"_six")||s.equals(type+"_sng")){
-				result+=gameSnapShotDate.getLong(s);
+				Object obj = gameSnapShotDate.get(s);
+				result+=Long.parseLong(String.valueOf(obj).equals("null")?"0":String.valueOf(obj));
 			 }
 		}
 		gameSnapShotDate.set(type+"_sum", result);
@@ -244,16 +308,20 @@ public class GameStatisticJobService implements Job {
 	}
 
 	/**
+	 * 
 	 * @param gameSnapShotDate
 	 * @param list
+	 * @param columnName    数据库表字段名
+	 * @param type          类型
 	 */
-	private void setDate2GameSnapShot(GameSnapShotDate gameSnapShotDate, List<Record> list, String type) {
+	private void setDate2GameSnapShot(EasyuiModel snapshot, List<Record> list, String columnName,String type) {
 		for (Record record : list) {
 			Integer gameroomtype = record.getInt("gameroomtype");
 			String resultype = paserGameroomtype(gameroomtype, type);
-			Long num = record.getLong("num");
+			Object obj = record.get(columnName);
+			Long num = Long.parseLong(String.valueOf(obj).equals("null")?"0":String.valueOf(obj));
 			if (resultype != null && num != null) {
-				gameSnapShotDate.set(resultype, num);
+				snapshot.set(resultype, num);
 			}
 			// log.error("获取数据出错");
 		}

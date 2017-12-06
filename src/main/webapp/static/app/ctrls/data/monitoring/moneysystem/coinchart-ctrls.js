@@ -18,7 +18,7 @@ MainApp.controller('CoinChartCtrls',  function($scope,TabService) {
 	        },
 	        {field:'showid',title:'showId',width:110,align:'left'},
 	        {field:'nickname',title:'昵称',width:110,align:'left'},
-	        {field:'change',title:'德扑币减少',width:150,align:'left'}
+	        {field:'change',title:'德扑币增加',width:150,align:'left'}
 	      ]],
 	});
 	
@@ -26,7 +26,7 @@ MainApp.controller('CoinChartCtrls',  function($scope,TabService) {
 	var  dg =$('#dg1').datagrid({
 		url : PATH+'/data/monitoring/moneysystem/coinchart/increaseRank',
 		fit : false,
-		title:"24小时德扑币减少排名",
+		title:"24小时德扑币增加排名",
 		border : true,
 		singleSelect : true,
 	     columns:[[

@@ -1,4 +1,4 @@
-package com.illumi.oms.data.model;
+package com.illumi.oms.data.model.SnapShot;
 
 import com.jayqqaa12.jbase.jfinal.ext.model.EasyuiModel;
 import com.jfinal.ext.plugin.tablebind.TableBind;

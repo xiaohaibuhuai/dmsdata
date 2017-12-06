@@ -17,6 +17,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.illumi.oms.common.UrlConfig;
 import com.illumi.oms.data.model.ExcelTableSheet;
+import com.illumi.oms.data.utils.DataBaseMapperUtils;
 import com.illumi.oms.data.utils.DateUtils;
 import com.illumi.oms.data.utils.ELKUtils;
 import com.illumi.oms.data.utils.ExcelController;
@@ -47,7 +48,7 @@ public class MoneyDailyController extends ExcelController {
 		//初始化map
 		Map<String, List<Double>> resultMap = initMoneyRelustMap();
 		
-		Map<String, String> channelMap = getMoneyChannelMap();
+		Map<String, String> channelMap = DataBaseMapperUtils.getConsumeMoneylMap();
 		for(Record r:records) {
 			//1 封装日期
 			datelist.add(DateUtils.getDateFormat4Day().format(r.getLong("targetdate")));
@@ -73,7 +74,7 @@ public class MoneyDailyController extends ExcelController {
 		//初始化map
 		Map<String, List<Double>> resultMap = initDiamondRelustMap();
 		
-		Map<String, String> channelMap = getDiamondChannelMap();
+		Map<String, String> channelMap = DataBaseMapperUtils.getConsumeDiamondlMap();
 		for(Record r:records) {
 			//1 封装日期
 			datelist.add(DateUtils.getDateFormat4Day().format(r.getLong("targetdate")));
@@ -116,8 +117,8 @@ public class MoneyDailyController extends ExcelController {
 		String resultType=type.equals("0")?"全部":type.equals("1")?"国内":"海外";
 		String titleMoney = "每日德扑币消耗汇总_"+resultType+timeDes1;
 		String titleDiamond = "每日钻石消耗汇总_"+resultType+timeDes2;
-		ExcelTableSheet sheet = new ExcelTableSheet(titleMoney, head1,"每日德扑币消耗",moneyList,getMoneyChannelMap());
-		ExcelTableSheet sheet2 = new ExcelTableSheet(titleDiamond, head2,"每日钻石消耗汇总",diamondList,getDiamondChannelMap());
+		ExcelTableSheet sheet = new ExcelTableSheet(titleMoney, head1,"每日德扑币消耗",moneyList,DataBaseMapperUtils.getConsumeMoneylMap());
+		ExcelTableSheet sheet2 = new ExcelTableSheet(titleDiamond, head2,"每日钻石消耗汇总",diamondList,DataBaseMapperUtils.getConsumeDiamondlMap());
 
 		XSSFWorkbook xs = ExcelUtil.getXSSFWorkbook(sheet, sheet2);
 
@@ -150,38 +151,11 @@ public class MoneyDailyController extends ExcelController {
 		String type = getPara("type");
 	    return Db.find(SqlKit.sql("data.dailyReport.getDiamondByDay"),new Object[] {type,dateStart,dateEnd});
 	}
-	private Map<String,String> getDiamondChannelMap(){
-		Map<String, String> map = new HashMap<String, String>();
-		map.put("联盟局","alliance");
-		map.put("修改昵称","changename");
-		map.put("延时道具","delayprops");
-		map.put("MTT门票","ticketmtt");
-		map.put("俱乐部推送","clubpush");
-		map.put("俱乐部改名","changecname");
-		map.put("日期", "targetdate");
-		map.put("汇总", "sum");
-		return map;
-	}
-	private Map<String, String> getMoneyChannelMap() {
-		Map<String, String> map = new HashMap<String, String>();
-		map.put("联盟局","service");
-		map.put("修改昵称","Interprops");
-		map.put("魔法表情","magic");
-		map.put("翻翻看","lookover");
-		map.put("弹幕","barrage");
-		map.put("扑克机","pokermachine");
-		map.put("加勒比","caribbean");
-		map.put("牛牛_一粒大米","cow");
-		map.put("八八碰_一粒大米","eight");
-		map.put("打赏牌谱","rewardpoker");
-		map.put("德扑币报名MTT","mttsign");
-		map.put("日期", "targetdate");
-		map.put("汇总", "sum");
-		return map;
-	}
+	
+	
 	private Map<String, List<Double>> initMoneyRelustMap() {
 		Map<String, List<Double>> map = new HashMap<String, List<Double>>();
-		Map<String, String> channelMap = getMoneyChannelMap();
+		Map<String, String> channelMap = DataBaseMapperUtils.getConsumeMoneylMap();
 		for (Entry<String, String> e : channelMap.entrySet()) {
 			//只保留映射项
 			if(!e.getKey().equals("日期")&&!e.getKey().equals("汇总")) {
@@ -193,7 +167,7 @@ public class MoneyDailyController extends ExcelController {
 	}
 	private Map<String, List<Double>> initDiamondRelustMap(){
 		Map<String, List<Double>> map = new HashMap<String, List<Double>>();
-		Map<String, String> channelMap = getDiamondChannelMap();
+		Map<String, String> channelMap = DataBaseMapperUtils.getConsumeDiamondlMap();
 		for (Entry<String, String> e : channelMap.entrySet()) {
 			//只保留映射项
 			if(!e.getKey().equals("日期")&&!e.getKey().equals("汇总")) {
@@ -218,9 +192,7 @@ public class MoneyDailyController extends ExcelController {
 					if(i==dataList.size()-1) {
 						endDate=time;
 					}
-					
 				}
-				
 		return "("+startDate+" 至 "+endDate+")";
 	}
 }

@@ -57,6 +57,7 @@ public class DateUtils {
          calendar.set(Calendar.HOUR_OF_DAY, 0);
          calendar.set(Calendar.MINUTE, 0);
          calendar.set(Calendar.SECOND, 0);
+         calendar.set(Calendar.MILLISECOND,0);
          Date zero = calendar.getTime();
          return zero.getTime();
 //		long zero=time/(1000*3600*24)*(1000*3600*24)-TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数

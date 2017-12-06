@@ -5,8 +5,10 @@ import java.util.List;
 
 import com.illumi.oms.common.UrlConfig;
 import com.illumi.oms.data.model.ChartInfo;
+import com.illumi.oms.data.model.RankInfo;
 import com.illumi.oms.data.utils.ELKUtils;
 import com.illumi.oms.system.model.Chart;
+import com.illumi.oms.system.model.DataGrid;
 import com.jayqqaa12.jbase.jfinal.ext.ctrl.EasyuiController;
 import com.jfinal.ext.route.ControllerBind;
 import com.jfinal.plugin.activerecord.Record;
@@ -34,7 +36,7 @@ public class DiamondChartController extends EasyuiController<Record>{
 		  List<Long>  fdata=new ArrayList<>();
 		  List<Long>  flog=new ArrayList<>();
 		  /**
-		   * 日期可能重复
+		   * 日期可能重复  ||
 		   */
 		  for(ChartInfo c:chartlistTask) {
 			  categories.add(c.getDate());
@@ -58,7 +60,7 @@ public class DiamondChartController extends EasyuiController<Record>{
 		
 		Chart chart = new Chart();
 		List<Long>  flog=new ArrayList<>();
-		flog.add(2l);
+		flog.add(-2l);
 		flog.add(33l);
 		flog.add(23l);
 		flog.add(23l);
@@ -68,7 +70,7 @@ public class DiamondChartController extends EasyuiController<Record>{
 		
 		List<Long>  flog2=new ArrayList<>();
 		flog2.add(12l);
-		flog2.add(43l);
+		flog2.add(-43l);
 		flog2.add(13l);
 		flog2.add(33l);
 		flog2.add(22l);
@@ -80,7 +82,7 @@ public class DiamondChartController extends EasyuiController<Record>{
 		flog3.add(111l);
 		flog3.add(22l);
 		flog3.add(66l);
-		flog3.add(20l);
+		flog3.add(-20l);
 		flog3.add(12l);
 		flog3.add(80l);
 		flog3.add(13l);
@@ -114,4 +116,41 @@ public class DiamondChartController extends EasyuiController<Record>{
 		renderGson(chart);
 	}
 	
+	
+	public void increaseDiamond() {
+		DataGrid data = new DataGrid();
+		String target="diamond";
+		String order="desc";
+		long time = -60*60*1000*24;
+		List<RankInfo> list = ELKUtils.getRankInfo(target,time,order);
+		data.setData(list);
+		renderGson(data);
+	}
+	public void reduceDiamond() {
+		DataGrid data = new DataGrid();
+		String target="diamond";
+		String order="asc";
+		long time = -60*60*1000*24;
+		List<RankInfo> list = ELKUtils.getRankInfo(target,time,order);
+		data.setData(list);
+		renderGson(data);
+	}
+//	public void increaseRecharge() {
+//		DataGrid data = new DataGrid();
+//		String target="";
+//		String order="desc";
+//		long time = -60*60*1000*24;
+//		List<RankInfo> list = ELKUtils.getRankInfo(target,time,order);
+//		data.setData(list);
+//		renderGson(data);
+//	}
+//     public void reduceRecharge() {
+//    	 DataGrid data = new DataGrid();
+// 		String target="money";
+// 		String order="asc";
+// 		long time = -60*60*1000*24;
+// 		List<RankInfo> list = ELKUtils.getRankInfo(target,time,order);
+// 		data.setData(list);
+// 		renderGson(data);
+//	}
 }

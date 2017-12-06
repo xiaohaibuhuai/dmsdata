@@ -87,8 +87,6 @@ public class CoinChartController extends EasyuiController<Record>{
 		long time = -60*60*1000*24;
 		List<RankInfo> list = ELKUtils.getRankInfo(target,time,order);
 		data.setData(list);
-		
-		Render poirender = PoiRender.me(list).fileName("carInfo.xls").headers("asddsa").sheetName("试题表").columns("adsa");
 		renderGson(data);
 	}
 }
