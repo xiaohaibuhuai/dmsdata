@@ -366,7 +366,6 @@ public class ELKUtils {
 	 * @return 年月日
 	 */
 	private static String[] getUrlDate(long startTime, DateFormat df) {
-		// SimpleDateFormat df = new SimpleDateFormat("yyyy-MM");
 		String end = df.format(new Date(startTime));
 		String start = df.format(new Date(DateUtils.changeHour(startTime, -24)));
 		String[] result = new String[2];

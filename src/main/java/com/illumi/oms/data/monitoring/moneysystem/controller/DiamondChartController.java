@@ -2,19 +2,25 @@ package com.illumi.oms.data.monitoring.moneysystem.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.beetl.ext.format.DateFormat;
+import org.elasticsearch.client.Response;
+
 import com.illumi.oms.common.UrlConfig;
 import com.illumi.oms.data.model.ChartInfo;
 import com.illumi.oms.data.model.RankInfo;
+import com.illumi.oms.data.model.SnapShot.DiamondSnapShotDate;
 import com.illumi.oms.data.utils.ArithUtils;
 import com.illumi.oms.data.utils.DataBaseMapperUtils;
 import com.illumi.oms.data.utils.DateUtils;
 import com.illumi.oms.data.utils.ELKUtils;
+import com.illumi.oms.data.utils.LogMapperUtils;
 import com.illumi.oms.system.model.Chart;
 import com.illumi.oms.system.model.DataGrid;
 import com.jayqqaa12.jbase.jfinal.ext.ctrl.EasyuiController;
@@ -68,69 +74,72 @@ public class DiamondChartController extends EasyuiController<Record>{
 	
 	public void recharge() {
 		
+		Long   nowTime = new Date().getTime();
+		Long   startTime = DateUtils.changeHour(nowTime, -24);
+		String method = "GET";
+		String urlhead = "ilumi_payment_";
+		String urlend = "/_search?size=30";
+		String url = ELKUtils.getUrl(startTime, urlhead, urlend, new SimpleDateFormat("yyyy-MM"));
+		String jsonString =getRechargeRequest();
+		
+		Response response = ELKUtils.getData(jsonString, method, url);
+		Map<Long, Map<String, Long>> paseDailyResponseMap = ELKUtils.paseDailyResponse(response, "money");
+		
+		
+		
 		Chart chart = new Chart();
+		//封装日期  需要排序
+		List<Long> datelist = new ArrayList<Long>();
+	
+		for(Entry<Long, Map<String, Long>> e:paseDailyResponseMap.entrySet()) {
+			datelist.add(e.getKey());
+		}
 		
+		//排序
+		Collections.sort(datelist);
+		//映射map
+		Map<String, String> channelMap = DataBaseMapperUtils.getRechargelMap();
+		//结果map
+		Map<String, List<Double>> resultMap = initRelustMap(channelMap);
+		//根据时间顺序封装
 		
+		List<String> dateRelust = new ArrayList<String>();
+		SimpleDateFormat df = new SimpleDateFormat("HH:mm");
 		
-		List<Long>  flog=new ArrayList<>();
-		flog.add(-2l);
-		flog.add(33l);
-		flog.add(23l);
-		flog.add(23l);
-		flog.add(1l);
-		flog.add(62l);
-		flog.add(56l);
+		for(Long date:datelist) {
+			//映射
+			if(paseDailyResponseMap.containsKey(date)) {
+				
+				Map<String, Long> map = paseDailyResponseMap.get(date);
+				for(String key:resultMap.keySet()) {
+					List<Double> list = resultMap.get(key);
+					Object value = map.get(channelMap.get(key));
+					list.add(Double.parseDouble(String.valueOf(value).equals("null")?"0":String.valueOf(value)));
+				}	
+				
+			}
+			
+			dateRelust.add(df.format(date));
+		}
+		//封装日期
+		chart.setCategories(dateRelust);
 		
-		List<Long>  flog2=new ArrayList<>();
-		flog2.add(12l);
-		flog2.add(-43l);
-		flog2.add(13l);
-		flog2.add(33l);
-		flog2.add(22l);
-		flog2.add(12l);
-		flog2.add(16l);
-		
-		
-		List<Long>  flog3=new ArrayList<>();
-		flog3.add(111l);
-		flog3.add(22l);
-		flog3.add(66l);
-		flog3.add(-20l);
-		flog3.add(12l);
-		flog3.add(80l);
-		flog3.add(13l);
-		
-		
-		//苹果, 步步, 九格, 微信公众号, 微信CMS, 大额, 支付宝公众号, 支付宝CMS, 安卓微信
-
-		chart.setSeriesDate("苹果", null, flog);
-		chart.setSeriesDate("步步", null, flog2);
-		chart.setSeriesDate("九格", null, flog3);
-		chart.setSeriesDate("微信公众号", null, flog3);
-		chart.setSeriesDate("微信CMS", null, flog3);
-		chart.setSeriesDate("大额", null, flog3);
-		chart.setSeriesDate("支付宝公众号", null, flog3);
-		chart.setSeriesDate("支付宝CMS", null, flog3);
-		chart.setSeriesDate("安卓微信", null, flog3);
-		
-		
-		List<String> list = new ArrayList<String>();
-		list.add("1：00");
-		list.add("2：00");
-		list.add("3：00");
-		list.add("4：00");
-		list.add("5：00");
-		list.add("6：00");
-		list.add("7：00");
-		list.add("8：00");
-		
-		chart.setCategories(list);
-		
+		//封装数据
+		for (Entry<String, List<Double>> e : resultMap.entrySet()) {
+			chart.setSeriesDate(e.getKey(), null, e.getValue());
+		}
 		renderGson(chart);
 	
 	}
 	
 	
+	
+
+
+
+
+
+
 	//支付买入钻石
 	public void increaseDiamond() {
 		DataGrid data = new DataGrid();
@@ -174,7 +183,7 @@ public class DiamondChartController extends EasyuiController<Record>{
 		renderGson(data);
 	}
 	//充值额度排名
-     public void RechargeNum() {
+    public void RechargeNum() {
     	    DataGrid data = new DataGrid();
  		String target="cach_earn_no";
  		String order="desc";
@@ -197,8 +206,63 @@ public class DiamondChartController extends EasyuiController<Record>{
 	}
 	
 	
-	
-	
+    
+    
+    
+    private Map<String, List<Double>> initRelustMap(Map<String,String> channelMap) {
+		Map<String, List<Double>> map = new HashMap<String, List<Double>>();
+		for (Entry<String, String> e : channelMap.entrySet()) {
+			//只保留映射项
+			if(!e.getKey().equals("日期")&&!e.getKey().equals("汇总")) {
+				map.put(e.getKey(), new ArrayList<Double>());
+			}
+
+		}
+		return map;
+	}
+    private String getRechargeRequest() {
+ 		String json = "{\n" + 
+ 				"  \"query\": {\n" + 
+ 				"    \"constant_score\": {\n" + 
+ 				"      \"filter\": {\"range\": {\n" + 
+ 				"        \"@timestamp\": {\n" + 
+ 				"          \"gte\": \"now-24h\",\n" + 
+ 				"          \"lte\": \"now\",\n" + 
+ 				"          \"time_zone\":\"+08:00\"\n" + 
+ 				"\n" + 
+ 				"        }\n" + 
+ 				"      }}\n" + 
+ 				"    }\n" + 
+ 				"  },\n" + 
+ 				"  \"aggs\": {\n" + 
+ 				"    \"NAME\": {\n" + 
+ 				"      \"date_histogram\": {\n" + 
+ 				"        \"field\": \"@timestamp\",\n" + 
+ 				"        \"interval\": \"hour\",\n" + 
+ 				"          \"time_zone\":\"+08:00\"\n" + 
+ 				"      }, \"aggs\": {   \n" + 
+ 				"        \"sum\":{\n" + 
+ 				"     \"terms\": {\n" + 
+ 				"       \"field\": \"ChannelId\",\n" + 
+ 				"       \"show_term_doc_count_error\": true,\n" + 
+ 				"       \"shard_size\": 30,\n" + 
+ 				"       \"order\": {\n" + 
+ 				"         \"money_sum\": \"desc\"\n" + 
+ 				"       }\n" + 
+ 				"      },\"aggs\": {\n" + 
+ 				"        \"money_sum\": {\n" + 
+ 				"          \"sum\": {\n" + 
+ 				"            \"field\": \"diamond_change_no\"\n" + 
+ 				"          }\n" + 
+ 				"        }\n" + 
+ 				"      }\n" + 
+ 				"    }}\n" + 
+ 				"    }\n" + 
+ 				"  }\n" + 
+ 				"  \n" + 
+ 				"}";
+ 		return json;
+ 	}
 	private String getRechargeTimesRequest(long stime, long endtime) {
 		String json="{\n" + 
 				"  \"query\": {\n" + 
