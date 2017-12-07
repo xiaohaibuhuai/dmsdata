@@ -1,9 +1,11 @@
 <!-- 复杂的 sql 写在 这里  简单的 直接 拼接了    -->
 <sqlGroup name="data">
     <sqlGroup name="billSnap">  
+ 
+      <!--游戏类型和手数  -->
       <sql id="getGameTypeList">
       SELECT 
-           gameroomtype, count(*) num 
+           gameroomtype, count(*) num,sum(totalgamenum) sum
       FROM 
           t_bill_base_info 
       WHERE 
@@ -40,9 +42,11 @@
       WHERE 
           createtime BETWEEN ? AND ? and totalgamenum>=10  AND overtag = 1 
       </sql>
+      
+      <!--查玩家和服务费  -->
       <sql id="getPlayerList">
       SELECT
-         gameroomtype,count(distinct uuid) num 
+         gameroomtype,count(distinct uuid) num,sum(buystacks) sum 
       FROM 
          t_bill_info a join t_bill_base_info b on a.roomid=b.roomid  
       WHERE  
@@ -78,6 +82,47 @@
           createtime  BETWEEN ? AND ? and gameroomtype = ?  AND overtag = 1 
       GROUP BY bigblind
       </sql> 
+      
+      <!-- 查手数 -->
+  <!--     <sql id = "getTotalGameNumByType">
+      SELECT
+         gameroomtype,sum(totalgamenum) sum  
+      FROM 
+         t_bill_base_info  
+      WHERE
+         overtag=1 and createtime  BETWEEN ? AND ?
+      GROUP BY
+         gameroomtype
+      </sql>
+      
+      各牌局服务费
+      <sql>
+      SElECT
+      gameroomtype,sum(buystacks) sum 
+      FROM
+      test_poker.t_bill_info a join test_poker.t_bill_base_info b on a.roomid=b.roomid  
+      WHERE 
+      createtime  BETWEEN ? AND ? 
+      GROUP BY gameroomtype;
+      </sql> -->
+      
+      <sql id="getHandSNGNum">
+      SELECT 
+           sum(totalgamenum) sum 
+      FROM 
+           t_sng_bill_base_info  
+      Where 
+           createtime BETWEEN ? AND ? AND overtag = 1 
+      </sql>
+      
+      <sql id="getServiceSNGNum">
+      SELECT 
+           sum(buystacks) sum 
+      FROM 
+           t_sng_bill_base_info  a join t_bill_info b on a.roomid = b.roomid
+      Where 
+           createtime BETWEEN ? AND ? AND overtag = 1
+      </sql>
    
    
     </sqlGroup>
@@ -239,6 +284,58 @@
         FROM
              t_game_daily_snapshot 
         WHERE isvalid= ? and targetdate  BETWEEN ? AND ? 
+      </sql>
+   
+      <sql id="getPlyerInfoByDay">
+        SELECT
+        targetdate,p_normal,p_normalins,p_omahains,p_six,p_sng,p_sum   
+        FROM
+             t_game_daily_snapshot 
+        WHERE isvalid= ? and targetdate  BETWEEN ? AND ? 
+      </sql>
+      
+      <sql id="getPlyerNumByDay">
+        SELECT
+        sum(p_sum)      
+        FROM
+             t_game_daily_snapshot 
+        WHERE isvalid= ? and targetdate  BETWEEN ? AND ? 
+      </sql>
+      
+      
+      <!-- 服务费 -->
+      <sql id="getServiceByDay">
+      SELECT
+        targetdate,s_normal,s_normalins,s_omahains,s_six,s_sng,s_sum   
+        FROM
+             t_game_ext_daily_snapshot 
+        WHERE targetdate  BETWEEN ? AND ? 
+      
+      
+      </sql>
+      <!--服务费总数  -->
+      <sql id="getServiceNumByDay">
+        SELECT
+          sum(s_sum)      
+        FROM
+             t_game_ext_daily_snapshot 
+        WHERE targetdate  BETWEEN ? AND ? 
+      </sql>
+      
+      <!-- 手数 -->
+      <sql id="getHandByDay">
+      SELECT
+        targetdate,h_normal,h_normalins,h_omahains,h_six,h_sng,h_sum   
+        FROM
+             t_game_ext_daily_snapshot 
+        WHERE targetdate  BETWEEN ? AND ?  
+      </sql>
+       <sql id="getHandNumByDay">
+        SELECT
+          sum(h_sum)      
+        FROM
+             t_game_ext_daily_snapshot 
+        WHERE targetdate  BETWEEN ? AND ? 
       </sql>
      
     
