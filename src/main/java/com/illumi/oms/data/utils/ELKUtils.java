@@ -110,12 +110,27 @@ public class ELKUtils {
 	}
 
 	// 排名信息获取
-	public static List<RankInfo> getRankInfo(String target, long time, String order) {
+	public static List<RankInfo> getRankInfoTemp(String urlMethod,String urlhead,String urlend ,String target, long time, String order) {
 		long nowTime = new Date().getTime();
 		long startTime = nowTime + time;
-		String urlMethod = "POST";
-		String urlhead = "ilumi_transactionlog_";
-		String urlend = "/_search?request_cache=false";
+		String url = getUrl(startTime, urlhead, urlend, new SimpleDateFormat("yyyy-MM"));
+		String jsonString = "{\n" + "  \"query\": {\n" + "    \"constant_score\": {\n"
+				+ "      \"filter\": {\"range\": {\n" + "        \"@timestamp\": {\n" + "          \"gte\": \""
+				+ startTime + "\",\n" + "          \"lte\": \"" + nowTime + "\"\n" + "        }\n" + "      }}\n"
+				+ "    }\n" + "  },\n" + "  \"aggs\":{\n" + "    \"sum\":{\n" + "     \"terms\": {\n"
+				+ "       \"field\": \"Uuid\",\n" + "       \"show_term_doc_count_error\": true,\n"
+				+ "       \"shard_size\": 100000,\n" + "       \"order\": {\n" + "         \"money_sum\": \"" + order
+				+ "\"\n" + "       }\n" + "      },\"aggs\": {\n" + "        \"money_sum\": {\n"
+				+ "          \"sum\": {\n" + "            \"field\": \"" + target + "\"\n" + "          }\n"
+				+ "        }\n" + "      }\n" + "    }\n" + "  }\n" + "}";
+
+
+		return getRankInfo(jsonString, urlMethod, url);
+	}
+	
+	public static List<RankInfo> getRankInfo(String urlMethod,String urlhead,String urlend ,String target, long time, String order) {
+		long nowTime = new Date().getTime();
+		long startTime = nowTime + time;
 		String url = getUrl(startTime, urlhead, urlend, new SimpleDateFormat("yyyy-MM"));
 		String jsonString = "{\n" + "  \"query\": {\n" + "    \"constant_score\": {\n"
 				+ "      \"filter\": {\"range\": {\n" + "        \"@timestamp\": {\n" + "          \"gte\": \""
@@ -124,19 +139,18 @@ public class ELKUtils {
 				+ "       \"field\": \"uuid\",\n" + "       \"show_term_doc_count_error\": true,\n"
 				+ "       \"shard_size\": 100000,\n" + "       \"order\": {\n" + "         \"money_sum\": \"" + order
 				+ "\"\n" + "       }\n" + "      },\"aggs\": {\n" + "        \"money_sum\": {\n"
-				+ "          \"sum\": {\n" + "            \"field\": \"" + target + "_change_no\"\n" + "          }\n"
+				+ "          \"sum\": {\n" + "            \"field\": \"" + target + "\"\n" + "          }\n"
 				+ "        }\n" + "      }\n" + "    }\n" + "  }\n" + "}";
 
-		System.out.println(jsonString);
-		System.out.println(url);
-		return getRankInfo(jsonString, urlMethod, url, target);
+
+		return getRankInfo(jsonString, urlMethod, url);
 	}
 
 	// 重载
-	public static List<RankInfo> getRankInfo(String jsonString, String urlMethod, String url, String target) {
+	public static List<RankInfo> getRankInfo(String jsonString, String urlMethod, String url) {
 		try {
 			Response response = ELKUtils.getData(jsonString, urlMethod, url);
-			List<RankInfo> list = ELKUtils.paseRankJson(response, target);
+			List<RankInfo> list = ELKUtils.paseRankJson(response);
 			return list;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -455,7 +469,7 @@ public class ELKUtils {
 	}
 
 	// 解析排名Json 解析：aggregations
-	private static List<RankInfo> paseRankJson(Response response, String target) {
+	private static List<RankInfo> paseRankJson(Response response) {
 		try {
 			String jsonstring = EntityUtils.toString(response.getEntity());
 			JSONObject jsonObj = JSON.parseObject(jsonstring);

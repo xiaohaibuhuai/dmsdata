@@ -121,7 +121,7 @@ MainApp.controller('DiamondChartCtrls', function($scope,TabService) {
 	 var  dg2 =$('#dg2').datagrid({
 			url : PATH+'/data/monitoring/moneysystem/diamondchart/reduceDiamond',
 			fit : false,
-			title:"24小时钻石增加排名",
+			title:"24小时钻石减少排名",
 		//	fitColumns : true,
 			border : true,
 			singleSelect : true,
@@ -141,7 +141,7 @@ MainApp.controller('DiamondChartCtrls', function($scope,TabService) {
 		});
 
 	 var  dg3 =$('#dg3').datagrid({
-			url : PATH+'/data/monitoring/moneysystem/coinchart/increaseRank',
+			url : PATH+'/data/monitoring/moneysystem/diamondchart/RechargeTimes',
 			fit : false,
 			title:"24小时充值次数排名",
 		//	fitColumns : true,
@@ -163,7 +163,7 @@ MainApp.controller('DiamondChartCtrls', function($scope,TabService) {
 		}); 
 	 
 	 var  dg4 =$('#dg4').datagrid({
-			url : PATH+'/data/monitoring/moneysystem/coinchart/increaseRank',
+			url : PATH+'/data/monitoring/moneysystem/diamondchart/RechargeNum',
 			fit : false,
 			title:"24小时充值额度排名",
 		//	fitColumns : true,
@@ -180,7 +180,7 @@ MainApp.controller('DiamondChartCtrls', function($scope,TabService) {
 		        },
 		        {field:'showid',title:'showId',width:100,align:'left'},
 		        {field:'nickname',title:'昵称',width:100,align:'left'},
-		        {field:'change',title:'钻石增加',width:100,align:'left'}
+		        {field:'change',title:'充值额度(元)',width:100,align:'left'}
 		      ]],
 		});
 

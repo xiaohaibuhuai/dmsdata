@@ -69,10 +69,13 @@ public class CoinChartController extends EasyuiController<Record>{
    */
 	public void increaseRank() {
 		DataGrid data = new DataGrid();
-		String target="money";
+		String target="money_change_no";
 		String order="desc";
 		long time = -60*60*1000*24;
-		List<RankInfo> list = ELKUtils.getRankInfo(target,time,order);
+		String urlMethod = "POST";
+		String urlhead = "ilumi_transactionlog_";
+		String urlend = "/_search?request_cache=false";
+		List<RankInfo> list = ELKUtils.getRankInfo(urlMethod, urlhead, urlend, target, time, order);
 		data.setData(list);
 		renderGson(data);
 	}
@@ -82,10 +85,13 @@ public class CoinChartController extends EasyuiController<Record>{
 	 */
 	public void reduceRank() {
 		DataGrid data = new DataGrid();
-		String target="money";
+		String target="money_change_no";
 		String order="asc";
 		long time = -60*60*1000*24;
-		List<RankInfo> list = ELKUtils.getRankInfo(target,time,order);
+		String urlMethod = "POST";
+		String urlhead = "ilumi_transactionlog_";
+		String urlend = "/_search?request_cache=false";
+		List<RankInfo> list = ELKUtils.getRankInfo(urlMethod, urlhead, urlend, target, time, order);
 		data.setData(list);
 		renderGson(data);
 	}

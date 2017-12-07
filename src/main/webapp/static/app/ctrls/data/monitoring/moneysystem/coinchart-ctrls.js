@@ -18,7 +18,7 @@ MainApp.controller('CoinChartCtrls',  function($scope,TabService) {
 	        },
 	        {field:'showid',title:'showId',width:110,align:'left'},
 	        {field:'nickname',title:'昵称',width:110,align:'left'},
-	        {field:'change',title:'德扑币增加',width:150,align:'left'}
+	        {field:'change',title:'德扑币减少',width:150,align:'left'}
 	      ]],
 	});
 	
@@ -40,7 +40,7 @@ MainApp.controller('CoinChartCtrls',  function($scope,TabService) {
 	        },
 	        {field:'showid',title:'showId',width:110,align:'left'},
 	        {field:'nickname',title:'昵称',width:110,align:'left'},
-	        {field:'change',title:'德扑币减少',width:150,align:'left'}
+	        {field:'change',title:'德扑币增加',width:150,align:'left'}
 	      ]],
 	});
 	

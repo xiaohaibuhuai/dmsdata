@@ -5,11 +5,11 @@ public class RankInfo{
 	private long uuid;
 	private String showid;
 	private String nickname;
-	private long  change;
+	private Object  change;
 	private int isErro;
 	
 	
-	public RankInfo(int rank, long uuid, String showid, String nickname, long change) {
+	public RankInfo(int rank, long uuid, String showid, String nickname, Object change) {
 		super();
 		this.rank = rank;
 		this.uuid = uuid;
@@ -52,11 +52,11 @@ public class RankInfo{
 		this.nickname = nickname;
 	}
 
-	public long getChange() {
+	public Object getChange() {
 		return change;
 	}
 
-	public void setChange(long change) {
+	public void setChange(Object change) {
 		this.change = change;
 	}
 

@@ -1,16 +1,26 @@
 package com.illumi.oms.data.monitoring.moneysystem.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import com.illumi.oms.common.UrlConfig;
 import com.illumi.oms.data.model.ChartInfo;
 import com.illumi.oms.data.model.RankInfo;
+import com.illumi.oms.data.utils.ArithUtils;
+import com.illumi.oms.data.utils.DataBaseMapperUtils;
+import com.illumi.oms.data.utils.DateUtils;
 import com.illumi.oms.data.utils.ELKUtils;
 import com.illumi.oms.system.model.Chart;
 import com.illumi.oms.system.model.DataGrid;
 import com.jayqqaa12.jbase.jfinal.ext.ctrl.EasyuiController;
+import com.jfinal.ext.plugin.sqlinxml.SqlKit;
 import com.jfinal.ext.route.ControllerBind;
+import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
 
 @ControllerBind(controllerKey = "/data/monitoring/moneysystem/diamondchart" ,viewPath=UrlConfig.DATA_MONITORING_MONEYSYSTEM)
@@ -59,6 +69,9 @@ public class DiamondChartController extends EasyuiController<Record>{
 	public void recharge() {
 		
 		Chart chart = new Chart();
+		
+		
+		
 		List<Long>  flog=new ArrayList<>();
 		flog.add(-2l);
 		flog.add(33l);
@@ -114,43 +127,109 @@ public class DiamondChartController extends EasyuiController<Record>{
 		chart.setCategories(list);
 		
 		renderGson(chart);
+	
 	}
 	
 	
+	//支付买入钻石
 	public void increaseDiamond() {
 		DataGrid data = new DataGrid();
-		String target="diamond";
+		String target="diamond_change_no";
 		String order="desc";
 		long time = -60*60*1000*24;
-		List<RankInfo> list = ELKUtils.getRankInfo(target,time,order);
+		String urlMethod = "POST";
+		String urlhead = "ilumi_payment_";
+		String urlend = "/_search?request_cache=false";
+		List<RankInfo> list = ELKUtils.getRankInfoTemp(urlMethod, urlhead, urlend, target, time, order);
 		data.setData(list);
 		renderGson(data);
 	}
+	//钻石减少
 	public void reduceDiamond() {
 		DataGrid data = new DataGrid();
-		String target="diamond";
+		String target="diamond_change_no";
 		String order="asc";
 		long time = -60*60*1000*24;
-		List<RankInfo> list = ELKUtils.getRankInfo(target,time,order);
+		String urlMethod = "POST";
+		String urlhead = "ilumi_transactionlog_";
+		String urlend = "/_search?request_cache=false";
+		List<RankInfo> list = ELKUtils.getRankInfo(urlMethod, urlhead, urlend, target, time, order);
 		data.setData(list);
 		renderGson(data);
 	}
-//	public void increaseRecharge() {
-//		DataGrid data = new DataGrid();
-//		String target="";
-//		String order="desc";
-//		long time = -60*60*1000*24;
-//		List<RankInfo> list = ELKUtils.getRankInfo(target,time,order);
-//		data.setData(list);
-//		renderGson(data);
-//	}
-//     public void reduceRecharge() {
-//    	 DataGrid data = new DataGrid();
-// 		String target="money";
-// 		String order="asc";
-// 		long time = -60*60*1000*24;
-// 		List<RankInfo> list = ELKUtils.getRankInfo(target,time,order);
-// 		data.setData(list);
-// 		renderGson(data);
-//	}
+	//充值次数排名
+	public void RechargeTimes() {
+		DataGrid data = new DataGrid();
+		long endtime = new Date().getTime();
+		long time = -60*60*1000*24;
+		long stime = endtime+time;
+		String urlMethod = "POST";
+		String urlhead = "ilumi_payment_";
+		String urlend = "/_search?request_cache=false";
+		String url = ELKUtils.getUrl(endtime, urlhead, urlend,new SimpleDateFormat("yyyy-MM") );
+		String jsonString=getRechargeTimesRequest(stime,endtime);
+		//List<RankInfo> list = ELKUtils.getRankInfo(urlMethod, urlhead, urlend, target, time, order);
+		List<RankInfo> list = ELKUtils.getRankInfo(jsonString, urlMethod, url);
+		data.setData(list);
+		renderGson(data);
+	}
+	//充值额度排名
+     public void RechargeNum() {
+    	    DataGrid data = new DataGrid();
+ 		String target="cach_earn_no";
+ 		String order="desc";
+ 		long time = -60*60*1000*24;
+ 		String urlMethod = "POST";
+		String urlhead = "ilumi_payment_";
+		String urlend = "/_search?request_cache=false";
+		List<RankInfo> list = ELKUtils.getRankInfoTemp(urlMethod, urlhead, urlend, target, time, order);
+ 		//除以100
+		for(RankInfo rank:list) {
+			Object change = rank.getChange();
+			Double num = Double.parseDouble(String.valueOf(change).equals("null")?"0":String.valueOf(change));
+		    Double resultNum = ArithUtils.div(num, 100, 5);
+		    rank.setChange(resultNum);
+		}
+		
+		
+		data.setData(list);
+ 		renderGson(data);
+	}
+	
+	
+	
+	
+	private String getRechargeTimesRequest(long stime, long endtime) {
+		String json="{\n" + 
+				"  \"query\": {\n" + 
+				"    \"constant_score\": {\n" + 
+				"      \"filter\": {\"range\": {\n" + 
+				"        \"@timestamp\": {\n" + 
+				"          \"gte\": \""+stime+"\",\n" + 
+				"          \"lte\": \""+endtime+"\"\n" + 
+				"        }\n" + 
+				"      }}\n" + 
+				"    }\n" + 
+				"  },\n" + 
+				"  \"aggs\":{\n" + 
+				"    \"sum\":{\n" + 
+				"     \"terms\": {\n" + 
+				"       \"field\": \"Uuid\",\n" + 
+				"       \"show_term_doc_count_error\": true,\n" + 
+				"       \"shard_size\": 100000,\n" + 
+				"       \"order\": {\n" + 
+				"         \"money_sum\": \"desc\"\n" + 
+				"       }\n" + 
+				"      },\"aggs\": {\n" + 
+				"        \"money_sum\": {\n" + 
+				"          \"value_count\": {\n" + 
+				"            \"field\": \"Uuid\"\n" + 
+				"          }\n" + 
+				"        }\n" + 
+				"      }\n" + 
+				"    }\n" + 
+				"  }\n" + 
+				"}";
+		return json;
+	}
 }
