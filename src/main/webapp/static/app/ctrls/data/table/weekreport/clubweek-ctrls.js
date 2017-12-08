@@ -57,7 +57,7 @@ MainApp.controller('ClubWeekCtrls',  function($scope,TabService) {
     $('#tt').tabs({    
 	      onSelect:function(title){   
 	         
-	          if(title=='俱乐部增量统计'){
+	          if(title=='俱乐部伙牌'){
 	
 	        	  $scope.loadInc();
 	          }      
@@ -69,7 +69,7 @@ MainApp.controller('ClubWeekCtrls',  function($scope,TabService) {
     $scope.loadInc = function(){
       	 if(!initInc){
       		 // 数据表格
-      		 
+      		 alert($("#h_dateStart").val());
       		if($("#h_dateStart").val()==""||$("#h_dateEnd").val()==""){
 	      		 alert("当前没有数据");
 	      		 return;
