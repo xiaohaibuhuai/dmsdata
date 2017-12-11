@@ -5,14 +5,15 @@ MainApp.controller('ClubWeekCtrls',  function($scope,TabService) {
     
     
     $("#btn").click(function(){
-    	  alert("ss");
     	  
-    	  var dateStart=$("#dateStart").val();
-    	  var dateEnd=$("#dateEnd").val();
+    	  var dateStart=$("#dateStart").val();      //开始时间
+    	  var dateEnd=$("#dateEnd").val();          //结束时间
     	  if(dateStart==""||dateEnd==""){
     		  alert("请选择时间");
     		  return;
     	  }else{
+
+    	      //判断开始结束时间是否符合标准
     		  var start = new Date(dateStart.replace("-", "/").replace("-", "/")); 
     		  var end= new Date(dateEnd.replace("-", "/").replace("-", "/")); 
     		  if(end<start){  
@@ -20,94 +21,113 @@ MainApp.controller('ClubWeekCtrls',  function($scope,TabService) {
     		        return; 
     		    }  
     	  }
-    	  alert("bbbb")
     	  // 数据表格
+    	  //家在俱乐部上桌等级表格
     	  var  dg =$('#dg1').datagrid({
-    			url : PATH+'/data/table/weekreport/clubweek/clubLevel?'+"dateStart="+dateStart+"&dateEnd="+dateEnd,
+    			url : PATH+'/data/table/weekreport/clubweek/clubDataQuery',
     			fit : false,
-    			title:"每日德普币消耗汇总表",
+//    			pagePosition : bottom,
+                pagination : true,
+    			queryParams :  {
+    			    dateStart: dateStart,
+    			    dateEnd: dateEnd,
+    			    page: 1,
+                    rows: 10
+    			},
+    			title:"俱乐部上桌等级汇总表",
     			border : true,
     			singleSelect : true,
     		    columns:[[
-    		    	    {field:'targetdate',title:'日期',width:100,align:'left',formatter:function(val,rec){
-    	                return jsonYearMonthDay(val);
-    	            }},
-    		        {field : 'service',title : '服务费',width : 120,align:'left',},
-    		        {field:'Interprops',title:'互动道具',width:120,align:'left'},
-    		        {field:'magic',title:'魔法表情',width:120,align:'left'},
-    		        {field:'lookover',title:'翻翻看',width:120,align:'left'},
-    		        {field:'barrage',title:'弹幕',width:120,align:'left'},
-    		        {field:'pokermachine',title:'扑克机',width:120,align:'left'},
-    		        {field:'caribbean',title:'加勒比',width:120,align:'left'},
-    		        {field:'cow',title:'牛牛_一粒大米',width:120,align:'left'},
-    		        {field:'eight',title:'八八碰_一粒大米',width:120,align:'left'},
-    		        {field:'rewardpoker',title:'打赏牌谱',width:120,align:'left'},
-    		        {field:'mttsign',title:'德扑币报名MTT',width:120,align:'left'},
-    		        {field:'sum',title:'汇总',width:120,align:'left'}
-    		      ]],
+    		        {field : 'clubId',title : '俱乐部id',width : 120,align:'left'},
+    		        {field : 'clubName',title : '俱乐部名字',width : 120,align:'left',},
+    		        {field:'roomidNum',title:'总上桌人次',width:120,align:'left'},
+    		        {field:'numWeek',title:'总上桌人次环比上周',width:120,align:'left'},
+    		        {field:'clubNum',title:'俱乐部局上桌人次',width:120,align:'left'},
+    		        {field:'leagNum',title:'联盟局上桌人次',width:120,align:'left'},
+                    {field:'maxPerson',title:'现有人数/最大人数',width:120,align:'left',formatter:function(val,row,index){
+                        return row.personNum + '/' + val;
+                    }},
+                    {field:'personChange',title:'现有人数较上周变化值',width:120,align:'left'},
+                    {field:'exp',title:'当前经验',width:120,align:'left'},
+                    {field:'expLevel',title:'当前等级',width:120,align:'left'},
+                    {field:'expChan',title:'经验变化值',width:120,align:'left'},
+                    {field:'levelChan',title:'等级变化值',width:120,align:'left'},
+                    {field:'Host',title:'主机常用登陆地址',width:120,align:'left'},
+                    {field:'leaName',title:'所属联盟名称',width:120,align:'left'}
+    		      ]]
     		});   
-    	  
-      	$("#h_dateStart").val(dateStart);
-	    	$("#h_dateEnd").val(dateEnd);
+
+            //分页代码
+        	$('#dg1').datagrid('getPager').pagination({
+                pageNumber : 1,
+                pageSize : 10,
+                pageList : 	[10,20,30,40,50],
+                beforePageText: '第',//页数文本框前显示的汉字
+                afterPageText: '页    共 {pages} 页',
+                displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录'
+            });
+
+            //加载俱乐部伙牌表格
+            var dg =$('#dg2').datagrid({
+                url : PATH+'/data/table/weekreport/clubweek/clubDataQuery',
+                pagination : true,
+                queryParams :  {
+                    dateStart: dateStart,
+                    dateEnd: dateEnd,
+                    page: 1,
+                    rows: 10
+                },
+                fit : false,
+                title:"俱乐部伙牌汇总表",
+                border : true,
+                singleSelect : true,
+                columns:[[
+                    {field : 'clubId',title : '俱乐部id',width : 120,align:'left',},
+                    {field : 'clubName',title : '俱乐部名字',width : 120,align:'left',},
+                    {field:'roomidNum',title:'总上桌人次',width:120,align:'left'},
+                    {field:'numWeek',title:'总上桌人次环比上周',width:120,align:'left'},
+                    {field:'cheatTimes',title:'总伙牌人次',width:120,align:'left'},
+                    {field:'timesPer',title:'总伙牌人次占比',width:120,align:'left'},
+                    {field:'timesWeek',title:'总伙牌人次环比上周',width:120,align:'left'},
+                    {field:'clubNum',title:'俱乐部局上桌人次',width:120,align:'left'},
+                    {field:'clubTimes',title:'俱乐部局伙牌人次',width:120,align:'left'},
+                    {field:'leagNum',title:'联盟局上桌人次',width:120,align:'left'},
+                    {field:'leagTimes',title:'联盟局伙牌人次',width:120,align:'left'},
+                    {field:'maxPerson',title:'现有人数/最大人数',width:120,align:'left',formatter:function(val,row,index){
+                        return row.personNum + '/' + val;
+                    }},
+                    {field:'Host',title:'主机常用登陆地址',width:120,align:'left'},
+                    {field:'leaName',title:'所属联盟名称',width:120,align:'left'}
+                ]]
+            });
+
+            //分页代码
+            $('#dg2').datagrid('getPager').pagination({
+                pageNumber : 1,
+                pageSize : 10,
+                pageList : 	[10,20,30,40,50],
+                beforePageText: '第',//页数文本框前显示的汉字
+                afterPageText: '页    共 {pages} 页',
+                displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录'
+            });
    });
-    
-    
-    
+
     
     $('#tt').tabs({    
-	      onSelect:function(title){   
-	         
-	          if(title=='俱乐部伙牌'){
-	
-	        	  $scope.loadInc();
-	          }      
+	      onSelect:function(title){
 	      }   
 	 });
-    
-    
-    
-    $scope.loadInc = function(){
-      	 if(!initInc){
-      		 // 数据表格
-      		 alert($("#h_dateStart").val());
-      		if($("#h_dateStart").val()==""||$("#h_dateEnd").val()==""){
-	      		 alert("当前没有数据");
-	      		 return;
-	      	 }
-    	    var  dg =$('#dg2').datagrid({
-    			url : PATH+'/data/table/weekreport/clubweek/clubCheat?'+"dateStart="+$("#h_dateStart").val()+"&dateEnd="+$("#h_dateEnd").val(),
-    			fit : false,
-    			title:"俱乐部伙牌",
-    			border : true,
-    			singleSelect : true,
-    		    columns:[[
-    		    	    {field:'targetdate',title:'日期',width:100,align:'left',formatter:function(val,rec){
-    	                return jsonYearMonthDay(val);
-    	            }},
-    		        {field : 'alliance',title : '联盟局',width : 120,align:'left',},
-    		        {field:'changename',title:'修改昵称',width:120,align:'left'},
-    		        {field:'delayprops',title:'延时道具',width:120,align:'left'},
-    		        {field:'ticketmtt',title:'MTT门票',width:120,align:'left'},
-    		        {field:'clubpush',title:'俱乐部推送',width:120,align:'left'},
-    		        {field:'changecname',title:'俱乐部改名',width:120,align:'left'},
-    		        {field:'sum',title:'汇总',width:120,align:'left'}
-    		      ]],
-    		});
-    }	 
-      	 }
-    
-    
-    $("#down").click(function(){
-    	if($("#h_dateStart").val()==""||$("#h_dateEnd").val()==""||$("#h_type").val()==""){
-   		 alert("当前没有数据");
-   		 return;
-   	 }
-    	
-    	$('#exportForm').form('submit',{url:PATH+'/data/table/weekreport/clubweek/excleDown'});
-    })
-    
-    
-    
 
+    $("#down").click(function(){
+        alert($("#h_dateStart").val() + "," + $("#h_dateEnd").val());
+    	if($("#h_dateStart").val()==""||$("#h_dateEnd").val()==""){
+   		 alert("请选择时间");
+   		 return;
+   	    }
+
+   	    alert("1");
+    	
+    	$('#exportForm').form('submit',{url:PATH+'/data/table/weekreport/clubweek/excelDown'});
+    });
 });
 

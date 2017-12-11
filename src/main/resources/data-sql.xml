@@ -337,7 +337,39 @@
              t_game_ext_daily_snapshot 
         WHERE targetdate  BETWEEN ? AND ? 
       </sql>
-     
     
+    </sqlGroup>
+
+    <sqlGroup name="clubWeek">
+        <sql id="getClubLevelWeeklyWithPage">
+            select clubId,date,clubName,roomidNum,numWeek,cheatTimes,
+            timesPer,timesWeek,clubNum,clubTimes,leagNum,leagTimes,
+            maxPerson,personNum,personChange,personWeek,exp,expLevel,
+            expChan,levelChan,Host,leaName
+            from t_club_exange
+            where
+            date_format(date,'%Y-%m-%d') >=?
+            and ?>=date_format(date,'%Y-%m-%d') limit ?,?
+        </sql>
+
+        <sql id="getClubLevelWeeklyWithoutPage">
+            select clubId,date,clubName,roomidNum,numWeek,cheatTimes,
+            timesPer,timesWeek,clubNum,clubTimes,leagNum,leagTimes,
+            maxPerson,personNum,personChange,personWeek,exp,expLevel,
+            expChan,levelChan,Host,leaName,CONCAT(personNum,'/',maxPerson) as person
+            from t_club_exange
+            where
+            date_format(date,'%Y-%m-%d') >=?
+            and ?>=date_format(date,'%Y-%m-%d')
+        </sql>
+
+        <sql id="getClubLevelWeeklyCount">
+            select count(*)
+            from t_club_exange
+            where
+            date_format(date,'%Y-%m-%d') >=?
+            and ?>=date_format(date,'%Y-%m-%d')
+        </sql>
+
     </sqlGroup>
 </sqlGroup>
