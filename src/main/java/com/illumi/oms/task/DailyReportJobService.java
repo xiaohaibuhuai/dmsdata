@@ -428,7 +428,7 @@ public class DailyReportJobService implements Job{
 	
 	private List<Record> initUuid() {
 		if(uuids==null) {
-			uuids = Db.use(Consts.DB_POKER2).find(SqlKit.sql("data.reportForms.getForeignUUID"));
+			uuids = Db.use(Consts.DB_POKER).find(SqlKit.sql("data.reportForms.getForeignUUID"));
 			System.out.println("********访问数据库*********");
 			
 		}
