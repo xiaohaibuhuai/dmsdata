@@ -54,11 +54,11 @@ public class DailyReportJobService implements Job{
 		//0 查一天 起始时间和结束时间一致
 		try {
 		//1 执行recharge充值日报
-		//rechargeJob(zeroTime);
+		rechargeJob(zeroTime);
 		//2 执行diamond
-		//diamondJob(zeroTime,zeroTime);
+		diamondJob(zeroTime,zeroTime);
 		//3 执行德扑币
-		//moneyJob(zeroTime,zeroTime);
+		moneyJob(zeroTime,zeroTime);
 		
 		//4执行德扑币充值日报
 		rechargeDiamondJob(zeroTime);
