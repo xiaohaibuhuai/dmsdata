@@ -43,6 +43,8 @@ public class DataBaseMapperUtils {
 			map.put("加勒比","caribbean");
 			map.put("牛牛_一粒大米","cow");
 			map.put("八八碰_一粒大米","eight");
+		    map.put("奔驰宝马_一粒大米", "benz_bmw");
+		    map.put("捕鱼_一粒大米", "fish");
 			map.put("打赏牌谱","rewardpoker");
 			map.put("德扑币报名MTT","mttsign");
 			map.put("日期", "targetdate");

@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/jfinal-authority.iml" filepath="$PROJECT_DIR$/jfinal-authority.iml" />
+      <module fileurl="file://$PROJECT_DIR$/omsdata.iml" filepath="$PROJECT_DIR$/omsdata.iml" />
     </modules>
   </component>
 </project>

@@ -41,18 +41,18 @@ public class SinglePokerQueryController extends EasyuiController<Record>{
 		String roomid = getPara("roomid");
 		
 		//1根据gameid查 房间时间   减去一天
-		//Record record = Db.use(Consts.DB_POKER2).queryFirst(SqlKit.sql("data.SinglePoker.getTimeByRoomid"),roomid);
-		//Long startTime = record.getLong("createtime");
-		//Integer overtag = record.getInt("overtag");
-		Integer overtag = 0;
+		Record record = Db.use(Consts.DB_POKER2).queryFirst(SqlKit.sql("data.SinglePoker.getTimeByRoomid"),roomid);
+		Long startTime = record.getLong("createtime");
+	    Integer overtag = record.getInt("overtag");
+		//Integer overtag = 0;
 		String urlMethod  = "GET";
 		String urlhead="ilumi_tableslog_";
 		String urlend = "/_search";
 //		String roomid="25204276";
 //        String handid="11";
         //long startTime=1509552000000l;
-        long startTime = 1511193600000l;
-        String url = null;
+//        long startTime = 1511366400000l;
+        String url = null; 
         DateFormat df = DateUtils.getDateFormat4Day();
         String formatTime = df.format(startTime);
         if(overtag==1) {

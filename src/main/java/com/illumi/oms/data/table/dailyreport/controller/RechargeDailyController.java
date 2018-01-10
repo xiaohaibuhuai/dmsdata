@@ -88,7 +88,7 @@ public class RechargeDailyController extends ExcelController {
 		String type = getPara("type");
 		String resultType=type.equals("0")?"全部":type.equals("1")?"国内":"海外";
 		String title = "每日充值汇总_"+resultType+timeDes;
-		ExcelTableSheet sheet = new ExcelTableSheet(title, head, "第一页",dataList,null);
+		ExcelTableSheet sheet = new ExcelTableSheet(title, head, "第一页",dataList,channelMap);
 		XSSFWorkbook xs = ExcelUtil.getXSSFWorkbook(sheet);
 
 		renderNewExcel(xs, "充值日报_"+resultType+timeDes);

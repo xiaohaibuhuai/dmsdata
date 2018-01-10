@@ -194,6 +194,8 @@ MainApp.controller('MoneyDailyCtrls',  function($scope,TabService) {
     		        {field:'caribbean',title:'加勒比',width:120,align:'left'},
     		        {field:'cow',title:'牛牛_一粒大米',width:120,align:'left'},
     		        {field:'eight',title:'八八碰_一粒大米',width:120,align:'left'},
+    		        {field:'benz_bmw',title:'奔驰宝马_一粒大米',width:120,align:'left'},
+    		        {field:'fish',title:'捕鱼_一粒大米',width:120,align:'left'},
     		        {field:'rewardpoker',title:'打赏牌谱',width:120,align:'left'},
     		        {field:'mttsign',title:'德扑币报名MTT',width:120,align:'left'},
     		        {field:'sum',title:'汇总',width:120,align:'left'}

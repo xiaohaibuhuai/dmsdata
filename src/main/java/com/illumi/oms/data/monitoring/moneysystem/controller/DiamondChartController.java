@@ -35,8 +35,8 @@ import org.joda.time.format.DateTimeFormatter;
 @ControllerBind(controllerKey = "/data/monitoring/moneysystem/diamondchart" ,viewPath=UrlConfig.DATA_MONITORING_MONEYSYSTEM)
 public class DiamondChartController extends EasyuiController<Record>{
 
-	
-	
+
+
 	public void diamondChange() {
 		String target="diamone_change";  //钻石变化
 		long time = -60*60*1000*24;
@@ -49,36 +49,37 @@ public class DiamondChartController extends EasyuiController<Record>{
 		 */
 		//3 放入数据
 		Chart chart = new Chart();
-		  //categories
-		  List<String> categories =new ArrayList<>();
-		  
-		  //3.1 来自数据库
-		  List<Long>  fdata=new ArrayList<>();
-		  List<Long>  flog=new ArrayList<>();
-		  /**
-		   * 日期可能重复  ||
-		   */
-		  DateTimeFormatter dateFormat= DateTimeFormat.forPattern("HH:00").withZone(DateTimeZone.getDefault());
-		  for(ChartInfo c:chartlistTask) {
-			  categories.add(c.getDate().toString(dateFormat));
-			  fdata.add(c.getNum());
-		  } 
-		  for(ChartInfo c:chartlistLog) {
-			  categories.add(c.getDate().toString(dateFormat));
-			  flog.add(c.getNum());
-		  } 
-		  
-		  chartlistLog=null;
-		  chart.setCategories(categories);
-		  chart.setSeriesDate("数据库", null,fdata);
-		  chart.setSeriesDate("日志", null,flog);
-		  renderGson(chart);
+		//categories
+		List<String> categories =new ArrayList<>();
+
+		//3.1 来自数据库
+		List<Long>  fdata=new ArrayList<>();
+
+		List<Long>  flog=new ArrayList<>();
+		/**
+		 * 日期可能重复  ||
+		 */
+		DateTimeFormatter dateFormat= DateTimeFormat.forPattern("HH:00").withZone(DateTimeZone.getDefault());
+		for(ChartInfo c:chartlistTask) {
+			categories.add(c.getDate().toString(dateFormat));
+			fdata.add(c.getNum());
+		}
+		for(ChartInfo c:chartlistLog) {
+			categories.add(c.getDate().toString(dateFormat));
+			flog.add(c.getNum());
+		}
+
+		chartlistLog=null;
+		chart.setCategories(categories);
+		chart.setSeriesDate("数据库", null,fdata);
+		chart.setSeriesDate("日志", null,flog);
+		renderGson(chart);
 	}
-	
-	
-	
+
+
+
 	public void recharge() {
-		
+
 		Long   nowTime = new Date().getTime();
 		Long   startTime = DateUtils.changeHour(nowTime, -24);
 		String method = "GET";
@@ -86,7 +87,7 @@ public class DiamondChartController extends EasyuiController<Record>{
 		String urlend = "/_search?size=30";
 		String url = ELKUtils.getIndices(startTime, urlhead, urlend, new SimpleDateFormat("yyyy-MM"));
 		String jsonString =getRechargeRequest();
-		
+
 		Response response = ELKUtils.getData(jsonString, method, url);
 		Map<Long, Map<String, Long>> paseDailyResponseMap = ELKUtils.paseDailyResponse(response, "money");
 
@@ -96,11 +97,11 @@ public class DiamondChartController extends EasyuiController<Record>{
 		Chart chart = new Chart();
 		//封装日期  需要排序
 		List<Long> datelist = new ArrayList<Long>();
-	
+
 		for(Entry<Long, Map<String, Long>> e:paseDailyResponseMap.entrySet()) {
 			datelist.add(e.getKey());
 		}
-		
+
 		//排序
 		Collections.sort(datelist);
 		//映射map
@@ -108,34 +109,34 @@ public class DiamondChartController extends EasyuiController<Record>{
 		//结果map
 		Map<String, List<Double>> resultMap = initRelustMap(channelMap);
 		//根据时间顺序封装
-		
+
 		List<String> dateRelust = new ArrayList<String>();
 		SimpleDateFormat df = new SimpleDateFormat("HH:mm");
-		
+
 		for(Long date:datelist) {
 			//映射
 			if(paseDailyResponseMap.containsKey(date)) {
-				
+
 				Map<String, Long> map = paseDailyResponseMap.get(date);
 				for(String key:resultMap.keySet()) {
 					List<Double> list = resultMap.get(key);
 					Object value = map.get(channelMap.get(key));
 					list.add(Double.parseDouble(String.valueOf(value).equals("null")?"0":String.valueOf(value)));
-				}	
-				
+				}
+
 			}
-			
+
 			dateRelust.add(df.format(date));
 		}
 		//封装日期
 		chart.setCategories(dateRelust);
-		
+
 		//封装数据
 		for (Entry<String, List<Double>> e : resultMap.entrySet()) {
 			chart.setSeriesDate(e.getKey(), null, e.getValue());
 		}
 		renderGson(chart);
-	
+
 	}
 
 
@@ -183,33 +184,33 @@ public class DiamondChartController extends EasyuiController<Record>{
 		renderGson(data);
 	}
 	//充值额度排名
-    public void RechargeNum() {
-    	    DataGrid data = new DataGrid();
- 		String target="cach_earn_no";
- 		String order="desc";
- 		long time = -60*60*1000*24;
- 		String urlMethod = "POST";
+	public void RechargeNum() {
+		DataGrid data = new DataGrid();
+		String target="cach_earn_no";
+		String order="desc";
+		long time = -60*60*1000*24;
+		String urlMethod = "POST";
 		String urlhead = "ilumi_payment_";
 //		String urlend = "/_search?request_cache=false";
 		List<RankInfo> list = ELKUtils.getRankInfo(urlMethod, urlhead, "", target, time, order);
- 		//除以100
+		//除以100
 		for(RankInfo rank:list) {
 			Object change = rank.getChange();
 			Double num = Double.parseDouble(String.valueOf(change).equals("null")?"0":String.valueOf(change));
-		    Double resultNum = ArithUtils.div(num, 100, 5);
-		    rank.setChange(resultNum);
+			Double resultNum = ArithUtils.div(num, 100, 5);
+			rank.setChange(resultNum);
 		}
-		
-		
+
+
 		data.setData(list);
- 		renderGson(data);
+		renderGson(data);
 	}
-	
-	
-    
-    
-    
-    private Map<String, List<Double>> initRelustMap(Map<String,String> channelMap) {
+
+
+
+
+
+	private Map<String, List<Double>> initRelustMap(Map<String,String> channelMap) {
 		Map<String, List<Double>> map = new HashMap<String, List<Double>>();
 		for (Entry<String, String> e : channelMap.entrySet()) {
 			//只保留映射项
@@ -220,48 +221,48 @@ public class DiamondChartController extends EasyuiController<Record>{
 		}
 		return map;
 	}
-    private String getRechargeRequest() {
- 		String json = "{\n" +
- 				"  \"query\": {\n" + 
- 				"    \"constant_score\": {\n" + 
- 				"      \"filter\": {\"range\": {\n" + 
- 				"        \"@timestamp\": {\n" + 
- 				"          \"gte\": \"now-24h\",\n" + 
- 				"          \"lte\": \"now\",\n" + 
- 				"          \"time_zone\":\"+08:00\"\n" + 
- 				"\n" + 
- 				"        }\n" + 
- 				"      }}\n" + 
- 				"    }\n" + 
- 				"  },\n" + 
- 				"  \"aggs\": {\n" + 
- 				"    \"NAME\": {\n" + 
- 				"      \"date_histogram\": {\n" + 
- 				"        \"field\": \"@timestamp\",\n" + 
- 				"        \"interval\": \"hour\",\n" + 
- 				"          \"time_zone\":\"+08:00\"\n" + 
- 				"      }, \"aggs\": {   \n" + 
- 				"        \"sum\":{\n" + 
- 				"     \"terms\": {\n" + 
- 				"       \"field\": \"channelid\",\n" +
- 				"       \"show_term_doc_count_error\": true,\n" + 
- 				"       \"shard_size\": 30,\n" + 
- 				"       \"order\": {\n" + 
- 				"         \"money_sum\": \"desc\"\n" + 
- 				"       }\n" + 
- 				"      },\"aggs\": {\n" + 
- 				"        \"money_sum\": {\n" + 
- 				"          \"sum\": {\n" + 
- 				"            \"field\": \"diamond_change_no\"\n" + 
- 				"          }\n" + 
- 				"        }\n" + 
- 				"      }\n" + 
- 				"    }}\n" + 
- 				"    }\n" + 
- 				"  }\n" + 
- 				"  \n" + 
- 				"}";
- 		return json;
- 	}
+	private String getRechargeRequest() {
+		String json = "{\n" +
+				"  \"query\": {\n" +
+				"    \"constant_score\": {\n" +
+				"      \"filter\": {\"range\": {\n" +
+				"        \"@timestamp\": {\n" +
+				"          \"gte\": \"now-24h\",\n" +
+				"          \"lte\": \"now\",\n" +
+				"          \"time_zone\":\"+08:00\"\n" +
+				"\n" +
+				"        }\n" +
+				"      }}\n" +
+				"    }\n" +
+				"  },\n" +
+				"  \"aggs\": {\n" +
+				"    \"NAME\": {\n" +
+				"      \"date_histogram\": {\n" +
+				"        \"field\": \"@timestamp\",\n" +
+				"        \"interval\": \"hour\",\n" +
+				"          \"time_zone\":\"+08:00\"\n" +
+				"      }, \"aggs\": {   \n" +
+				"        \"sum\":{\n" +
+				"     \"terms\": {\n" +
+				"       \"field\": \"channelid\",\n" +
+				"       \"show_term_doc_count_error\": true,\n" +
+				"       \"shard_size\": 30,\n" +
+				"       \"order\": {\n" +
+				"         \"money_sum\": \"desc\"\n" +
+				"       }\n" +
+				"      },\"aggs\": {\n" +
+				"        \"money_sum\": {\n" +
+				"          \"sum\": {\n" +
+				"            \"field\": \"diamond_change_no\"\n" +
+				"          }\n" +
+				"        }\n" +
+				"      }\n" +
+				"    }}\n" +
+				"    }\n" +
+				"  }\n" +
+				"  \n" +
+				"}";
+		return json;
+	}
 
 }
