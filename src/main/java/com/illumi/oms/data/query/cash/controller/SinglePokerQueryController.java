@@ -63,7 +63,7 @@ public class SinglePokerQueryController extends EasyuiController<Record>{
         		  url=urlhead+formatTime+urlend;
         	  }else {
         		  //今天和昨天
-        		  url=ELKUtils.getUrl(startTime, urlhead, urlend, df);
+        		  url=ELKUtils.getIndices(startTime, urlhead, urlend, df);
         	  }
         }else {
         	//牌局正在进行
@@ -71,7 +71,7 @@ public class SinglePokerQueryController extends EasyuiController<Record>{
         	  if(df.format(judgeTime).equals(formatTime)) {
         		  url=urlhead+formatTime+urlend;
         	  }else {
-        		  url=ELKUtils.getUrl(DateUtils.changeHour(startTime, 24), urlhead, urlend, df);
+        		  url=ELKUtils.getIndices(DateUtils.changeHour(startTime, 24), urlhead, urlend, df);
         	  }
         	
         }

@@ -1,5 +1,6 @@
 package com.illumi.oms;
 
+import com.illumi.oms.task.DailyReportJobService;
 import org.beetl.core.GroupTemplate;
 import org.beetl.ext.jfinal.BeetlRenderFactory;
 
@@ -194,8 +195,7 @@ public class MyConfig extends JFinalConfig
      */
 	@Override
 	public void afterJFinalStart() {
-		
-		
+//		new DailyReportJobService().defineExcuteByDay(System.currentTimeMillis(),20); ;
 	}
 
 	/**

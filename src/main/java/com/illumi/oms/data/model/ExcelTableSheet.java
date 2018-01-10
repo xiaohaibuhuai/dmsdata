@@ -13,7 +13,7 @@ public class ExcelTableSheet {
 		private String[] head; //表头
 		private List<Map<String,Object>> rows;//每一行数据    map("列名"，"值")
 		//映射关系
-		private Map<String, String> transformMap;
+		private Map<String, String> transformMap;//表头和列名映射关系
 		
 		
 		public ExcelTableSheet(String title,String[] head, List<Map<String, Object>> rows,String sheetname,Map<String, String> transformMap) {

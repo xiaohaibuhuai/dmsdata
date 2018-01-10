@@ -28,6 +28,9 @@ import com.jfinal.ext.plugin.sqlinxml.SqlKit;
 import com.jfinal.ext.route.ControllerBind;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 @ControllerBind(controllerKey = "/data/monitoring/moneysystem/diamondchart" ,viewPath=UrlConfig.DATA_MONITORING_MONEYSYSTEM)
 public class DiamondChartController extends EasyuiController<Record>{
@@ -38,8 +41,9 @@ public class DiamondChartController extends EasyuiController<Record>{
 		String target="diamone_change";  //钻石变化
 		long time = -60*60*1000*24;
 		String timeformat ="1h";
-		List<ChartInfo> chartlistLog = ELKUtils.getLogChartChangeInfo(target, time,timeformat);
-		List<ChartInfo> chartlistTask =ELKUtils.getTaskChartChangeInfo(target, time,timeformat);
+		String[] urlHead = { "ilumi_transactionlog_", "ilumi_payment_" };
+		List<ChartInfo> chartlistLog = ELKUtils.getchartChangeInfo(urlHead,target, time,timeformat);
+		List<ChartInfo> chartlistTask =ELKUtils.getchartChangeInfo("ilumi_task_coinanddiamond_",target, time,timeformat);
 		/**
 		 * 链接不上会报空指针异常
 		 */
@@ -54,12 +58,13 @@ public class DiamondChartController extends EasyuiController<Record>{
 		  /**
 		   * 日期可能重复  ||
 		   */
+		  DateTimeFormatter dateFormat= DateTimeFormat.forPattern("HH:00").withZone(DateTimeZone.getDefault());
 		  for(ChartInfo c:chartlistTask) {
-			  categories.add(c.getDate());
+			  categories.add(c.getDate().toString(dateFormat));
 			  fdata.add(c.getNum());
 		  } 
 		  for(ChartInfo c:chartlistLog) {
-			  categories.add(c.getDate());
+			  categories.add(c.getDate().toString(dateFormat));
 			  flog.add(c.getNum());
 		  } 
 		  
@@ -79,14 +84,15 @@ public class DiamondChartController extends EasyuiController<Record>{
 		String method = "GET";
 		String urlhead = "ilumi_payment_";
 		String urlend = "/_search?size=30";
-		String url = ELKUtils.getUrl(startTime, urlhead, urlend, new SimpleDateFormat("yyyy-MM"));
+		String url = ELKUtils.getIndices(startTime, urlhead, urlend, new SimpleDateFormat("yyyy-MM"));
 		String jsonString =getRechargeRequest();
 		
 		Response response = ELKUtils.getData(jsonString, method, url);
 		Map<Long, Map<String, Long>> paseDailyResponseMap = ELKUtils.paseDailyResponse(response, "money");
-		
-		
-		
+
+		long endtime = new Date().getTime();
+		long time = -60*60*1000*24;
+
 		Chart chart = new Chart();
 		//封装日期  需要排序
 		List<Long> datelist = new ArrayList<Long>();
@@ -131,13 +137,6 @@ public class DiamondChartController extends EasyuiController<Record>{
 		renderGson(chart);
 	
 	}
-	
-	
-	
-
-
-
-
 
 
 	//支付买入钻石
@@ -148,8 +147,8 @@ public class DiamondChartController extends EasyuiController<Record>{
 		long time = -60*60*1000*24;
 		String urlMethod = "POST";
 		String urlhead = "ilumi_payment_";
-		String urlend = "/_search?request_cache=false";
-		List<RankInfo> list = ELKUtils.getRankInfoTemp(urlMethod, urlhead, urlend, target, time, order);
+//		String urlend = "/_search?request_cache=false";
+		List<RankInfo> list = ELKUtils.getRankInfo(urlMethod, urlhead, "", target, time, order);
 		data.setData(list);
 		renderGson(data);
 	}
@@ -161,8 +160,8 @@ public class DiamondChartController extends EasyuiController<Record>{
 		long time = -60*60*1000*24;
 		String urlMethod = "POST";
 		String urlhead = "ilumi_transactionlog_";
-		String urlend = "/_search?request_cache=false";
-		List<RankInfo> list = ELKUtils.getRankInfo(urlMethod, urlhead, urlend, target, time, order);
+//		String urlend = "/_search?request_cache=false";
+		List<RankInfo> list = ELKUtils.getRankInfo(urlMethod, urlhead, "", target, time, order);
 		data.setData(list);
 		renderGson(data);
 	}
@@ -171,14 +170,15 @@ public class DiamondChartController extends EasyuiController<Record>{
 		DataGrid data = new DataGrid();
 		long endtime = new Date().getTime();
 		long time = -60*60*1000*24;
+		String order="desc";
 		long stime = endtime+time;
 		String urlMethod = "POST";
 		String urlhead = "ilumi_payment_";
-		String urlend = "/_search?request_cache=false";
-		String url = ELKUtils.getUrl(endtime, urlhead, urlend,new SimpleDateFormat("yyyy-MM") );
-		String jsonString=getRechargeTimesRequest(stime,endtime);
+//		String urlend = "/_search?request_cache=false";
+//		String url = ELKUtils.getIndices(endtime, urlhead, urlend,new SimpleDateFormat("yyyy-MM") );
+		List<RankInfo> list =ELKUtils.getRechargeTimesRequest(urlMethod, urlhead, "", time, order);
 		//List<RankInfo> list = ELKUtils.getRankInfo(urlMethod, urlhead, urlend, target, time, order);
-		List<RankInfo> list = ELKUtils.getRankInfo(jsonString, urlMethod, url);
+//		List<RankInfo> list = ELKUtils.getRankInfo(jsonString, urlMethod, url);
 		data.setData(list);
 		renderGson(data);
 	}
@@ -190,8 +190,8 @@ public class DiamondChartController extends EasyuiController<Record>{
  		long time = -60*60*1000*24;
  		String urlMethod = "POST";
 		String urlhead = "ilumi_payment_";
-		String urlend = "/_search?request_cache=false";
-		List<RankInfo> list = ELKUtils.getRankInfoTemp(urlMethod, urlhead, urlend, target, time, order);
+//		String urlend = "/_search?request_cache=false";
+		List<RankInfo> list = ELKUtils.getRankInfo(urlMethod, urlhead, "", target, time, order);
  		//除以100
 		for(RankInfo rank:list) {
 			Object change = rank.getChange();
@@ -221,7 +221,7 @@ public class DiamondChartController extends EasyuiController<Record>{
 		return map;
 	}
     private String getRechargeRequest() {
- 		String json = "{\n" + 
+ 		String json = "{\n" +
  				"  \"query\": {\n" + 
  				"    \"constant_score\": {\n" + 
  				"      \"filter\": {\"range\": {\n" + 
@@ -243,7 +243,7 @@ public class DiamondChartController extends EasyuiController<Record>{
  				"      }, \"aggs\": {   \n" + 
  				"        \"sum\":{\n" + 
  				"     \"terms\": {\n" + 
- 				"       \"field\": \"ChannelId\",\n" + 
+ 				"       \"field\": \"channelid\",\n" +
  				"       \"show_term_doc_count_error\": true,\n" + 
  				"       \"shard_size\": 30,\n" + 
  				"       \"order\": {\n" + 
@@ -263,37 +263,5 @@ public class DiamondChartController extends EasyuiController<Record>{
  				"}";
  		return json;
  	}
-	private String getRechargeTimesRequest(long stime, long endtime) {
-		String json="{\n" + 
-				"  \"query\": {\n" + 
-				"    \"constant_score\": {\n" + 
-				"      \"filter\": {\"range\": {\n" + 
-				"        \"@timestamp\": {\n" + 
-				"          \"gte\": \""+stime+"\",\n" + 
-				"          \"lte\": \""+endtime+"\"\n" + 
-				"        }\n" + 
-				"      }}\n" + 
-				"    }\n" + 
-				"  },\n" + 
-				"  \"aggs\":{\n" + 
-				"    \"sum\":{\n" + 
-				"     \"terms\": {\n" + 
-				"       \"field\": \"Uuid\",\n" + 
-				"       \"show_term_doc_count_error\": true,\n" + 
-				"       \"shard_size\": 100000,\n" + 
-				"       \"order\": {\n" + 
-				"         \"money_sum\": \"desc\"\n" + 
-				"       }\n" + 
-				"      },\"aggs\": {\n" + 
-				"        \"money_sum\": {\n" + 
-				"          \"value_count\": {\n" + 
-				"            \"field\": \"Uuid\"\n" + 
-				"          }\n" + 
-				"        }\n" + 
-				"      }\n" + 
-				"    }\n" + 
-				"  }\n" + 
-				"}";
-		return json;
-	}
+
 }

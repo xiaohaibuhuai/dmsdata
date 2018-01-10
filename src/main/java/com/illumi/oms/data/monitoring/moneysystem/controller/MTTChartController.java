@@ -21,6 +21,8 @@ import com.jfinal.ext.route.ControllerBind;
 import com.jfinal.log.Logger;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 @ControllerBind(controllerKey = "/data/monitoring/moneysystem/mttchart", viewPath = UrlConfig.DATA_MONITORING_MONEYSYSTEM)
 public class MTTChartController extends EasyuiController<Record> {
@@ -30,8 +32,9 @@ public class MTTChartController extends EasyuiController<Record> {
 		String target="ticket_change";  //钻石变化
 		long time = -60*60*1000*24;
 		String timeformat ="1h";
-		List<ChartInfo> chartlistLog = ELKUtils.getLogChartChangeInfo(target, time,timeformat);
-		List<ChartInfo> chartlistTask =ELKUtils.getTaskChartChangeInfo(target, time,timeformat);
+		String[] urlHead = { "/ilumi_transactionlog_", "ilumi_payment_" };
+		List<ChartInfo> chartlistLog = ELKUtils.getchartChangeInfo(urlHead,target, time,timeformat);
+		List<ChartInfo> chartlistTask =ELKUtils.getchartChangeInfo("ilumi_task_coinanddiamond_",target, time,timeformat);
 		/**
 		 * 链接不上会报空指针异常
 		 */
@@ -46,16 +49,17 @@ public class MTTChartController extends EasyuiController<Record> {
 		  /**
 		   * 日期可能重复
 		   */
-		  for(ChartInfo c:chartlistTask) {
-			  categories.add(c.getDate());
-			  fdata.add(c.getNum());
-		  } 
-		  for(ChartInfo c:chartlistLog) {
-			  categories.add(c.getDate());
-			  flog.add(c.getNum());
-		  } 
-		  
-		  chartlistLog=null;
+		DateTimeFormatter dateFormat= DateTimeFormat.forPattern("HH:00");
+		for(ChartInfo c:chartlistTask) {
+			categories.add(c.getDate().toString(dateFormat));
+			fdata.add(c.getNum());
+		}
+		for(ChartInfo c:chartlistLog) {
+			categories.add(c.getDate().toString(dateFormat));
+			flog.add(c.getNum());
+		}
+
+		chartlistLog=null;
 		  chart.setCategories(categories);
 		  chart.setSeriesDate("数据库", null,fdata);
 		  chart.setSeriesDate("日志", null,flog);

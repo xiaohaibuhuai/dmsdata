@@ -18,7 +18,10 @@ import com.jfinal.ext.route.ControllerBind;
 import com.jfinal.log.Logger;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.render.Render;
-                                 
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
 @ControllerBind(controllerKey = "/data/monitoring/moneysystem/coinchart", viewPath = UrlConfig.DATA_MONITORING_MONEYSYSTEM)
 public class CoinChartController extends EasyuiController<Record>{
 
@@ -28,28 +31,31 @@ public class CoinChartController extends EasyuiController<Record>{
 		String target="money_change";
 		long time = -60*60*1000*24;
 		String timeformat  ="1h";
-		List<ChartInfo> chartlistLog = ELKUtils.getLogChartChangeInfo(target, time,timeformat);
-		List<ChartInfo> chartlistTask =ELKUtils.getTaskChartChangeInfo(target, time,timeformat);
+		String[] urlHead = { "ilumi_transactionlog_", "ilumi_payment_" };
+		List<ChartInfo> chartlistLog = ELKUtils.getchartChangeInfo(urlHead,target, time,timeformat);
+		List<ChartInfo> chartlistTask =ELKUtils.getchartChangeInfo("ilumi_task_coinanddiamond_",target, time,timeformat);
 		/**
 		 * 链接不上会报空指针异常
 		 */
 		//3 放入数据
 		Chart chart = new Chart();
-		  //categories
-		  List<String> categories =new ArrayList<>();
-		  
-		  //3.1 来自数据库
-		  List<Long>  fdata=new ArrayList<>();
-		  List<Long>  flog=new ArrayList<>();
-		  /**
-		   * 日期可能重复
-		   */
-		  for(ChartInfo c:chartlistTask) {
-			  categories.add(c.getDate());
+		//categories
+		List<String> categories = new ArrayList<>();
+
+		//3.1 来自数据库
+		List<Long> fdata = new ArrayList<>();
+		List<Long> flog = new ArrayList<>();
+		/**
+		 * 日期可能重复
+		 */
+
+		DateTimeFormatter dateFormat= DateTimeFormat.forPattern("HH").withZone(DateTimeZone.getDefault());
+		for(ChartInfo c:chartlistTask) {
+			  categories.add(c.getDate().toString(dateFormat) + ":00");
 			  fdata.add(c.getNum());
 		  } 
 		  for(ChartInfo c:chartlistLog) {
-			  categories.add(c.getDate());
+			  categories.add(c.getDate().toString(dateFormat) + ":00");
 			  flog.add(c.getNum());
 		  } 
 		  
@@ -75,7 +81,9 @@ public class CoinChartController extends EasyuiController<Record>{
 		String urlMethod = "POST";
 		String urlhead = "ilumi_transactionlog_";
 		String urlend = "/_search?request_cache=false";
-		List<RankInfo> list = ELKUtils.getRankInfo(urlMethod, urlhead, urlend, target, time, order);
+//		List<RankInfo> list = ELKUtils.getRankInfo(urlMethod, urlhead, urlend, target, time, order);
+		List<RankInfo> list = ELKUtils.getRankInfo(urlMethod, urlhead, "", target, time, order);
+
 		data.setData(list);
 		renderGson(data);
 	}
@@ -91,7 +99,7 @@ public class CoinChartController extends EasyuiController<Record>{
 		String urlMethod = "POST";
 		String urlhead = "ilumi_transactionlog_";
 		String urlend = "/_search?request_cache=false";
-		List<RankInfo> list = ELKUtils.getRankInfo(urlMethod, urlhead, urlend, target, time, order);
+		List<RankInfo> list = ELKUtils.getRankInfo(urlMethod, urlhead, "", target, time, order);
 		data.setData(list);
 		renderGson(data);
 	}

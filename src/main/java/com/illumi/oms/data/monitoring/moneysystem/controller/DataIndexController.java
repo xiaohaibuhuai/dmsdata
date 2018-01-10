@@ -18,8 +18,9 @@ public class DataIndexController extends EasyuiController<Record>{
 		String target="diamone_change";  //钻石变化
 		long time = -30*60*1000;
 		String timeformat="30m";
-		List<ChartInfo> chartlistLog = ELKUtils.getLogChartChangeInfo(target, time,timeformat);
-		List<ChartInfo> chartlistTask =ELKUtils.getTaskChartChangeInfo(target, time,timeformat);
+		String[] urlHead = { "/ilumi_transactionlog_", "ilumi_payment_" };
+		List<ChartInfo> chartlistLog = ELKUtils.getchartChangeInfo(urlHead,target, time,timeformat);
+		List<ChartInfo> chartlistTask =ELKUtils.getchartChangeInfo("ilumi_task_coinanddiamond_",target, time,timeformat);
 		Map<String,ChartInfo> map = new HashMap<>();
 		map.put("log", chartlistLog.get(1));
 		map.put("task", chartlistTask.get(1));
@@ -30,8 +31,9 @@ public class DataIndexController extends EasyuiController<Record>{
 		String target="money_change";  //钻石变化
 		long time = -30*60*1000;
 		String timeformat="30m";
-		List<ChartInfo> chartlistLog = ELKUtils.getLogChartChangeInfo(target, time,timeformat);
-		List<ChartInfo> chartlistTask =ELKUtils.getTaskChartChangeInfo(target, time,timeformat);
+		String[] urlHead = { "/ilumi_transactionlog_", "ilumi_payment_" };
+		List<ChartInfo> chartlistLog = ELKUtils.getchartChangeInfo(urlHead,target, time,timeformat);
+		List<ChartInfo> chartlistTask =ELKUtils.getchartChangeInfo("ilumi_task_coinanddiamond_",target, time,timeformat);
 		Map<String,ChartInfo> map = new HashMap<>();
 		map.put("log", chartlistLog.get(0));
 		map.put("task", chartlistTask.get(0));

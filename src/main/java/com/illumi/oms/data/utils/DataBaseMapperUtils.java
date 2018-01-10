@@ -46,6 +46,8 @@ public class DataBaseMapperUtils {
 			map.put("打赏牌谱","rewardpoker");
 			map.put("德扑币报名MTT","mttsign");
 			map.put("日期", "targetdate");
+			map.put("奔驰宝马_一粒大米", "benz_bmw");
+			map.put("捕鱼_一粒大米", "fish");
 			map.put("汇总", "sum");
 			return map;
 		}

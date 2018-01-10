@@ -1,18 +1,19 @@
 package com.illumi.oms.data.model;
 
 
+import org.joda.time.DateTime;
 
 public class ChartInfo {
     
 	//private List<>
-	private String date;
+	private DateTime date;
 	private Long num;
-	public ChartInfo(String date, Long num) {
+	public ChartInfo(DateTime date, Long num) {
 		super();
 		this.date = date;
 		this.num = num;
 	}
-	public String getDate() {
+	public DateTime getDate() {
 		return date;
 	}
 	
@@ -38,7 +39,7 @@ public class ChartInfo {
 	}
 	
 	*/
-	public void setDate(String date) {
+	public void setDate(DateTime date) {
 		this.date = date;
 	}
 	public Long getNum() {
@@ -47,16 +48,4 @@ public class ChartInfo {
 	public void setNum(Long num) {
 		this.num = num;
 	}
-	
-	
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
 }

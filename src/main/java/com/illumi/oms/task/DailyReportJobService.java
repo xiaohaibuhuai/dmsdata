@@ -45,10 +45,10 @@ public class DailyReportJobService implements Job{
 		
 		 log.info("记录每日开局快照任务结束...");
 	}
-	
-	
-	
-	
+
+
+
+
 	public void startJob(long zeroTime) {
 	   
 		//0 查一天 起始时间和结束时间一致
@@ -68,15 +68,9 @@ public class DailyReportJobService implements Job{
 		
 		
 	}
-	
-	
-
-
-
-
 
 	private void rechargeDiamondJob(long zeroTime) {
-		String termsFiled = "ChannelId";
+		String termsFiled = "channelid";
 		String sumFiled  = "diamond_change_no";
 		String urlhead = "ilumi_payment_";
 		String urlend = "/_search?size=30";
@@ -84,14 +78,17 @@ public class DailyReportJobService implements Job{
 		String url = urlhead+new SimpleDateFormat("yyyy-MM").format(zeroTime)+urlend;
 		Response fullData = ResponseFullData(zeroTime, zeroTime, termsFiled, sumFiled,url,method);
 		//全部
-		Map<Long, Map<String, Long>> fullMap = ELKUtils.paseDailyResponse(fullData, "money");
+//		Map<Long, Map<String, Long>> fullMap = ELKUtils.paseDailyResponse(fullData);		//TODO
+		Map<Long, Map<String, Long>> fullMap = new HashMap<>();
+
 		//填充数据
 		DiamondRechargeSnapShotDate all = fillDiamondRechargeData(fullMap,0,DiamondRechargeSnapShotDate.class);
 		
 		
 		//国外
 		Response abroadData = ResponseAbroadData(zeroTime, zeroTime, termsFiled, sumFiled,url,method);
-		Map<Long, Map<String, Long>> abroadMap = ELKUtils.paseDailyResponse(abroadData, "money");
+//		Map<Long, Map<String, Long>> abroadMap = ELKUtils.paseDailyResponse(abroadData);
+		Map<Long, Map<String, Long>> abroadMap = new HashMap<>();		//TODO
 		DiamondRechargeSnapShotDate abroad = null;
 		if(abroadMap.values().size()!=0) {
 		 abroad = fillDiamondRechargeData(abroadMap,2,DiamondRechargeSnapShotDate.class);
@@ -128,7 +125,7 @@ public class DailyReportJobService implements Job{
 
 
 	private void rechargeJob(long zeroTime) {
-		String termsFiled = "ChannelId";
+		String termsFiled = "channelid";
 		String sumFiled  = "cach_earn_no";
 		String urlhead = "ilumi_payment_";
 		String urlend = "/_search?size=30";
@@ -139,14 +136,17 @@ public class DailyReportJobService implements Job{
 		
 		Response fullData = ResponseFullData(zeroTime, zeroTime, termsFiled, sumFiled,url,method);
 		//全部
-		Map<Long, Map<String, Long>> fullMap = ELKUtils.paseDailyResponse(fullData, "money");
+//		Map<Long, Map<String, Long>> fullMap = ELKUtils.paseDailyResponse(fullData, "money");
+
+		Map<Long, Map<String, Long>> fullMap = new HashMap<>();		//TODO
 		//填充数据
 		RechargeSnapShotDate all = fillRechargeData(fullMap,0,RechargeSnapShotDate.class);
 		
 		
 		//国外
 		Response abroadData = ResponseAbroadData(zeroTime, zeroTime, termsFiled, sumFiled,url,method);
-		Map<Long, Map<String, Long>> abroadMap = ELKUtils.paseDailyResponse(abroadData, "money");
+//		Map<Long, Map<String, Long>> abroadMap = ELKUtils.paseDailyResponse(abroadData, "money");
+		Map<Long, Map<String, Long>> abroadMap = new HashMap<>();		//TODO
 		RechargeSnapShotDate abroad = null;
 		if(abroadMap.values().size()!=0) {
 		 abroad = fillRechargeData(abroadMap,2,RechargeSnapShotDate.class);
@@ -179,19 +179,21 @@ public class DailyReportJobService implements Job{
 	}
 	private void moneyJob(long startTime, long zeroTime) {
 		String termsFiled = "action_name";
-		String sumFiled  = "money_change_no";
-		String urlend = "/_search?size=30";
+		String sumFiled  = "money_earn_no";
+		String urlend = "/_search?size=60";
 		String urlhead[] = {"ilumi_transactionlog_","ilumi_minigame_"};
 		String method = "GET";
 	//	String url = ELKUtils.getUrl(startTime, urlhead, urlend, new SimpleDateFormat("yyyy-MM"));
 		String url = urlhead[0]+new SimpleDateFormat("yyyy-MM").format(zeroTime)+","+urlhead[1]+new SimpleDateFormat("yyyy-MM").format(zeroTime)+urlend;
 		
 		Response fullData = ResponseFullData(startTime, zeroTime, termsFiled, sumFiled,url,method);
-		Map<Long, Map<String, Long>> fullMap = ELKUtils.paseDailyResponse(fullData, "money");
+//		Map<Long, Map<String, Long>> fullMap = ELKUtils.paseDailyResponse(fullData, "money");
+		Map<Long, Map<String, Long>> fullMap = new HashMap<>();		//TODO
 		MoneySnapShotDate all = fillMoneyData(fullMap,0);
 		//国外
 		Response abroadData = ResponseAbroadData(startTime, zeroTime, termsFiled, sumFiled,url,method);
-		Map<Long, Map<String, Long>> abroadMap = ELKUtils.paseDailyResponse(abroadData, "money");
+//		Map<Long, Map<String, Long>> abroadMap = ELKUtils.paseDailyResponse(abroadData, "money");
+		Map<Long, Map<String, Long>> abroadMap = new HashMap<>();		//TODO
 		MoneySnapShotDate abroad = fillMoneyData(abroadMap,2);
 		if(abroadMap.values().size()!=0) {
 			 abroad = fillMoneyData(abroadMap,2);
@@ -223,19 +225,23 @@ public class DailyReportJobService implements Job{
 	private void diamondJob(long startTime, long zeroTime) {
 		String termsFiled = "action_name";
 		String sumFiled  = "diamond_change_no";
-		String urlend = "/_search?size=30";
+		String urlend = "/_search?size=60";
 		String urlhead[] = {"ilumi_transactionlog_","ilumi_minigame_"};
 		String method = "GET";
 		String url = urlhead[0]+new SimpleDateFormat("yyyy-MM").format(zeroTime)+","+urlhead[1]+new SimpleDateFormat("yyyy-MM").format(zeroTime)+urlend;
 		
 		
 		Response fullData = ResponseFullData(startTime, zeroTime, termsFiled, sumFiled,url,method);
-		Map<Long, Map<String, Long>> fullMap = ELKUtils.paseDailyResponse(fullData, "money");
+//		Map<Long, Map<String, Long>> fullMap = ELKUtils.paseDailyResponse(fullData, "money");
+
+		Map<Long, Map<String, Long>> fullMap = new HashMap<>();		//TODO
 		DiamondSnapShotDate all = fillDiamondData(fullMap,0);
 		
 		//国外
 		Response abroadData = ResponseAbroadData(startTime, zeroTime, termsFiled, sumFiled,url,method);
-		Map<Long, Map<String, Long>> abroadMap = ELKUtils.paseDailyResponse(abroadData, "money");
+//		Map<Long, Map<String, Long>> abroadMap = ELKUtils.paseDailyResponse(abroadData, "money");
+
+		Map<Long, Map<String, Long>> abroadMap = new HashMap<>();		//TODO
 		DiamondSnapShotDate abroad = fillDiamondData(abroadMap,2);
 		if(abroadMap.values().size()!=0) {
 			 abroad = fillDiamondData(abroadMap,2);
@@ -382,12 +388,12 @@ public class DailyReportJobService implements Job{
 				String log = e.getValue(); //日志字段
 				if(value.containsKey(log)) {
 					   if(log.equals("玩家买入")) {
-						   ds.set(data, value.get(log)*0.1*-1);
+						   ds.set(data, value.get(log));
 					   }else {
 						   //消耗变化量 乘负一
-						   ds.set(data, value.get(log)*-1);   
+						   ds.set(data, value.get(log));
 					   }
-					   sum = ArithUtils.add(sum,value.get(log)*-1);
+					   sum = ArithUtils.add(sum,value.get(log));
 				}else {
 					ds.set(data,0);
 				}
@@ -465,7 +471,7 @@ public class DailyReportJobService implements Job{
 				"          \"constant_score\": {\n" + 
 				"            \"filter\": {\n" + 
 				"              \"terms\": {\n" + 
-				"                \"Uuid\": [\n" + 
+				"                \"uuid\": [\n" +
                 "                  "+uuids+"\n" + 
 				"                ]\n" + 
 				"              }\n" + 
@@ -487,7 +493,8 @@ public class DailyReportJobService implements Job{
 				"     \"terms\": {\n" + 
 				"       \"field\": \""+termsFiled+"\",\n" + 
 				"       \"show_term_doc_count_error\": true,\n" + 
-				"       \"shard_size\": 30,\n" + 
+				"       \"shard_size\": 60,\n" +
+				"      \"size\": 50,"+
 				"       \"order\": {\n" + 
 				"         \"money_sum\": \"desc\"\n" + 
 				"       }\n" + 
@@ -533,7 +540,8 @@ public class DailyReportJobService implements Job{
 				"     \"terms\": {\n" + 
 				"       \"field\": \""+termsFiled+"\",\n" + 
 				"       \"show_term_doc_count_error\": true,\n" + 
-				"       \"shard_size\": 30,\n" + 
+				"       \"shard_size\": 60,\n" +
+				"      \"size\": 50,"+
 				"       \"order\": {\n" + 
 				"         \"money_sum\": \"desc\"\n" + 
 				"       }\n" + 
