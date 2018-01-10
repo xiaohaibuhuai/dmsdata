@@ -127,12 +127,7 @@ public class MyConfig extends JFinalConfig
 		ActiveRecordPlugin arpMysql2 = new ActiveRecordPlugin("pokerdb2", pokerDbPlugin2);
 		me.add(arpMysql2);
 		arpMysql2.setCache(new EhCache());
-		//配置拆分库查询库
-        DruidPlugin pokerDbPlugin3 = new DruidPlugin(ConfigKit.getStr("poker3.jdbcUrl"), ConfigKit.getStr("poker3.user"), ConfigKit.getStr("poker3.password"));
-        me.add(pokerDbPlugin3);
-        ActiveRecordPlugin arpMysql3 = new ActiveRecordPlugin("pokerdb3", pokerDbPlugin3);
-        me.add(arpMysql3);
-        arpMysql3.setCache(new EhCache());
+	
         
         
         //data查询库
