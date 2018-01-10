@@ -1,6 +1,8 @@
 package com.illumi.oms;
 
+import com.illumi.oms.data.utils.DateUtils;
 import com.illumi.oms.task.DailyReportJobService;
+import com.illumi.oms.task.GameStatisticJobService;
 import org.beetl.core.GroupTemplate;
 import org.beetl.ext.jfinal.BeetlRenderFactory;
 
@@ -190,7 +192,14 @@ public class MyConfig extends JFinalConfig
      */
 	@Override
 	public void afterJFinalStart() {
-//		new DailyReportJobService().defineExcuteByDay(System.currentTimeMillis(),20); ;
+		new DailyReportJobService().defineExcuteByDay(System.currentTimeMillis(),30);
+
+
+		long zeroTime = DateUtils.getCurrentZeroTime();
+		long startTime = DateUtils.changeHour(zeroTime, -24);
+		new GameStatisticJobService().defineExcuteByDay(startTime,zeroTime,30);
+
+
 	}
 
 	/**
