@@ -192,12 +192,6 @@ public class MyConfig extends JFinalConfig
      */
 	@Override
 	public void afterJFinalStart() {
-		new DailyReportJobService().defineExcuteByDay(System.currentTimeMillis(),30);
-
-
-		long zeroTime = DateUtils.getCurrentZeroTime();
-		long startTime = DateUtils.changeHour(zeroTime, -24);
-		new GameStatisticJobService().defineExcuteByDay(startTime,zeroTime,30);
 
 
 	}

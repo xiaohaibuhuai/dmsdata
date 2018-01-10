@@ -120,8 +120,11 @@ public class DiamondChartController extends EasyuiController<Record>{
 				Map<String, Long> map = paseDailyResponseMap.get(date);
 				for(String key:resultMap.keySet()) {
 					List<Double> list = resultMap.get(key);
-					Object value = map.get(channelMap.get(key));
-					list.add(Double.parseDouble(String.valueOf(value).equals("null")?"0":String.valueOf(value)));
+					double doub = Double.parseDouble(String.valueOf(value).equals("null")?"0":String.valueOf(value));
+					if(doub!=0) {
+						doub=ArithUtils.div(doub,100);
+					}
+					list.add(doub);
 				}
 
 			}
@@ -253,7 +256,7 @@ public class DiamondChartController extends EasyuiController<Record>{
 				"      },\"aggs\": {\n" +
 				"        \"money_sum\": {\n" +
 				"          \"sum\": {\n" +
-				"            \"field\": \"diamond_change_no\"\n" +
+				"            \"field\": \"cach_earn_no\"\n" +
 				"          }\n" +
 				"        }\n" +
 				"      }\n" +
