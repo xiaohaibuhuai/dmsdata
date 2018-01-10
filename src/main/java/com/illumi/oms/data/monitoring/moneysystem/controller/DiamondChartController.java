@@ -120,6 +120,7 @@ public class DiamondChartController extends EasyuiController<Record>{
 				Map<String, Long> map = paseDailyResponseMap.get(date);
 				for(String key:resultMap.keySet()) {
 					List<Double> list = resultMap.get(key);
+					Object value = map.get(channelMap.get(key));
 					double doub = Double.parseDouble(String.valueOf(value).equals("null")?"0":String.valueOf(value));
 					if(doub!=0) {
 						doub=ArithUtils.div(doub,100);
