@@ -38,7 +38,7 @@ public class GameStatisticController extends EasyuiController<Record> {
 		long dateEnd = DateUtils.getCurrentZeroTime();
 		long dateStart = DateUtils.changeHour(dateEnd, -14 * 24);
 		// 2 查数据库
-		List<Record> gameInfo = Db.find(SqlKit.sql("data.reportForms.getGameInfoByDate"),
+		List<Record> gameInfo = Db.use(Consts.DB_POKERDATA).find(SqlKit.sql("data.reportForms.getGameInfoByDate"),
 				new Object[] { dateStart, dateEnd });
 		
 		//倒序
@@ -123,8 +123,8 @@ public class GameStatisticController extends EasyuiController<Record> {
 		List<String> dates = getDays(dateStart, target);
 		String sqlSum = getgamenumSql();
 		String sqlValid = getGameValidSql();
-		List<Record> recordSum = Db.use(Consts.DB_POKER2).findByCache("getRecordSumByDate", dateEnd, sqlSum, new Object[] { dateStart, dateEnd });
-		List<Record> recordValid = Db.use(Consts.DB_POKER2).findByCache("getVaildRecordSumByDate", dateEnd, sqlValid, new Object[] { dateStart, dateEnd });
+		List<Record> recordSum = Db.use(Consts.DB_POKERDATA).findByCache("getRecordSumByDate", dateEnd, sqlSum, new Object[] { dateStart, dateEnd });
+		List<Record> recordValid = Db.use(Consts.DB_POKERDATA).findByCache("getVaildRecordSumByDate", dateEnd, sqlValid, new Object[] { dateStart, dateEnd });
 		// 去重
 		List<Long> sum = parseRecord(recordSum, dates, target);
 		List<Long> valid = parseRecord(recordValid, dates, target);

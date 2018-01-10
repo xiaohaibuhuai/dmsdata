@@ -30,7 +30,7 @@ public class EpokerController extends EasyuiController<Record>
 		User user = ShiroExt.getSessionAttr(Consts.SESSION_USER);
 		log.info(user.getStr("account")+"/"+user.getName()+",错误牌局列表(/stat/epoker/list),请求参数/"+getParasLog());
 		long beginstamp = System.currentTimeMillis();
-		DataGrid<Record> dg = RecordUtil.listByDataGrid(Consts.DB_POKER3, "stat.epoker.getEpokerlist", getDataGrid(), getParas());
+		DataGrid<Record> dg = RecordUtil.listByDataGrid(Consts.DB_POKER2, "stat.epoker.getEpokerlist", getDataGrid(), getParas());
 		long responseTime = System.currentTimeMillis() - beginstamp;
 		log.info("getEpokerlist responseTime : " + responseTime);
 		renderJson(dg);
@@ -43,8 +43,8 @@ public class EpokerController extends EasyuiController<Record>
 		rf.setCode(200);
 		try{
 			Object[] paras = getParas();
-			Record rd = Db.use(Consts.DB_POKER3).findFirst(SqlKit.sql("stat.epoker.getCountPoker"), paras);
-			long etotal = Db.use(Consts.DB_POKER3).queryLong(SqlKit.sql("stat.epoker.getCountEPoker"), paras);
+			Record rd = Db.use(Consts.DB_POKER2).findFirst(SqlKit.sql("stat.epoker.getCountPoker"), paras);
+			long etotal = Db.use(Consts.DB_POKER2).queryLong(SqlKit.sql("stat.epoker.getCountEPoker"), paras);
 			rd.set("etotal", etotal);
 			rf.setObj(rd);
 		}catch(Exception e){

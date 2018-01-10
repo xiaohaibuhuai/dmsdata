@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.illumi.oms.common.Consts;
 import com.illumi.oms.common.UrlConfig;
 import com.illumi.oms.data.utils.DateUtils;
 import com.jayqqaa12.jbase.jfinal.ext.ctrl.EasyuiController;
@@ -100,7 +101,7 @@ public class BlindStatisicController extends EasyuiController<Record>{
 		}else {
 			// 2 查数据库
 			long dateStart = DateUtils.changeHour(dateEnd,-14*24);
-			gameInfo= Db.find(SqlKit.sql("data.reportForms.getBlindInfoByType"),new Object[]{type,dateStart,dateEnd});
+			gameInfo= Db.use(Consts.DB_POKERDATA).find(SqlKit.sql("data.reportForms.getBlindInfoByType"),new Object[]{type,dateStart,dateEnd});
 			//倒序
 			//Collections.reverse(gameInfo); 
 			map.put(type, gameInfo);

@@ -132,7 +132,7 @@ public class RechargeDailyController extends ExcelController {
 		Long dateStart = getLongDate("dateStart");
 		Long dateEnd = getLongDate("dateEnd");
 		String type = getPara("type");
-	    return Db.find(SqlKit.sql("data.dailyReport.getRechargeByDay"),new Object[] {type,dateStart,dateEnd});
+	    return Db.use(Consts.DB_POKERDATA).find(SqlKit.sql("data.dailyReport.getRechargeByDay"),new Object[] {type,dateStart,dateEnd});
 	}
 
 

@@ -15,6 +15,7 @@ import org.elasticsearch.client.Response;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.illumi.oms.common.Consts;
 import com.illumi.oms.common.UrlConfig;
 import com.illumi.oms.data.model.ExcelTableSheet;
 import com.illumi.oms.data.utils.DataBaseMapperUtils;
@@ -142,14 +143,15 @@ public class MoneyDailyController extends ExcelController {
 		Long dateStart = getLongDate("dateStart");
 		Long dateEnd = getLongDate("dateEnd");
 		String type = getPara("type");
-	    return Db.find(SqlKit.sql("data.dailyReport.getMoneyByDay"),new Object[] {type,dateStart,dateEnd});
+	
+	    return Db.use(Consts.DB_POKERDATA).find(SqlKit.sql("data.dailyReport.getMoneyByDay"),new Object[] {type,dateStart,dateEnd});
 	}
 	
 	private List<Record> getDiamondList() {
 		Long dateStart = getLongDate("dateStart");
 		Long dateEnd = getLongDate("dateEnd");
 		String type = getPara("type");
-	    return Db.find(SqlKit.sql("data.dailyReport.getDiamondByDay"),new Object[] {type,dateStart,dateEnd});
+	    return Db.use(Consts.DB_POKERDATA).find(SqlKit.sql("data.dailyReport.getDiamondByDay"),new Object[] {type,dateStart,dateEnd});
 	}
 	
 	

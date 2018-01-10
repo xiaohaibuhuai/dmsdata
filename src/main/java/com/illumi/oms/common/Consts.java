@@ -43,8 +43,6 @@ public class Consts
 	public static final String DB_POKER = "pokerdb";
 	//数据源拆分库
 	public static final String DB_POKER2 = "pokerdb2";
-	//数据源拆分库从库，查询用
-    public static final String DB_POKER3 = "pokerdb3";
     //data查询库
     public static final String DB_POKERDATA = "pokerdata";
 	// 配置更新库

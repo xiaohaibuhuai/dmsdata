@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.illumi.oms.common.Consts;
 import com.illumi.oms.common.UrlConfig;
 import com.illumi.oms.data.utils.ArithUtils;
 import com.illumi.oms.data.utils.DataBaseMapperUtils;
@@ -63,9 +64,9 @@ public class SumDailyController extends EasyuiController<Record> {
 		Long time = DateUtils.changeHour(DateUtils.getCurrentZeroTime(), -24);
 		Long stime =DateUtils.changeHour(time, -24*7);
 		// 2 数据库获取  (不分是否有效)
-		Record record = Db.findFirst(SqlKit.sql("data.dailyReport.getHandByDay"),
+		Record record = Db.use(Consts.DB_POKERDATA).findFirst(SqlKit.sql("data.dailyReport.getHandByDay"),
 				new Object[] {time, time});
-		Number num = Db.queryNumber(SqlKit.sql("data.dailyReport.getHandNumByDay"),new Object[]{stime,time});
+		Number num = Db.use(Consts.DB_POKERDATA).queryNumber(SqlKit.sql("data.dailyReport.getHandNumByDay"),new Object[]{stime,time});
 		Double avgNum = ArithUtils.div(num.doubleValue(), 7, 2);
 		Double nowNum = Double.parseDouble(record.get("h_sum").toString());
 		String desc = getChangeDesc(avgNum,nowNum);
@@ -85,9 +86,9 @@ public class SumDailyController extends EasyuiController<Record> {
 		Long time = DateUtils.changeHour(DateUtils.getCurrentZeroTime(), -24);
 		Long stime =DateUtils.changeHour(time, -24*7);
 		// 2 数据库获取  (不分是否有效)
-		Record record = Db.findFirst(SqlKit.sql("data.dailyReport.getServiceByDay"),
+		Record record = Db.use(Consts.DB_POKERDATA).findFirst(SqlKit.sql("data.dailyReport.getServiceByDay"),
 				new Object[] {time, time});
-		Number num = Db.queryNumber(SqlKit.sql("data.dailyReport.getServiceNumByDay"),new Object[]{stime,time});
+		Number num = Db.use(Consts.DB_POKERDATA).queryNumber(SqlKit.sql("data.dailyReport.getServiceNumByDay"),new Object[]{stime,time});
 		Double avgNum = ArithUtils.div(num.doubleValue(), 7, 2);
 		Double nowNum = Double.parseDouble(record.get("s_sum").toString());
 		String desc = getChangeDesc(avgNum,nowNum);
@@ -107,9 +108,9 @@ public class SumDailyController extends EasyuiController<Record> {
 		Long time = DateUtils.changeHour(DateUtils.getCurrentZeroTime(), -24);
 		Long stime =DateUtils.changeHour(time, -24*7);
 		// 2 数据库获取
-		Record record = Db.findFirst(SqlKit.sql("data.dailyReport.getPlyerInfoByDay"),
+		Record record = Db.use(Consts.DB_POKERDATA).findFirst(SqlKit.sql("data.dailyReport.getPlyerInfoByDay"),
 				new Object[] {"0",time, time });
-		Number num = Db.queryNumber(SqlKit.sql("data.dailyReport.getPlyerNumByDay"),new Object[]{"0",stime,time});
+		Number num = Db.use(Consts.DB_POKERDATA).queryNumber(SqlKit.sql("data.dailyReport.getPlyerNumByDay"),new Object[]{"0",stime,time});
 		Double avgNum = ArithUtils.div(num.doubleValue(), 7, 2);
 		Double nowNum = Double.parseDouble(record.get("p_sum").toString());
 		String desc = getChangeDesc(avgNum,nowNum);
@@ -129,9 +130,9 @@ public class SumDailyController extends EasyuiController<Record> {
 		Long time = DateUtils.changeHour(DateUtils.getCurrentZeroTime(), -24);
 		Long stime =DateUtils.changeHour(time, -24*7);
 		// 2 数据库获取
-		Record record = Db.findFirst(SqlKit.sql("data.dailyReport.getGameInfoByDay"),
+		Record record = Db.use(Consts.DB_POKERDATA).findFirst(SqlKit.sql("data.dailyReport.getGameInfoByDay"),
 				new Object[] {"0",time, time });
-		Number num = Db.queryNumber(SqlKit.sql("data.dailyReport.getGameNumByDay"),new Object[]{"0",stime,time});
+		Number num = Db.use(Consts.DB_POKERDATA).queryNumber(SqlKit.sql("data.dailyReport.getGameNumByDay"),new Object[]{"0",stime,time});
 		Double avgNum = ArithUtils.div(num.doubleValue(), 7, 2);
 		Double nowNum = Double.parseDouble(record.get("g_sum").toString());
 		String desc = getChangeDesc(avgNum,nowNum);
@@ -152,9 +153,9 @@ public class SumDailyController extends EasyuiController<Record> {
 		Long time = 1511971200000l;
         Long stime =DateUtils.changeHour(time, -24*7);
 		// 2 数据库获取
-		Record record = Db.findFirst(SqlKit.sql("data.dailyReport.getMoneyByDay"),
+		Record record = Db.use(Consts.DB_POKERDATA).findFirst(SqlKit.sql("data.dailyReport.getMoneyByDay"),
 				new Object[] { "0", time, time });
-		Number num = Db.queryNumber(SqlKit.sql("data.dailyReport.getMoneyNumByDay"),new Object[]{"0",stime,time});	
+		Number num = Db.use(Consts.DB_POKERDATA).queryNumber(SqlKit.sql("data.dailyReport.getMoneyNumByDay"),new Object[]{"0",stime,time});	
 		Double avgNum = ArithUtils.div(num.doubleValue(), 7, 2);
 		Double nowNum = Double.parseDouble(record.get("sum").toString());
 		String desc = getChangeDesc(avgNum,nowNum);
@@ -180,9 +181,9 @@ public class SumDailyController extends EasyuiController<Record> {
 		Long time = 1511971200000l;
 		Long stime =DateUtils.changeHour(time, -24*7);
 		// 2 数据库获取
-		Record record = Db.findFirst(SqlKit.sql("data.dailyReport.getDiamondByDay"),
+		Record record = Db.use(Consts.DB_POKERDATA).findFirst(SqlKit.sql("data.dailyReport.getDiamondByDay"),
 				new Object[] { "0", time, time });
-		Number num = Db.queryNumber(SqlKit.sql("data.dailyReport.getDiamondNumByDay"),new Object[]{"0",stime,time});
+		Number num = Db.use(Consts.DB_POKERDATA).queryNumber(SqlKit.sql("data.dailyReport.getDiamondNumByDay"),new Object[]{"0",stime,time});
 		Double avgNum = ArithUtils.div(num.doubleValue(), 7, 2);
 		Double nowNum = Double.parseDouble(record.get("sum").toString());
 		String desc = getChangeDesc(avgNum,nowNum);
@@ -205,10 +206,10 @@ public class SumDailyController extends EasyuiController<Record> {
 		Long time = 1512316800000l;
 		Long stime =DateUtils.changeHour(time, -24*7);
 		// 2 数据库获取
-		Record record = Db.findFirst(SqlKit.sql("data.dailyReport.getAddDiamondByDay"),
+		Record record = Db.use(Consts.DB_POKERDATA).findFirst(SqlKit.sql("data.dailyReport.getAddDiamondByDay"),
 				new Object[] { "0", time, time });
         //2.1 七日变化
-		Number num = Db.queryNumber(SqlKit.sql("data.dailyReport.getAddDiamondNumByDay"),new Object[]{"0",stime,time});	
+		Number num = Db.use(Consts.DB_POKERDATA).queryNumber(SqlKit.sql("data.dailyReport.getAddDiamondNumByDay"),new Object[]{"0",stime,time});	
 		Double avgNum = null;
 		if(num!=null) {
 		avgNum = ArithUtils.div(num.doubleValue(), 7, 2);

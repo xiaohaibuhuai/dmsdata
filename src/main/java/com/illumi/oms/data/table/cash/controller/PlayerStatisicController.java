@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import com.illumi.oms.common.Consts;
 import com.illumi.oms.common.UrlConfig;
 import com.illumi.oms.data.utils.DateUtils;
 import com.jayqqaa12.jbase.jfinal.ext.ctrl.EasyuiController;
@@ -22,7 +23,7 @@ public class PlayerStatisicController extends EasyuiController<Record>{
 		long dateEnd = DateUtils.getCurrentZeroTime();
 		long dateStart = DateUtils.changeHour(dateEnd,-14*24);
 		//2 查数据库
-		List<Record>  gameValidInfo= Db.find(SqlKit.sql("data.reportForms.getGameInfoByDate"),new Object[]{dateStart,dateEnd});
+		List<Record>  gameValidInfo= Db.use(Consts.DB_POKERDATA).find(SqlKit.sql("data.reportForms.getGameInfoByDate"),new Object[]{dateStart,dateEnd});
 		
 		//Collections.reverse(gameValidInfo); 倒序
 		
@@ -62,7 +63,7 @@ public class PlayerStatisicController extends EasyuiController<Record>{
   		long dateEnd = DateUtils.getCurrentZeroTime();
 		long dateStart = DateUtils.changeHour(dateEnd,-14*24);
 		// 2 查数据库
-		List<Record>  gameInfo= Db.find(SqlKit.sql("data.reportForms.getBlindInfoByType"),new Object[]{type,dateStart,dateEnd});
+		List<Record>  gameInfo= Db.use(Consts.DB_POKERDATA).find(SqlKit.sql("data.reportForms.getBlindInfoByType"),new Object[]{type,dateStart,dateEnd});
 		
 		//Collections.reverse(gameInfo);  倒叙 
 		DataGrid<Record> data = new DataGrid<Record>();
