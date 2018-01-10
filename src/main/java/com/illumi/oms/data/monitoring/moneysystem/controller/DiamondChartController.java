@@ -149,7 +149,7 @@ public class DiamondChartController extends EasyuiController<Record>{
 		String urlMethod = "POST";
 		String urlhead = "ilumi_payment_";
 		String urlend = "/_search?request_cache=false";
-		List<RankInfo> list = ELKUtils.getRankInfoTemp(urlMethod, urlhead, urlend, target, time, order);
+		List<RankInfo> list = ELKUtils.getRankInfo(urlMethod, urlhead, urlend, target, time, order);
 		data.setData(list);
 		renderGson(data);
 	}
@@ -178,6 +178,8 @@ public class DiamondChartController extends EasyuiController<Record>{
 		String url = ELKUtils.getUrl(endtime, urlhead, urlend,new SimpleDateFormat("yyyy-MM") );
 		String jsonString=getRechargeTimesRequest(stime,endtime);
 		//List<RankInfo> list = ELKUtils.getRankInfo(urlMethod, urlhead, urlend, target, time, order);
+		System.out.println(url);
+		System.out.println(jsonString);
 		List<RankInfo> list = ELKUtils.getRankInfo(jsonString, urlMethod, url);
 		data.setData(list);
 		renderGson(data);
@@ -191,7 +193,7 @@ public class DiamondChartController extends EasyuiController<Record>{
  		String urlMethod = "POST";
 		String urlhead = "ilumi_payment_";
 		String urlend = "/_search?request_cache=false";
-		List<RankInfo> list = ELKUtils.getRankInfoTemp(urlMethod, urlhead, urlend, target, time, order);
+		List<RankInfo> list = ELKUtils.getRankInfo(urlMethod, urlhead, urlend, target, time, order);
  		//除以100
 		for(RankInfo rank:list) {
 			Object change = rank.getChange();
@@ -243,7 +245,7 @@ public class DiamondChartController extends EasyuiController<Record>{
  				"      }, \"aggs\": {   \n" + 
  				"        \"sum\":{\n" + 
  				"     \"terms\": {\n" + 
- 				"       \"field\": \"ChannelId\",\n" + 
+ 				"       \"field\": \"channelid\",\n" + 
  				"       \"show_term_doc_count_error\": true,\n" + 
  				"       \"shard_size\": 30,\n" + 
  				"       \"order\": {\n" + 
@@ -278,7 +280,7 @@ public class DiamondChartController extends EasyuiController<Record>{
 				"  \"aggs\":{\n" + 
 				"    \"sum\":{\n" + 
 				"     \"terms\": {\n" + 
-				"       \"field\": \"Uuid\",\n" + 
+				"       \"field\": \"uuid\",\n" + 
 				"       \"show_term_doc_count_error\": true,\n" + 
 				"       \"shard_size\": 100000,\n" + 
 				"       \"order\": {\n" + 
@@ -287,7 +289,7 @@ public class DiamondChartController extends EasyuiController<Record>{
 				"      },\"aggs\": {\n" + 
 				"        \"money_sum\": {\n" + 
 				"          \"value_count\": {\n" + 
-				"            \"field\": \"Uuid\"\n" + 
+				"            \"field\": \"uuid\"\n" + 
 				"          }\n" + 
 				"        }\n" + 
 				"      }\n" + 

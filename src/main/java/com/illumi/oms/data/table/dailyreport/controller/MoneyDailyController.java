@@ -103,7 +103,7 @@ public class MoneyDailyController extends ExcelController {
 		renderJson(data);
 	}
 	public void download() {
-		String[] head1 = { "日期", "服务费", "互动道具", "魔法表情", "翻翻看", "弹幕", "扑克机", "加勒比", "牛牛—一粒大米", "八八碰—一粒大米", "打赏牌谱",
+		String[] head1 = { "日期", "服务费", "互动道具", "魔法表情", "翻翻看", "弹幕", "扑克机", "加勒比", "牛牛_一粒大米", "八八碰_一粒大米","奔驰宝马_一粒大米","捕鱼_一粒大米","打赏牌谱",
 				"德扑币报名MTT", "汇总" };
 		String[] head2 = { "日期", "联盟局", "修改昵称", "延时道具", "MTT门票", "俱乐部推送", "俱乐部改名", "汇总" };
 

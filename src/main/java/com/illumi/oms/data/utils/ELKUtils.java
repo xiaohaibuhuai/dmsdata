@@ -109,24 +109,7 @@ public class ELKUtils {
 		return null;
 	}
 
-	// 排名信息获取
-	public static List<RankInfo> getRankInfoTemp(String urlMethod,String urlhead,String urlend ,String target, long time, String order) {
-		long nowTime = new Date().getTime();
-		long startTime = nowTime + time;
-		String url = getUrl(startTime, urlhead, urlend, new SimpleDateFormat("yyyy-MM"));
-		String jsonString = "{\n" + "  \"query\": {\n" + "    \"constant_score\": {\n"
-				+ "      \"filter\": {\"range\": {\n" + "        \"@timestamp\": {\n" + "          \"gte\": \""
-				+ startTime + "\",\n" + "          \"lte\": \"" + nowTime + "\"\n" + "        }\n" + "      }}\n"
-				+ "    }\n" + "  },\n" + "  \"aggs\":{\n" + "    \"sum\":{\n" + "     \"terms\": {\n"
-				+ "       \"field\": \"Uuid\",\n" + "       \"show_term_doc_count_error\": true,\n"
-				+ "       \"shard_size\": 100000,\n" + "       \"order\": {\n" + "         \"money_sum\": \"" + order
-				+ "\"\n" + "       }\n" + "      },\"aggs\": {\n" + "        \"money_sum\": {\n"
-				+ "          \"sum\": {\n" + "            \"field\": \"" + target + "\"\n" + "          }\n"
-				+ "        }\n" + "      }\n" + "    }\n" + "  }\n" + "}";
-
-
-		return getRankInfo(jsonString, urlMethod, url);
-	}
+	
 	
 	public static List<RankInfo> getRankInfo(String urlMethod,String urlhead,String urlend ,String target, long time, String order) {
 		long nowTime = new Date().getTime();
@@ -141,7 +124,6 @@ public class ELKUtils {
 				+ "\"\n" + "       }\n" + "      },\"aggs\": {\n" + "        \"money_sum\": {\n"
 				+ "          \"sum\": {\n" + "            \"field\": \"" + target + "\"\n" + "          }\n"
 				+ "        }\n" + "      }\n" + "    }\n" + "  }\n" + "}";
-
 
 		return getRankInfo(jsonString, urlMethod, url);
 	}
@@ -426,7 +408,7 @@ public class ELKUtils {
 		try {
 			String jsonstring = EntityUtils.toString(response.getEntity());
 //			System.out.println("***************Response Json***************");
-//			System.out.println(jsonstring);
+			//System.out.println(jsonstring);
 			
 			JSONObject jsonObj = JSON.parseObject(jsonstring);
 			JSONObject ag = jsonObj.getJSONObject("aggregations");
