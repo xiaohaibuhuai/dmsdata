@@ -1,5 +1,6 @@
 package com.illumi.oms.data.table.weekreport.controller;
 
+import com.illumi.oms.common.Consts;
 import com.illumi.oms.common.UrlConfig;
 import com.illumi.oms.data.model.ExcelTableSheet;
 import com.illumi.oms.data.utils.ExcelController;
@@ -99,12 +100,12 @@ public class ClubWeekController extends ExcelController{
 		if(rows == 0 && page == 0){
 			//不包含分页查询
 			log.info("不分页查询sql");
-			return Db.find(SqlKit.sql("data.clubWeek.getClubLevelWeeklyWithoutPage"), new Object[]{dateStart, dateEnd});
+			return Db.use(Consts.DB_POKERDATA).find(SqlKit.sql("data.clubWeek.getClubLevelWeeklyWithoutPage"), new Object[]{dateStart, dateEnd});
 		}else {
 			//分页查询
 			log.info("分页查询sql");
 			int limitStart = (page - 1) * rows;
-			return Db.find(SqlKit.sql("data.clubWeek.getClubLevelWeeklyWithPage"), new Object[]{dateStart, dateEnd, limitStart, rows});
+			return Db.use(Consts.DB_POKERDATA).find(SqlKit.sql("data.clubWeek.getClubLevelWeeklyWithPage"), new Object[]{dateStart, dateEnd, limitStart, rows});
 		}
 	}
 
@@ -114,7 +115,7 @@ public class ClubWeekController extends ExcelController{
 	 * @date 2016-12-08 17:18:30
 	 * */
 	private Long getDataAmount(String dateStart,String dateEnd){
-		return Db.queryLong(SqlKit.sql("data.clubWeek.getClubLevelWeeklyCount"),new Object[] {dateStart,dateEnd});
+		return Db.use(Consts.DB_POKERDATA).queryLong(SqlKit.sql("data.clubWeek.getClubLevelWeeklyCount"),new Object[] {dateStart,dateEnd});
 	}
 
 	/**

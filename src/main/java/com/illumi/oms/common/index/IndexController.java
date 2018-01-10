@@ -91,13 +91,13 @@ public class IndexController extends Controller {
         if (user != null) {
 
 
-//          DubboService dubboService = (DubboService) IocInterceptor.ctx.getBean("dubboService");
-//          state = dubboService.userLogin(account, string2MD5(result[1]));
-            if (account.equals("17073549066")) {
-                state = 203513;
-            } else {
-                state = 203512;
-            }
+          DubboService dubboService = (DubboService) IocInterceptor.ctx.getBean("dubboService");
+          state = dubboService.userLogin(account, string2MD5(result[1]));
+//            if (account.equals("17073549066")) {
+//                state = 203513;
+//            } else {
+//                state = 203512;
+//            }
             if (state == 0) {
                 forwardAction("未返回用户信息", UrlConfig.LOGIN);
             } else if (state == 1) {

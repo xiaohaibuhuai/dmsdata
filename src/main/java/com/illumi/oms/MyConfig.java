@@ -63,8 +63,8 @@ public class MyConfig extends JFinalConfig
 		me.setError403View("/page/error/403.html");
 		me.setError500View("/page/error/500.html");
 		
-//		new ConfigPlugin("config.txt").reload(false).start();
-		new ConfigPlugin("dev.txt").reload(false).start();
+		new ConfigPlugin("config.txt").reload(false).start();
+//		new ConfigPlugin("dev.txt").reload(false).start();
 //		new ConfigPlugin("test.txt").reload(false).start();
 		me.setDevMode(isDev);
 		// me.setViewType(ViewType.OTHER);
@@ -148,7 +148,7 @@ public class MyConfig extends JFinalConfig
 		QuartzPlugin quartzPlugin = new QuartzPlugin();
 		me.add(quartzPlugin);
 		//Spring
-//		me.add(new SpringPlugin());
+		me.add(new SpringPlugin());
 		//me.add(new SpringPlugin("//home/dyp/data/git/mytest/oms/target/oms-web/WEB-INF/classes/applicationContext.xml"));
 	}
 
