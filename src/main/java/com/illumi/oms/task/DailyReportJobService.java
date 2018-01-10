@@ -1,11 +1,15 @@
 package com.illumi.oms.task;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
+import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.http.ParseException;
+import org.apache.http.util.EntityUtils;
 import org.elasticsearch.client.Response;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -20,6 +24,7 @@ import com.illumi.oms.data.utils.ArithUtils;
 import com.illumi.oms.data.utils.DateUtils;
 import com.illumi.oms.data.utils.ELKUtils;
 import com.illumi.oms.data.utils.LogMapperUtils;
+import com.illumi.oms.data.utils.Look;
 import com.jayqqaa12.jbase.jfinal.ext.model.EasyuiModel;
 import com.jfinal.ext.plugin.sqlinxml.SqlKit;
 import com.jfinal.log.Logger;
@@ -33,50 +38,54 @@ public class DailyReportJobService implements Job{
 	private String[] rechargeMapperArr= {"101","102","201","202","301","302","303","401","402","403","sum"};
 //	private Map<String,String> diamondMapperMap = null;
 //	private Map<String,String> moneyMapperMap = null;
+
+	public static void main(String[] args) {
+
+	}
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
-		 log.info("记录每日日报快照任务开始...");
+		log.info("记录每日日报快照任务开始...");
 		//1 执行recharge充值日报
-		 long zeroTime = DateUtils.changeHour(DateUtils.getCurrentZeroTime(), -24);
-		 startJob(zeroTime);
-		 
+		long zeroTime = DateUtils.changeHour(DateUtils.getZeroTime(new Date()), -24);
+		startJob(zeroTime);
+
 		//2 执行循环任务
 		//defineExcuteByDay(zeroTime, 30);
-		
-		 log.info("记录每日开局快照任务结束...");
+
+		log.info("记录每日开局快照任务结束...");
 	}
-	
-	
-	
-	
+
+
+
+
 	public void startJob(long zeroTime) {
-	   
+
 		//0 查一天 起始时间和结束时间一致
 		try {
-		//1 执行recharge充值日报
-		//rechargeJob(zeroTime);
-		//2 执行diamond
-		//diamondJob(zeroTime,zeroTime);
-		//3 执行德扑币
-		//moneyJob(zeroTime,zeroTime);
-		
-		//4执行德扑币充值日报
-		rechargeDiamondJob(zeroTime);
+			//1 执行recharge充值日报
+			rechargeJob(zeroTime);
+			//2 执行diamond
+			diamondJob(zeroTime,zeroTime);
+			//3 执行德扑币
+			moneyJob(zeroTime,zeroTime);
+
+			//4执行德扑币充值日报
+			rechargeDiamondJob(zeroTime);
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		
+
+
 	}
-	
-	
+
+
 
 
 
 
 
 	private void rechargeDiamondJob(long zeroTime) {
-		String termsFiled = "ChannelId";
+		String termsFiled = "channelid";
 		String sumFiled  = "diamond_change_no";
 		String urlhead = "ilumi_payment_";
 		String urlend = "/_search?size=30";
@@ -87,19 +96,19 @@ public class DailyReportJobService implements Job{
 		Map<Long, Map<String, Long>> fullMap = ELKUtils.paseDailyResponse(fullData, "money");
 		//填充数据
 		DiamondRechargeSnapShotDate all = fillDiamondRechargeData(fullMap,0,DiamondRechargeSnapShotDate.class);
-		
-		
+
+
 		//国外
 		Response abroadData = ResponseAbroadData(zeroTime, zeroTime, termsFiled, sumFiled,url,method);
 		Map<Long, Map<String, Long>> abroadMap = ELKUtils.paseDailyResponse(abroadData, "money");
 		DiamondRechargeSnapShotDate abroad = null;
 		if(abroadMap.values().size()!=0) {
-		 abroad = fillDiamondRechargeData(abroadMap,2,DiamondRechargeSnapShotDate.class);
+			abroad = fillDiamondRechargeData(abroadMap,2,DiamondRechargeSnapShotDate.class);
 		}else {
 			abroad = new DiamondRechargeSnapShotDate();
 			abroad.set("targetdate", all.get("targetdate"));
 			abroad.set("type", 2);
-			for(String s : rechargeMapperArr) {	
+			for(String s : rechargeMapperArr) {
 				abroad.set(s,0);
 			}
 		}
@@ -107,54 +116,54 @@ public class DailyReportJobService implements Job{
 		DiamondRechargeSnapShotDate  domestic = new DiamondRechargeSnapShotDate();
 		domestic.set("targetdate", all.get("targetdate"));
 		domestic.set("type", 1);
-		for(String s : rechargeMapperArr) {	
+		for(String s : rechargeMapperArr) {
 			String str1 = all.get(s)+"";
 			double a = Double.parseDouble(str1.equals("null")?"0.0":str1);
 			String str2 = abroad.get(s)+"";
 			double b = Double.parseDouble(str2.equals("null")?"0.0":str2);
 			domestic.set(s, ArithUtils.sub(a, b));
 		}
-		
-		
+
+
 		boolean isuccess1 = all.saveAndCreateDate();
 		boolean isuccess2 = abroad.saveAndCreateDate();
-		boolean isuccess3 = domestic.saveAndCreateDate();		
+		boolean isuccess3 = domestic.saveAndCreateDate();
 		log.info("t_Recharge_daily_snapshot[type 0 :"+isuccess1+"|| type 1:"+isuccess2+"||type 2 "+isuccess3+"]"+"日期:"+DateUtils.getDateFormat4Day().format(zeroTime));
-		
-		
+
+
 	}
 
 
 
 
 	private void rechargeJob(long zeroTime) {
-		String termsFiled = "ChannelId";
+		String termsFiled = "channelid";
 		String sumFiled  = "cach_earn_no";
 		String urlhead = "ilumi_payment_";
 		String urlend = "/_search?size=30";
 		String method = "GET";
 		String url = urlhead+new SimpleDateFormat("yyyy-MM").format(zeroTime)+urlend;
-		
-	
-		
+
+
+
 		Response fullData = ResponseFullData(zeroTime, zeroTime, termsFiled, sumFiled,url,method);
 		//全部
 		Map<Long, Map<String, Long>> fullMap = ELKUtils.paseDailyResponse(fullData, "money");
 		//填充数据
 		RechargeSnapShotDate all = fillRechargeData(fullMap,0,RechargeSnapShotDate.class);
-		
-		
+
+
 		//国外
 		Response abroadData = ResponseAbroadData(zeroTime, zeroTime, termsFiled, sumFiled,url,method);
 		Map<Long, Map<String, Long>> abroadMap = ELKUtils.paseDailyResponse(abroadData, "money");
 		RechargeSnapShotDate abroad = null;
 		if(abroadMap.values().size()!=0) {
-		 abroad = fillRechargeData(abroadMap,2,RechargeSnapShotDate.class);
+			abroad = fillRechargeData(abroadMap,2,RechargeSnapShotDate.class);
 		}else {
 			abroad = new RechargeSnapShotDate();
 			abroad.set("targetdate", all.get("targetdate"));
 			abroad.set("type", 2);
-			for(String s : rechargeMapperArr) {	
+			for(String s : rechargeMapperArr) {
 				abroad.set(s,0);
 			}
 		}
@@ -162,63 +171,152 @@ public class DailyReportJobService implements Job{
 		RechargeSnapShotDate  domestic = new RechargeSnapShotDate();
 		domestic.set("targetdate", all.get("targetdate"));
 		domestic.set("type", 1);
-		for(String s : rechargeMapperArr) {	
+		for(String s : rechargeMapperArr) {
 			String str1 = all.get(s)+"";
 			double a = Double.parseDouble(str1.equals("null")?"0.0":str1);
 			String str2 = abroad.get(s)+"";
 			double b = Double.parseDouble(str2.equals("null")?"0.0":str2);
 			domestic.set(s, ArithUtils.sub(a, b));
 		}
-		
-		
+
+
 		boolean isuccess1 = all.saveAndCreateDate();
 		boolean isuccess2 = abroad.saveAndCreateDate();
-		boolean isuccess3 = domestic.saveAndCreateDate();		
+		boolean isuccess3 = domestic.saveAndCreateDate();
 		log.info("t_Recharge_daily_snapshot[type 0 :"+isuccess1+"|| type 1:"+isuccess2+"||type 2 "+isuccess3+"]"+"日期:"+DateUtils.getDateFormat4Day().format(zeroTime));
-		
+
 	}
 	private void moneyJob(long startTime, long zeroTime) {
 		String termsFiled = "action_name";
-		String sumFiled  = "money_change_no";
-		String urlend = "/_search?size=30";
+		String sumFiled  = "money_earn_no";
+		String urlend = "/_search?size=60";
 		String urlhead[] = {"ilumi_transactionlog_","ilumi_minigame_"};
 		String method = "GET";
-	//	String url = ELKUtils.getUrl(startTime, urlhead, urlend, new SimpleDateFormat("yyyy-MM"));
+		//	String url = ELKUtils.getUrl(startTime, urlhead, urlend, new SimpleDateFormat("yyyy-MM"));
 		String url = urlhead[0]+new SimpleDateFormat("yyyy-MM").format(zeroTime)+","+urlhead[1]+new SimpleDateFormat("yyyy-MM").format(zeroTime)+urlend;
-		
+
+
+		//小游戏
+		String termsFiled_game = "game_type";
+		String sumFiled_game  = "money_earn_no";
+		String url_game = urlhead[1]+new SimpleDateFormat("yyyy-MM").format(zeroTime)+urlend;
+		String method_game = "GET";
+
+
+
+		//表情
+		String termsFiled_look = "emoticon";
+		String sumFiled_look  = "money_earn_no";
+		String url_look = urlhead[0]+new SimpleDateFormat("yyyy-MM").format(zeroTime)+urlend;
+		String method_look = "GET";
+
+
+		Response fullSmallGameData = ResponseFullData(startTime, zeroTime, termsFiled_game, sumFiled_game,url_game,method_game);
 		Response fullData = ResponseFullData(startTime, zeroTime, termsFiled, sumFiled,url,method);
+		Response fullLookData = ResponseFullData(startTime, zeroTime, termsFiled_look, sumFiled_look,url_look,method_look);
 		Map<Long, Map<String, Long>> fullMap = ELKUtils.paseDailyResponse(fullData, "money");
+		Map<Long, Map<String, Long>> fullSmallGameMap = ELKUtils.paseDailyResponse(fullSmallGameData, "money");
+		Map<Long, Map<String, Long>> fullLookMap = ELKUtils.paseDailyResponse(fullLookData, "money");
+
 		MoneySnapShotDate all = fillMoneyData(fullMap,0);
+
+		//添加小游戏数据
+		fillMoneyGameData(all,fullSmallGameMap);
+
+		//添加表情
+		fillLookGameData(all,fullLookMap);
+
+
 		//国外
+		Response abroadLookData = ResponseAbroadData(startTime, zeroTime, termsFiled_look, sumFiled_look,url_look,method_look);
+		Response abroadSmallGameData = ResponseFullData(startTime, zeroTime, termsFiled_game, sumFiled_game,url_game,method_game);
 		Response abroadData = ResponseAbroadData(startTime, zeroTime, termsFiled, sumFiled,url,method);
+
 		Map<Long, Map<String, Long>> abroadMap = ELKUtils.paseDailyResponse(abroadData, "money");
+		Map<Long, Map<String, Long>> abroadSmallGameMap = ELKUtils.paseDailyResponse(abroadSmallGameData, "money");
+		Map<Long, Map<String, Long>> abroadLookMap = ELKUtils.paseDailyResponse(abroadLookData, "money");
+
 		MoneySnapShotDate abroad = fillMoneyData(abroadMap,2);
+		//填充小游戏
+		fillMoneyGameData(abroad,abroadSmallGameMap);
+		//填充表情
+		fillLookGameData(abroad,abroadLookMap);
+
 		if(abroadMap.values().size()!=0) {
-			 abroad = fillMoneyData(abroadMap,2);
-			}else {
-				abroad = new MoneySnapShotDate();
-				abroad.set("targetdate", all.get("targetdate"));
-				abroad.set("type", 2);
-				for(String s :LogMapperUtils.getMoneyMapper().keySet()) {	
-					abroad.set(s,0);
-				}
+			abroad = fillMoneyData(abroadMap,2);
+		}else {
+			abroad = new MoneySnapShotDate();
+			abroad.set("targetdate", all.get("targetdate"));
+			abroad.set("type", 2);
+			for(String s :LogMapperUtils.getMoneyMapper().keySet()) {
+				abroad.set(s,0);
 			}
+		}
 		//3国内
 		//国内
 		MoneySnapShotDate  domestic = new MoneySnapShotDate();
-	    domestic.set("targetdate", all.get("targetdate"));
+		domestic.set("targetdate", all.get("targetdate"));
 		domestic.set("type", 1);
-		for(String s : LogMapperUtils.getMoneyMapper().keySet()) {	
+		for(String s : LogMapperUtils.getMoneyMapper().keySet()) {
 			double a = Double.parseDouble(all.get(s)+"");
 			String str = abroad.get(s)+"";
 			double b = Double.parseDouble(str.equals("null")?"0.0":str);
 			domestic.set(s, ArithUtils.sub(a, b));
-		}	
+		}
 		boolean isuccess1 = all.saveAndCreateDate();
 		boolean isuccess2 = abroad.saveAndCreateDate();
-		boolean isuccess3 = domestic.saveAndCreateDate();		
+		boolean isuccess3 = domestic.saveAndCreateDate();
 		log.info("t_money_daily_snapshot[type 0 :"+isuccess1+"|| type 1:"+isuccess2+"||type 2 "+isuccess3+"]"+"日期:"+DateUtils.getDateFormat4Day().format(zeroTime));
-		
+
+	}
+	private void fillLookGameData(MoneySnapShotDate date, Map<Long, Map<String, Long>> LookMap) {
+		//1解析LookMap
+		Map<String, Look> lookMapper = LogMapperUtils.getLookMapper();
+		Long itemSum = 0L ;
+		Long magicfaceSum = 0L ;
+		for(Entry<Long, Map<String, Long>> entry :LookMap.entrySet()) {
+
+			Map<String, Long> valueMap = entry.getValue();
+
+			for(Entry<String,Long> e:valueMap.entrySet()) {
+				Look look = lookMapper.get(e.getKey());
+				if(look.getType().equals("互动道具")) {
+					itemSum =itemSum+e.getValue();
+				}else if(look.getType().equals("魔法表情")){
+					magicfaceSum =magicfaceSum+e.getValue();
+				}
+			}
+			date.set("Interprops", itemSum);
+			date.set("magic", magicfaceSum);
+
+		}
+
+
+
+	}
+	private void fillMoneyGameData(MoneySnapShotDate date, Map<Long, Map<String, Long>> SmallGameMap) {
+
+		try {
+			Map<String, String> mapper = LogMapperUtils.getMoneyMapper();
+
+			for(Entry<Long, Map<String, Long>> entry :SmallGameMap.entrySet()) {
+//			   System.out.println(entry.getKey()+"||maptime ");
+//			   System.out.println(date.get("targetdate")+"||datatime");
+				Map<String, Long> valueMap = entry.getValue();
+
+				for(Entry<String, String> e :mapper.entrySet()) {
+					if(valueMap.containsKey(e.getValue())) {
+						date.set(e.getKey(),valueMap.get(e.getValue()));
+					}
+				}
+
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+
+
+
 	}
 	private void diamondJob(long startTime, long zeroTime) {
 		String termsFiled = "action_name";
@@ -227,32 +325,32 @@ public class DailyReportJobService implements Job{
 		String urlhead[] = {"ilumi_transactionlog_","ilumi_minigame_"};
 		String method = "GET";
 		String url = urlhead[0]+new SimpleDateFormat("yyyy-MM").format(zeroTime)+","+urlhead[1]+new SimpleDateFormat("yyyy-MM").format(zeroTime)+urlend;
-		
-		
+
+
 		Response fullData = ResponseFullData(startTime, zeroTime, termsFiled, sumFiled,url,method);
 		Map<Long, Map<String, Long>> fullMap = ELKUtils.paseDailyResponse(fullData, "money");
 		DiamondSnapShotDate all = fillDiamondData(fullMap,0);
-		
+
 		//国外
 		Response abroadData = ResponseAbroadData(startTime, zeroTime, termsFiled, sumFiled,url,method);
 		Map<Long, Map<String, Long>> abroadMap = ELKUtils.paseDailyResponse(abroadData, "money");
 		DiamondSnapShotDate abroad = fillDiamondData(abroadMap,2);
 		if(abroadMap.values().size()!=0) {
-			 abroad = fillDiamondData(abroadMap,2);
-			}else {
-				abroad = new DiamondSnapShotDate();
-				abroad.set("targetdate", all.get("targetdate"));
-				abroad.set("type", 2);
-				for(String s :LogMapperUtils.getDiamondMapper().keySet()) {	
-					abroad.set(s,0);
-				}
+			abroad = fillDiamondData(abroadMap,2);
+		}else {
+			abroad = new DiamondSnapShotDate();
+			abroad.set("targetdate", all.get("targetdate"));
+			abroad.set("type", 2);
+			for(String s :LogMapperUtils.getDiamondMapper().keySet()) {
+				abroad.set(s,0);
 			}
+		}
 		//3国内
 		//国内
 		DiamondSnapShotDate  domestic = new DiamondSnapShotDate();
-	    domestic.set("targetdate", all.get("targetdate"));
+		domestic.set("targetdate", all.get("targetdate"));
 		domestic.set("type", 1);
-		for(String s : LogMapperUtils.getDiamondMapper().keySet()) {	
+		for(String s : LogMapperUtils.getDiamondMapper().keySet()) {
 			double a = Double.parseDouble(all.get(s)+"");
 			String str = abroad.get(s)+"";
 			double b = Double.parseDouble(str.equals("null")?"0.0":str);
@@ -260,11 +358,11 @@ public class DailyReportJobService implements Job{
 		}
 		boolean isuccess1 = all.saveAndCreateDate();
 		boolean isuccess2 = abroad.saveAndCreateDate();
-		boolean isuccess3 = domestic.saveAndCreateDate();		
+		boolean isuccess3 = domestic.saveAndCreateDate();
 		log.info("t_money_daily_snapshot[type 0 :"+isuccess1+"|| type 1:"+isuccess2+"||type 2 "+isuccess3+"]");
 	}
-	
-	
+
+
 	/**
 	 * 每个字段处理方法不同
 	 * @param dataMap
@@ -273,7 +371,7 @@ public class DailyReportJobService implements Job{
 	 */
 	private DiamondSnapShotDate fillDiamondData(Map<Long, Map<String, Long>> dataMap, int type) {
 		Map<String,String> mapper = LogMapperUtils.getDiamondMapper();
-		DiamondSnapShotDate ds = new DiamondSnapShotDate();		
+		DiamondSnapShotDate ds = new DiamondSnapShotDate();
 		//1设置类型
 		ds.set("type", type);
 		for(Entry<Long, Map<String, Long>> entry:dataMap.entrySet()) {
@@ -286,134 +384,135 @@ public class DailyReportJobService implements Job{
 				String log = e.getValue(); //日志字段
 				if(value.containsKey(log)) {
 					// 消耗变换量  乘负一
-					   ds.set(data, value.get(log)*-1);
-					   sum = ArithUtils.add(sum,value.get(log)*-1);
+					ds.set(data, value.get(log)*-1);
+					sum = ArithUtils.add(sum,value.get(log)*-1);
 				}else {
 					ds.set(data,0);
 				}
 
-		}
+			}
 			ds.set("sum", sum);
 			return ds;
-			
-      }
+
+		}
 		return ds;
 	}
-	
-	
-	
-	 //钻石充值   Long
-    private <T extends EasyuiModel>T fillDiamondRechargeData(Map<Long, Map<String, Long>> fullMap, Integer type,Class<T> clazz) {
-	   T rs = null;
-	try {
-		rs = clazz.newInstance();
-	} catch (Exception e) {
-		e.printStackTrace();
-	}
-	   rs.set("type",type);
-	   String[] arrs= {"101","102","201","202","301","302","303","401","402","403","sum"};
-	   Long sum = 0l;
-	   //只有一个map
-	   for(Entry<Long, Map<String, Long>> e :fullMap.entrySet()) {
-		   rs.set("targetdate", e.getKey());
-		   Map<String, Long> value = e.getValue();
-		   for(String s :arrs) {
-			   if(value.containsKey(s)) {
-				   long div = value.get(s);
-				   rs.set(s, div);
-				   sum=div+sum;
-			   }else {
-				   rs.set(s, 0);
-			   }
-			   
-		   }
-		   rs.set("sum",sum);
-	       return  rs;   
-	   } 
-		return rs;
-	}
-	
-	
-    //充值
-    private <T extends EasyuiModel>T fillRechargeData(Map<Long, Map<String, Long>> fullMap, Integer type,Class<T> clazz) {
-	   T rs = null;
-	try {
-		rs = clazz.newInstance();
-	} catch (Exception e) {
-		e.printStackTrace();
-	}
-	   rs.set("type",type);
-	   String[] arrs= {"101","102","201","202","301","302","303","401","402","403","sum"};
-	   Double sum = 0.0;
-	   //只有一个map
-	   for(Entry<Long, Map<String, Long>> e :fullMap.entrySet()) {
-		   rs.set("targetdate", e.getKey());
-		   Map<String, Long> value = e.getValue();
-		   for(String s :arrs) {
-			   if(value.containsKey(s)) {
-				   double div = ArithUtils.div(value.get(s).doubleValue(),100);
-				   rs.set(s, div);
-				   sum = ArithUtils.add(sum, div);
-			   }else {
-				   rs.set(s, 0);
-			   }
-			   
-		   }
-		   rs.set("sum",sum);
-	       return  rs;   
-	   } 
+
+
+
+	//钻石充值   Long
+	private <T extends EasyuiModel>T fillDiamondRechargeData(Map<Long, Map<String, Long>> fullMap, Integer type,Class<T> clazz) {
+		T rs = null;
+		try {
+			rs = clazz.newInstance();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		rs.set("type",type);
+		String[] arrs= {"101","102","201","202","301","302","303","401","402","403","sum"};
+		Long sum = 0l;
+		//只有一个map
+		for(Entry<Long, Map<String, Long>> e :fullMap.entrySet()) {
+			rs.set("targetdate", e.getKey());
+			Map<String, Long> value = e.getValue();
+			for(String s :arrs) {
+				if(value.containsKey(s)) {
+					long div = value.get(s);
+					rs.set(s, div);
+					sum=div+sum;
+				}else {
+					rs.set(s, 0);
+				}
+
+			}
+			rs.set("sum",sum);
+			return  rs;
+		}
 		return rs;
 	}
 
-    //德扑币
-    private MoneySnapShotDate fillMoneyData(Map<Long, Map<String, Long>> dataMap,Integer type) {
+
+	//充值
+	private <T extends EasyuiModel>T fillRechargeData(Map<Long, Map<String, Long>> fullMap, Integer type,Class<T> clazz) {
+		T rs = null;
+		try {
+			rs = clazz.newInstance();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		rs.set("type",type);
+		String[] arrs= {"101","102","201","202","301","302","303","401","402","403","sum"};
+		Double sum = 0.0;
+		//只有一个map
+		for(Entry<Long, Map<String, Long>> e :fullMap.entrySet()) {
+			rs.set("targetdate", e.getKey());
+			Map<String, Long> value = e.getValue();
+			for(String s :arrs) {
+				if(value.containsKey(s)) {
+					double div = ArithUtils.div(value.get(s).doubleValue(),100);
+					rs.set(s, div);
+					sum = ArithUtils.add(sum, div);
+				}else {
+					rs.set(s, 0);
+				}
+
+			}
+			rs.set("sum",sum);
+			return  rs;
+		}
+		return rs;
+	}
+
+	//德扑币
+	private MoneySnapShotDate fillMoneyData(Map<Long, Map<String, Long>> dataMap,Integer type) {
 		Map<String,String> mapper = LogMapperUtils.getMoneyMapper();
-		MoneySnapShotDate ds = new MoneySnapShotDate();		
+		MoneySnapShotDate ds = new MoneySnapShotDate();
 		//1设置类型
 		ds.set("type", type);
 		for(Entry<Long, Map<String, Long>> entry:dataMap.entrySet()) {
 			//2 时间
 			ds.set("targetdate", entry.getKey());
-			
+
 			Map<String, Long> value = entry.getValue();
 			Double sum=0.0;
 			for(Entry<String, String> e : mapper.entrySet()) {
 				String data = e.getKey(); // 数据库字段
 				String log = e.getValue(); //日志字段
 				if(value.containsKey(log)) {
-					   if(log.equals("玩家买入")) {
-						   ds.set(data, value.get(log)*0.1*-1);
-					   }else {
-						   //消耗变化量 乘负一
-						   ds.set(data, value.get(log)*-1);   
-					   }
-					   sum = ArithUtils.add(sum,value.get(log)*-1);
+					if(log.equals("玩家买入")) {
+						ds.set(data, value.get(log));
+					}else {
+						ds.set(data, value.get(log));
+					}
+					sum = ArithUtils.add(sum,value.get(log));
 				}else {
 					ds.set(data,0);
 				}
 
-		}
+			}
 			ds.set("sum", sum);
 			return ds;
-			
-      }
+
+		}
 		return ds;
 	}
-	
-	
+
+
 	private Response ResponseFullData(Long dateStart, Long dateEnd,String termsFiled,String sumFiled,String url,String method) {
 		String jsonString = getRequestJson(dateStart, dateEnd,termsFiled,sumFiled);
 //		System.out.println(jsonString);
 //		System.out.println(method);
 //		System.out.println(url);
 		Response response = ELKUtils.getData(jsonString, method, url);
+
+
 		return response;
 	}
-	
-	
-	
+
+
+
 	private Response ResponseAbroadData(Long dateStart, Long dateEnd,String termsFiled,String sumFiled,String url,String method) {
-	
+
 		List<Record> uuids = initUuid();
 		//log.info("uuids Num:"+uuids.size());
 		String jsonString = getRequestAbroadJson(dateStart,dateEnd,uuids,termsFiled,sumFiled);
@@ -423,14 +522,14 @@ public class DailyReportJobService implements Job{
 //		}
 		return response;
 	}
-	
-	
-	
+
+
+
 	private List<Record> initUuid() {
 		if(uuids==null) {
-			uuids = Db.use(Consts.DB_POKER2).find(SqlKit.sql("data.reportForms.getForeignUUID"));
+			uuids = Db.use(Consts.DB_POKER).find(SqlKit.sql("data.reportForms.getForeignUUID"));
 			System.out.println("********访问数据库*********");
-			
+
 		}
 		return uuids;
 	}
@@ -444,114 +543,116 @@ public class DailyReportJobService implements Job{
 				uuids+="\""+target+"\""+",";
 			}
 		}
-		String json="{\n" + 
-				"  \"query\": {\n" + 
-				"    \"bool\": {\n" + 
-				"      \"must\": [\n" + 
-				"        {\"constant_score\": {\n" + 
-				"          \"filter\": {\n" + 
-				"            \"range\": {\n" + 
-				"              \"@timestamp\": {\n" + 
-				"                \"gte\": \""+DateUtils.getDateFormat4Day().format(dateStart)+"\",\n" + 
-				"                \"lte\": \""+DateUtils.getDateFormat4Day().format(dateEnd)+"\",\n" + 
-				"                \"time_zone\":\"+08:00\"\n" + 
-				"              }\n" + 
-				"            }\n" + 
-				"          },\n" + 
-				"          \"boost\": 1.2\n" + 
-				"        }\n" + 
-				"          \n" + 
-				"        },{\n" + 
-				"          \"constant_score\": {\n" + 
-				"            \"filter\": {\n" + 
-				"              \"terms\": {\n" + 
-				"                \"Uuid\": [\n" + 
-                "                  "+uuids+"\n" + 
-				"                ]\n" + 
-				"              }\n" + 
-				"            },\n" + 
-				"            \"boost\": 1.2\n" + 
-				"          }\n" + 
-				"        }\n" + 
-				"      ]\n" + 
-				"    }\n" + 
-				"  },\n" + 
-				"  \"aggs\": {\n" + 
-				"    \"NAME\": {\n" + 
-				"      \"date_histogram\": {\n" + 
-				"        \"field\": \"@timestamp\",\n" + 
-				"        \"interval\": \"day\",\n" + 
-				"          \"time_zone\":\"+08:00\"\n" + 
-				"      }, \"aggs\": {   \n" + 
-				"        \"sum\":{\n" + 
-				"     \"terms\": {\n" + 
-				"       \"field\": \""+termsFiled+"\",\n" + 
-				"       \"show_term_doc_count_error\": true,\n" + 
-				"       \"shard_size\": 30,\n" + 
-				"       \"order\": {\n" + 
-				"         \"money_sum\": \"desc\"\n" + 
-				"       }\n" + 
-				"      },\"aggs\": {\n" + 
-				"        \"money_sum\": {\n" + 
-				"          \"sum\": {\n" + 
-				"            \"field\": \""+sumFiled+"\"\n" + 
-				"          }\n" + 
-				"        }\n" + 
-				"      }\n" + 
-				"    }}\n" + 
-				"    }\n" + 
-				"  }\n" + 
-				"  \n" + 
+		String json="{\n" +
+				"  \"query\": {\n" +
+				"    \"bool\": {\n" +
+				"      \"must\": [\n" +
+				"        {\"constant_score\": {\n" +
+				"          \"filter\": {\n" +
+				"            \"range\": {\n" +
+				"              \"@timestamp\": {\n" +
+				"                \"gte\": \""+DateUtils.getDateFormat4Day().format(dateStart)+"\",\n" +
+				"                \"lte\": \""+DateUtils.getDateFormat4Day().format(dateEnd)+"\",\n" +
+				"                \"time_zone\":\"+08:00\"\n" +
+				"              }\n" +
+				"            }\n" +
+				"          },\n" +
+				"          \"boost\": 1.2\n" +
+				"        }\n" +
+				"          \n" +
+				"        },{\n" +
+				"          \"constant_score\": {\n" +
+				"            \"filter\": {\n" +
+				"              \"terms\": {\n" +
+				"                \"uuid\": [\n" +
+				"                  "+uuids+"\n" +
+				"                ]\n" +
+				"              }\n" +
+				"            },\n" +
+				"            \"boost\": 1.2\n" +
+				"          }\n" +
+				"        }\n" +
+				"      ]\n" +
+				"    }\n" +
+				"  },\n" +
+				"  \"aggs\": {\n" +
+				"    \"NAME\": {\n" +
+				"      \"date_histogram\": {\n" +
+				"        \"field\": \"@timestamp\",\n" +
+				"        \"interval\": \"day\",\n" +
+				"          \"time_zone\":\"+08:00\"\n" +
+				"      }, \"aggs\": {   \n" +
+				"        \"sum\":{\n" +
+				"     \"terms\": {\n" +
+				"       \"field\": \""+termsFiled+"\",\n" +
+				"       \"show_term_doc_count_error\": true,\n" +
+				"       \"shard_size\": 60,\n" +
+				"  \"size\": 50,"+
+				"       \"order\": {\n" +
+				"         \"money_sum\": \"desc\"\n" +
+				"       }\n" +
+				"      },\"aggs\": {\n" +
+				"        \"money_sum\": {\n" +
+				"          \"sum\": {\n" +
+				"            \"field\": \""+sumFiled+"\"\n" +
+				"          }\n" +
+				"        }\n" +
+				"      }\n" +
+				"    }}\n" +
+				"    }\n" +
+				"  }\n" +
+				"  \n" +
 				"}";
 		return json;
 	}
 
-	
-    private String getRequestJson(Long stime, Long etime,String termsFiled,String sumFiled) {
-	
-		String json="{\n" + 
-				"  \"query\": {\n" + 
-				"    \"constant_score\": {\n" + 
-				"      \"filter\": {\"range\": {\n" + 
-				"        \"@timestamp\": {\n" + 
-				"          \"gte\": \""+DateUtils.getDateFormat4Day().format(stime)+"\",\n" + 
-				"          \"lte\": \""+DateUtils.getDateFormat4Day().format(etime)+"\",\n" + 
-				"          \"time_zone\":\"+08:00\"\n" + 
-				"\n" + 
-				"        }\n" + 
-				"      }}\n" + 
-				"    }\n" + 
-				"  },\n" + 
-				"  \"aggs\": {\n" + 
-				"    \"NAME\": {\n" + 
-				"      \"date_histogram\": {\n" + 
-				"        \"field\": \"@timestamp\",\n" + 
-				"        \"interval\": \"day\",\n" + 
-				"          \"time_zone\":\"+08:00\"\n" + 
-				"      }, \"aggs\": {   \n" + 
-				"        \"sum\":{\n" + 
-				"     \"terms\": {\n" + 
-				"       \"field\": \""+termsFiled+"\",\n" + 
-				"       \"show_term_doc_count_error\": true,\n" + 
-				"       \"shard_size\": 30,\n" + 
-				"       \"order\": {\n" + 
-				"         \"money_sum\": \"desc\"\n" + 
-				"       }\n" + 
-				"      },\"aggs\": {\n" + 
-				"        \"money_sum\": {\n" + 
-				"          \"sum\": {\n" + 
-				"            \"field\": \""+sumFiled+"\"\n" + 
-				"          }\n" + 
-				"        }\n" + 
-				"      }\n" + 
-				"    }}\n" + 
-				"    }\n" + 
-				"  }\n" + 
-				"  \n" + 
+
+	private String getRequestJson(Long stime, Long etime,String termsFiled,String sumFiled) {
+
+		String json="{\n" +
+				"  \"query\": {\n" +
+				"    \"constant_score\": {\n" +
+				"      \"filter\": {\"range\": {\n" +
+				"        \"@timestamp\": {\n" +
+				"          \"gte\": \""+DateUtils.getDateFormat4Day().format(stime)+"\",\n" +
+				"          \"lte\": \""+DateUtils.getDateFormat4Day().format(etime)+"\",\n" +
+				"          \"time_zone\":\"+08:00\"\n" +
+				"\n" +
+				"        }\n" +
+				"      }}\n" +
+				"    }\n" +
+				"  },\n" +
+				"  \"aggs\": {\n" +
+				"    \"NAME\": {\n" +
+				"      \"date_histogram\": {\n" +
+				"        \"field\": \"@timestamp\",\n" +
+				"        \"interval\": \"day\",\n" +
+				"          \"time_zone\":\"+08:00\"\n" +
+				"      }, \"aggs\": {   \n" +
+				"        \"sum\":{\n" +
+				"     \"terms\": {\n" +
+				"       \"field\": \""+termsFiled+"\",\n" +
+				"       \"show_term_doc_count_error\": true,\n" +
+				"       \"shard_size\": 60,\n" +
+				"  \"size\": 50,"+
+				"       \"order\": {\n" +
+				"         \"money_sum\": \"desc\"\n" +
+				"       }\n" +
+				"      },\"aggs\": {\n" +
+				"        \"money_sum\": {\n" +
+				"          \"sum\": {\n" +
+				"            \"field\": \""+sumFiled+"\"\n" +
+				"          }\n" +
+				"        }\n" +
+				"      }\n" +
+				"    }}\n" +
+				"    }\n" +
+				"  }\n" +
+				"  \n" +
 				"}";
-  
+
 		return json;
-}
+	}
 
     /*
     private Map<String, String> initDiamondMapper() {
@@ -602,22 +703,22 @@ public class DailyReportJobService implements Job{
     	
     }
     */
-    
-    /**
-     * 
-     * @param zeroTime
-     * @param num
-     */
-    public void defineExcuteByDay(long zeroTime, int num) {
-    	
-    	  for(int i=0;i<num-1;i++) {
-    		  zeroTime = DateUtils.changeHour(zeroTime, -24);
-       }
-   
-      
-      for(int i=0;i<num;i++) {
-   	    startJob(zeroTime);
-   	    zeroTime = DateUtils.changeHour(zeroTime, +24);
-     }
-    } 
+
+	/**
+	 *
+	 * @param zeroTime
+	 * @param num
+	 */
+	public void defineExcuteByDay(long zeroTime, int num) {
+
+		for(int i=0;i<num-1;i++) {
+			zeroTime = DateUtils.changeHour(zeroTime, -24);
+		}
+
+
+		for(int i=0;i<num;i++) {
+			startJob(zeroTime);
+			zeroTime = DateUtils.changeHour(zeroTime, +24);
+		}
+	}
 }

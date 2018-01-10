@@ -397,7 +397,6 @@ public class ELKUtils {
             String jsonstring = EntityUtils.toString(response.getEntity());
 //			System.out.println("***************Response Json***************");
 //			System.out.println(jsonstring);
-            log.info("jsonstring = " + jsonstring);
             JSONObject jsonObj = JSON.parseObject(jsonstring);
             JSONObject ag = jsonObj.getJSONObject("aggregations");
             JSONObject na = ag.getJSONObject("NAME");
