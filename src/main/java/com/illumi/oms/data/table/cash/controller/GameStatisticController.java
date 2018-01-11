@@ -123,8 +123,8 @@ public class GameStatisticController extends EasyuiController<Record> {
 		List<String> dates = getDays(dateStart, target);
 		String sqlSum = getgamenumSql();
 		String sqlValid = getGameValidSql();
-		List<Record> recordSum = Db.use(Consts.DB_POKERDATA).findByCache("getRecordSumByDate", dateEnd, sqlSum, new Object[] { dateStart, dateEnd });
-		List<Record> recordValid = Db.use(Consts.DB_POKERDATA).findByCache("getVaildRecordSumByDate", dateEnd, sqlValid, new Object[] { dateStart, dateEnd });
+		List<Record> recordSum = Db.use(Consts.DB_POKER2).findByCache("getRecordSumByDate", dateEnd, sqlSum, new Object[] { dateStart, dateEnd });
+		List<Record> recordValid = Db.use(Consts.DB_POKER2).findByCache("getVaildRecordSumByDate", dateEnd, sqlValid, new Object[] { dateStart, dateEnd });
 		// 去重
 		List<Long> sum = parseRecord(recordSum, dates, target);
 		List<Long> valid = parseRecord(recordValid, dates, target);
