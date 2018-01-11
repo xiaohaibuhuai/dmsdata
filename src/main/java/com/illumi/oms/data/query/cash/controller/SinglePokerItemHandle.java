@@ -83,7 +83,7 @@ public class SinglePokerItemHandle {
 	 */
 	private String getUserName(Long uuid) {
 		if(!map.containsKey(uuid)) {
-			String name = Db.use(Consts.DB_POKER2).queryStr(SqlKit.sql("data.SinglePoker.getUserNickNameByid"), uuid);
+			String name = Db.use(Consts.DB_POKER).queryStr(SqlKit.sql("data.SinglePoker.getUserNickNameByid"), uuid);
 			if (name != null) {
 				map.put(uuid, name);
 				return name;
