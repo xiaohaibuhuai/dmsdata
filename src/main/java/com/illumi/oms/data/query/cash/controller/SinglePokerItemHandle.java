@@ -101,11 +101,11 @@ public class SinglePokerItemHandle {
 		// 优化只创建一个对象
 		SinglePokerItemInfo pinfo = new SinglePokerItemInfo();
 		// 1 uuid
-		String uuid = m.get("Uuid").toString();
+		String uuid = m.get("uuid").toString();
 		// 2 昵称
 		if (uuid != null) {
 			pinfo.setUuid(Long.parseLong(uuid));
-			String userName = getUserName(Long.parseLong(m.get("Uuid") + ""));
+			String userName = getUserName(Long.parseLong(m.get("uuid") + ""));
 			if (userName != null) {
 				pinfo.setNickName(userName);
 			}
@@ -271,7 +271,7 @@ public class SinglePokerItemHandle {
 
 	private SinglePokerItemInfo paseInsresult(Map<String, Object> m, String type) {
 		SinglePokerItemInfo sinfo = basePase(m, type);
-		if(m.get("Uuid").equals("1000")) {
+		if(m.get("uuid").equals("1000")) {
 			return null;
 		}
 		
@@ -292,7 +292,7 @@ public class SinglePokerItemHandle {
 
 	private SinglePokerItemInfo paseInsbuy(Map<String, Object> m, String type) {
 		SinglePokerItemInfo sinfo = basePase(m, type);
-		if(m.get("Uuid").equals("1000")) {
+		if(m.get("uuid").equals("1000")) {
 			return null;
 		}
 		sinfo.setValue(m.get("insbuy_number").toString());
