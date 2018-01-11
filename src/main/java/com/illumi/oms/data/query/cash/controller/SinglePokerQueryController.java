@@ -41,7 +41,11 @@ public class SinglePokerQueryController extends EasyuiController<Record>{
 		String roomid = getPara("roomid");
 		
 		//1根据gameid查 房间时间   减去一天
-		Record record = Db.use(Consts.DB_POKER2).queryFirst(SqlKit.sql("data.SinglePoker.getTimeByRoomid"),roomid);
+		Record record = Db.use(Consts.DB_POKER2).findFirst(SqlKit.sql("data.SinglePoker.getTimeByRoomid"),roomid);
+		if(record == null){
+		    renderJson("0");
+		    return;
+		}
 		Long startTime = record.getLong("createtime");
 	    Integer overtag = record.getInt("overtag");
 		//Integer overtag = 0;
