@@ -58,7 +58,7 @@ public class GameStatisticController extends EasyuiController<Record> {
 		long dateEnd = DateUtils.getCurrentZeroTime();
 		long dateStart = DateUtils.changeHour(dateEnd, -14 * 24);
 		// 2 查数据库
-		List<Record> gameValidInfo = Db.find(SqlKit.sql("data.reportForms.getGameValidInfoByDate"),
+		List<Record> gameValidInfo = Db.use(Consts.DB_POKERDATA).find(SqlKit.sql("data.reportForms.getGameValidInfoByDate"),
 				new Object[] { dateStart, dateEnd });
 		//倒序
 	    //Collections.reverse(gameValidInfo); 

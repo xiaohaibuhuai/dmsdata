@@ -35,8 +35,8 @@ public class SumDailyController extends EasyuiController<Record> {
 		   Chart consumeDiamond =getConsumeDiamond();
 		   list.add(consumeDiamond);
 //		// 3 德扑币总增加
-		   Chart addMoney =getAddMoney();
-		   list.add(addMoney);
+		  // Chart addMoney =getAddMoney();
+		   list.add(new Chart());
 //		// 4 德扑币总消耗
 		   Chart consumeMoney = getConsumeMoney();
 		   list.add(consumeMoney);
@@ -150,7 +150,7 @@ public class SumDailyController extends EasyuiController<Record> {
 		Chart chart = new Chart();
 		// 1昨日消耗数据
 		//Long time = DateUtils.changeHour(DateUtils.getCurrentZeroTime(), -24*7);
-		Long time = 1511971200000l;
+		Long time = DateUtils.changeHour(DateUtils.getCurrentZeroTime(), -24);
         Long stime =DateUtils.changeHour(time, -24*7);
 		// 2 数据库获取
 		Record record = Db.use(Consts.DB_POKERDATA).findFirst(SqlKit.sql("data.dailyReport.getMoneyByDay"),
@@ -178,7 +178,7 @@ public class SumDailyController extends EasyuiController<Record> {
 		Chart chart = new Chart();
 		// 1昨日消耗数据
 		//Long time = DateUtils.changeHour(DateUtils.getCurrentZeroTime(), -24*7);
-		Long time = 1511971200000l;
+		Long time = DateUtils.changeHour(DateUtils.getCurrentZeroTime(), -24);
 		Long stime =DateUtils.changeHour(time, -24*7);
 		// 2 数据库获取
 		Record record = Db.use(Consts.DB_POKERDATA).findFirst(SqlKit.sql("data.dailyReport.getDiamondByDay"),
@@ -203,7 +203,7 @@ public class SumDailyController extends EasyuiController<Record> {
 		// 1昨日消耗数据
 
 		//Long time = DateUtils.changeHour(DateUtils.getCurrentZeroTime(), -24);
-		Long time = 1512316800000l;
+		Long time = DateUtils.changeHour(DateUtils.getCurrentZeroTime(), -24);
 		Long stime =DateUtils.changeHour(time, -24*7);
 		// 2 数据库获取
 		Record record = Db.use(Consts.DB_POKERDATA).findFirst(SqlKit.sql("data.dailyReport.getAddDiamondByDay"),
