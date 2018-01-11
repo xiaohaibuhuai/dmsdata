@@ -23,7 +23,7 @@ MainApp.controller('BlindStatisticCtrls',  function($scope,TabService) {
 		        {field:'g_b600',title:'300/600',width:90,align:'left'},
 		        {field:'g_b1000',title:'500/1k',width:90,align:'left'},
 		        {field:'g_b2000',title:'1k/2k',width:90,align:'left'},
-		        {field:'g_pre',title:'盲注指数',width:90,align:'left'}
+		        //{field:'g_pre',title:'盲注指数',width:90,align:'left'}
 	      ]],
 	});
 	
@@ -50,7 +50,7 @@ MainApp.controller('BlindStatisticCtrls',  function($scope,TabService) {
 		        {field:'g_b600',title:'300/600',width:90,align:'left'},
 		        {field:'g_b1000',title:'500/1k',width:90,align:'left'},
 		        {field:'g_b2000',title:'1k/2k',width:90,align:'left'},
-		        {field:'g_pre',title:'盲注指数',width:90,align:'left'}
+		        //{field:'g_pre',title:'盲注指数',width:90,align:'left'}
 	      ]],
 	});
 	
@@ -76,7 +76,7 @@ MainApp.controller('BlindStatisticCtrls',  function($scope,TabService) {
 		        {field:'g_b600',title:'300/600',width:90,align:'left'},
 		        {field:'g_b1000',title:'500/1k',width:90,align:'left'},
 		        {field:'g_b2000',title:'1k/2k',width:90,align:'left'},
-		        {field:'g_pre',title:'盲注指数',width:90,align:'left'}
+		        //{field:'g_pre',title:'盲注指数',width:90,align:'left'}
 	      ]],
 	});
 	
@@ -104,7 +104,7 @@ MainApp.controller('BlindStatisticCtrls',  function($scope,TabService) {
 		        {field:'g_b600',title:'300/600',width:90,align:'left'},
 		        {field:'g_b1000',title:'500/1k',width:90,align:'left'},
 		        {field:'g_b2000',title:'1k/2k',width:90,align:'left'},
-		        {field:'g_pre',title:'盲注指数',width:90,align:'left'}
+		        //{field:'g_pre',title:'盲注指数',width:90,align:'left'}
 	      ]],
 	});
 	

@@ -5,8 +5,6 @@ MainApp.controller('MoneyDailyCtrls',  function($scope,TabService) {
     
     
     $("#btn").click(function(){
-    	  alert("ss");
-    	  
     	  var dateStart=$("#dateStart").val();
     	  var dateEnd=$("#dateEnd").val();
     	  var type=$("#type").val();
