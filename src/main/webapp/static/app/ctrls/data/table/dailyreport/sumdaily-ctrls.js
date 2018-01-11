@@ -23,7 +23,7 @@ MainApp.controller('SumDailyCtrls',  function($scope,TabService) {
 		    	            text:"昨日钻石总增加:"+data[0].desc
 		    	        },
 		    	        subtitle: {
-		    	            text: '单击每个浏览器品牌不同版本的具体信息，数据来源: netmarketshare.com.'
+		    	            text: ''
 		    	        },
 		    	        plotOptions: {
 		    	            series: {
@@ -52,7 +52,7 @@ MainApp.controller('SumDailyCtrls',  function($scope,TabService) {
 		    	            text:"昨日钻石总消耗:"+data[1].desc
 		    	        },
 		    	        subtitle: {
-		    	            text: '单击每个浏览器品牌不同版本的具体信息，数据来源: netmarketshare.com.'
+		    	            text: ''
 		    	        },
 		    	        plotOptions: {
 		    	            series: {
@@ -109,7 +109,7 @@ MainApp.controller('SumDailyCtrls',  function($scope,TabService) {
 		    	            text:"昨日德扑币总消耗:"+data[3].desc
 		    	        },
 		    	        subtitle: {
-		    	            text: '单击每个浏览器品牌不同版本的具体信息，数据来源: netmarketshare.com.'
+		    	            text: ''
 		    	        },
 		    	        plotOptions: {
 		    	            series: {
@@ -140,7 +140,7 @@ MainApp.controller('SumDailyCtrls',  function($scope,TabService) {
 		    	            text:"昨日开局数:"+data[4].desc
 		    	        },
 		    	        subtitle: {
-		    	            text: '单击每个浏览器品牌不同版本的具体信息，数据来源: netmarketshare.com.'
+		    	            text: ''
 		    	        },
 		    	        plotOptions: {
 		    	            series: {
@@ -170,7 +170,7 @@ MainApp.controller('SumDailyCtrls',  function($scope,TabService) {
 		    	            text:"昨日活跃人数:"+data[5].desc
 		    	        },
 		    	        subtitle: {
-		    	            text: '单击每个浏览器品牌不同版本的具体信息，数据来源: netmarketshare.com.'
+		    	            text: ''
 		    	        },
 		    	        plotOptions: {
 		    	            series: {
@@ -199,7 +199,7 @@ MainApp.controller('SumDailyCtrls',  function($scope,TabService) {
 		    	            text:"昨日总服务费:"+data[6].desc
 		    	        },
 		    	        subtitle: {
-		    	            text: '单击每个浏览器品牌不同版本的具体信息，数据来源: netmarketshare.com.'
+		    	            text: ''
 		    	        },
 		    	        plotOptions: {
 		    	            series: {
@@ -227,7 +227,7 @@ MainApp.controller('SumDailyCtrls',  function($scope,TabService) {
 		    	            text:"昨日总手数:"+data[7].desc
 		    	        },
 		    	        subtitle: {
-		    	            text: '单击每个浏览器品牌不同版本的具体信息，数据来源: netmarketshare.com.'
+		    	            text: ''
 		    	        },
 		    	        plotOptions: {
 		    	            series: {

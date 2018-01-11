@@ -272,7 +272,7 @@ public class SinglePokerQueryController extends EasyuiController<Record>{
 				"      {\n" + 
 				"        \"constant_score\": {\n" + 
 				"          \"filter\": {\"term\": {\n" + 
-				"            \"RoomID\": \""+roomid+"\"\n" + 
+				"            \"roomid\": \""+roomid+"\"\n" +
 				"          }\n" + 
 				"          },\n" + 
 				"          \"boost\": 1.2\n" + 
@@ -280,7 +280,7 @@ public class SinglePokerQueryController extends EasyuiController<Record>{
 				"      },{\n" + 
 				"      \"constant_score\": {\n" + 
 				"        \"filter\": {\"term\": {\n" + 
-				"          \"HandID\": \""+handid+"\"\n" + 
+				"          \"handid\": \""+handid+"\"\n" +
 				"        }},\n" + 
 				"        \"boost\": 1.2\n" + 
 				"      }\n" + 
