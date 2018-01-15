@@ -32,7 +32,7 @@ MainApp.controller('SinglePokerCtrls',  function($scope,$http) {
 		    	  var sign="============";
 		    	  
 		    	  
-		    	  var head =sign+"牌局:"+callback.roomname+",牌局ID:"+callback.roomid+",手数ID:"+callback.handid+sign+"<br/>"
+		    	  var head =sign+"牌局:"+callback.roomName+",牌局ID:"+callback.roomid+",手数ID:"+callback.handid+sign+"<br/>"
 		    	  $.each(callback.before,function(n,value) {   
 		    		  var item = ""; 
 		    		  
