@@ -122,7 +122,7 @@ public class GameStatisticJobService implements Job {
 		// 时间
 		gameValidSnapShotDate.set("targetdate", startTime);
 		// 封装各种局统计数量 有效
-		setDate2GameSnapShot(gameValidSnapShotDate, gameTypeVaildList, "sum",TYPE_GAME);
+		setDate2GameSnapShot(gameValidSnapShotDate, gameTypeVaildList, "num",TYPE_GAME);
 		// 封装SNG有效数
 		gameValidSnapShotDate.set("g_sng", gameSNGVaildCount);
 		// 封装游戏总数

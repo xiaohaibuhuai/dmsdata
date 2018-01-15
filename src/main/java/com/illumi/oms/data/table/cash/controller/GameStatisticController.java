@@ -73,12 +73,14 @@ public class GameStatisticController extends EasyuiController<Record> {
 	
 	
 	private String getGameValidSql() {
-		String sql = "select from_unixtime(createtime/1000, '%m月%d日') days,COUNT(*) as num from t_bill_base_info where  createtime  BETWEEN ? AND ? AND totalgamenum>=10 GROUP BY days";
+		String sql = "SELECT from_unixtime(targetdate/1000, '%m月%d日') days,g_sum as num FROM t_game_daily_snapshot where isvalid = 1 AND targetdate  BETWEEN ? AND ?";
+		//String sql = "select from_unixtime(createtime/1000, '%m月%d日') days,COUNT(*) as num from t_bill_base_info where  createtime  BETWEEN ? AND ? AND totalgamenum>=10 GROUP BY days";
 		return sql;
 	}
 
 	private String getgamenumSql() {
-		String sql = "select from_unixtime(createtime/1000, '%m月%d日') days,COUNT(*) as num from t_bill_base_info where  createtime  BETWEEN ? AND ? GROUP BY days";
+		String sql = "SELECT from_unixtime(targetdate/1000, '%m月%d日') days,g_sum as num FROM t_game_daily_snapshot where isvalid = 0 AND targetdate  BETWEEN ? AND ?";
+		//String sql = "select from_unixtime(createtime/1000, '%m月%d日') days,COUNT(*) as num from t_bill_base_info where  createtime  BETWEEN ? AND ? GROUP BY days";
 		return sql;
 	}
 
@@ -101,7 +103,7 @@ public class GameStatisticController extends EasyuiController<Record> {
 			for (Record r : record) {
 				String day = r.getStr("days");
 				if (datesmap.containsKey(day)) {
-					datesmap.put(day, r.getLong("num"));
+					datesmap.put(day, Long.parseLong(r.get("num").toString()));
 				}
 			}
 			for (String d : dates) {
@@ -110,7 +112,7 @@ public class GameStatisticController extends EasyuiController<Record> {
 		} else {
 			// 相等
 			for (Record r : record) {
-				list.add(r.getLong("num"));
+				list.add(Long.parseLong(r.get("num").toString()));
 			}
 		}
 		return list;
@@ -123,8 +125,8 @@ public class GameStatisticController extends EasyuiController<Record> {
 		List<String> dates = getDays(dateStart, target);
 		String sqlSum = getgamenumSql();
 		String sqlValid = getGameValidSql();
-		List<Record> recordSum = Db.use(Consts.DB_POKER2).findByCache("getRecordSumByDate", dateEnd, sqlSum, new Object[] { dateStart, dateEnd });
-		List<Record> recordValid = Db.use(Consts.DB_POKER2).findByCache("getVaildRecordSumByDate", dateEnd, sqlValid, new Object[] { dateStart, dateEnd });
+		List<Record> recordSum = Db.use(Consts.DB_POKERDATA).findByCache("getRecordSumByDate", dateEnd, sqlSum, new Object[] { dateStart, dateEnd });
+		List<Record> recordValid = Db.use(Consts.DB_POKERDATA).findByCache("getVaildRecordSumByDate", dateEnd, sqlValid, new Object[] { dateStart, dateEnd });
 		// 去重
 		List<Long> sum = parseRecord(recordSum, dates, target);
 		List<Long> valid = parseRecord(recordValid, dates, target);
@@ -135,10 +137,14 @@ public class GameStatisticController extends EasyuiController<Record> {
 		DecimalFormat df = new DecimalFormat("#0.00");
 		for (int i = 0; i < sum.size(); i++) {
 			if (sum.get(i) != null && valid.get(i) != null) {
-				Double d = (valid.get(i) * 1.0 / sum.get(i)) * 100;
-				String format = df.format(d);
-				Double result = Double.valueOf(format.toString());
-				pre.add(result);
+				if(valid.get(i)!=0) {
+					Double d = (valid.get(i) * 1.0 / sum.get(i)) * 100;
+					String format = df.format(d);
+					Double result = Double.valueOf(format.toString());
+					pre.add(result);
+				}else {
+					pre.add(0.0);
+				}
 			} else {
 				pre.add(null);
 			}
