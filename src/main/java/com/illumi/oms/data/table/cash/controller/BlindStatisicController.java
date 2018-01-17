@@ -23,18 +23,12 @@ import com.jfinal.plugin.activerecord.Record;
 public class BlindStatisicController extends EasyuiController<Record>{
 
     private static Map<Integer,List<Record>> map = new HashMap<>();
-    private static Map<String,Map<String,Map<String,String>>> chartMap = null; 
+    //private static Map<String,Map<String,Map<String,String>>> chartMap = null;
     private static Long time = null; //过期时间
     private static final Logger log = Logger.getLogger(BlindStatisicController.class);
     
     //热力图
 	public void sum() {
-		//获取当天的零点时间
-		 long dateEnd = DateUtils.getCurrentZeroTime();
-		if(chartMap!=null&&!isOverTimeMap(dateEnd)) {
-			log.info("从chartMap中获取数据||"+formatTime(time));
-			renderJson(chartMap);
-		}else {	
 			List<Record> list1 = getBlindDateByType(1); 
 			List<Record> list3 = getBlindDateByType(3);
 			List<Record> list5 = getBlindDateByType(5);
@@ -52,11 +46,8 @@ public class BlindStatisicController extends EasyuiController<Record>{
 		    blindMap.put("普通保险局", typeMap3);
 		    blindMap.put("奥马哈局", typeMap5);
 		    blindMap.put("奥马哈保险局", typeMap6);
-		    
-		    chartMap=blindMap; //更新chartMap
-		    time=dateEnd;//更新时间
-		    renderJson(chartMap);
-		}
+		    renderJson(blindMap);
+
 		
 	}
 	//普通局
@@ -113,10 +104,14 @@ public class BlindStatisicController extends EasyuiController<Record>{
 				long dateStart = DateUtils.changeHour(dateEnd,-14*24);
 				Integer [] arrys = {1,3,5,6};
 				for(int i=0;i<arrys.length;i++){
-					gameInfo= Db.use(Consts.DB_POKERDATA).find(SqlKit.sql("data.reportForms.getBlindInfoByType"),new Object[]{arrys[i],dateStart,dateEnd});
+
+					List<Record> data= Db.use(Consts.DB_POKERDATA).find(SqlKit.sql("data.reportForms.getBlindInfoByType"),new Object[]{arrys[i],dateStart,dateEnd});
+					if(type==arrys[i]){
+						gameInfo = data;
+					}
 					//倒序
 					//Collections.reverse(gameInfo);
-					map.put(arrys[i], gameInfo);
+					map.put(arrys[i], data);
 					//设置查询时间
 				}
 				time=dateEnd;
