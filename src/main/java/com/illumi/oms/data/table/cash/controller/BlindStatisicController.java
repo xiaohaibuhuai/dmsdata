@@ -89,9 +89,13 @@ public class BlindStatisicController extends EasyuiController<Record>{
 		data.setRows(list);
 		renderJson(data);
 	}
-	
-	
-	
+
+
+	/**
+	 * 会有并发访问问题, map会覆盖,之后访问走缓存
+	 * @param type
+	 * @return
+     */
 	private List<Record> getBlindDateByType(int type) {
 		long dateEnd = DateUtils.getCurrentZeroTime();
 		List<Record> gameInfo = null;
@@ -99,14 +103,17 @@ public class BlindStatisicController extends EasyuiController<Record>{
 		 gameInfo = map.get(type);
 		 log.info("从map中获取数据||"+"牌局类型:"+type+"||"+formatTime(time));
 		}else {
-			// 2 查数据库
+			// 2 查数据库   一次查询
 			long dateStart = DateUtils.changeHour(dateEnd,-14*24);
-			gameInfo= Db.use(Consts.DB_POKERDATA).find(SqlKit.sql("data.reportForms.getBlindInfoByType"),new Object[]{type,dateStart,dateEnd});
-			//倒序
-			//Collections.reverse(gameInfo); 
-			map.put(type, gameInfo);
-			//设置查询时间
-	        time=dateEnd;
+			Integer [] arrys = {1,3,5,6};
+			for(int i=0;i<arrys.length;i++){
+				gameInfo= Db.use(Consts.DB_POKERDATA).find(SqlKit.sql("data.reportForms.getBlindInfoByType"),new Object[]{arrys[i],dateStart,dateEnd});
+				//倒序
+				//Collections.reverse(gameInfo);
+				map.put(arrys[i], gameInfo);
+				//设置查询时间
+			}
+			time=dateEnd;
 		}
 		return gameInfo;
 	}
