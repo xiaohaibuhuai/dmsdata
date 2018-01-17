@@ -98,22 +98,30 @@ public class BlindStatisicController extends EasyuiController<Record>{
      */
 	private List<Record> getBlindDateByType(int type) {
 		long dateEnd = DateUtils.getCurrentZeroTime();
+
 		List<Record> gameInfo = null;
 		if(map.containsKey(type)&&!isOverTimeMap(dateEnd)) {
 		 gameInfo = map.get(type);
 		 log.info("从map中获取数据||"+"牌局类型:"+type+"||"+formatTime(time));
 		}else {
 			// 2 查数据库   一次查询
-			long dateStart = DateUtils.changeHour(dateEnd,-14*24);
-			Integer [] arrys = {1,3,5,6};
-			for(int i=0;i<arrys.length;i++){
-				gameInfo= Db.use(Consts.DB_POKERDATA).find(SqlKit.sql("data.reportForms.getBlindInfoByType"),new Object[]{arrys[i],dateStart,dateEnd});
-				//倒序
-				//Collections.reverse(gameInfo);
-				map.put(arrys[i], gameInfo);
-				//设置查询时间
+			// 定时任务3.45    判断是否已经跑完定时任务
+			if(System.currentTimeMillis()<=DateUtils.changeHour(dateEnd,+5)){
+				gameInfo = map.get(type);
+				log.info("从map中获取数据||"+"牌局类型:"+type+"||"+formatTime(time));
+			}else{
+				long dateStart = DateUtils.changeHour(dateEnd,-14*24);
+				Integer [] arrys = {1,3,5,6};
+				for(int i=0;i<arrys.length;i++){
+					gameInfo= Db.use(Consts.DB_POKERDATA).find(SqlKit.sql("data.reportForms.getBlindInfoByType"),new Object[]{arrys[i],dateStart,dateEnd});
+					//倒序
+					//Collections.reverse(gameInfo);
+					map.put(arrys[i], gameInfo);
+					//设置查询时间
+				}
+				time=dateEnd;
 			}
-			time=dateEnd;
+
 		}
 		return gameInfo;
 	}
