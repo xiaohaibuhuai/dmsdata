@@ -24,11 +24,12 @@ public class BlindStatisicController extends EasyuiController<Record>{
 
     private static Map<Integer,List<Record>> map = new HashMap<>();
     //private static Map<String,Map<String,Map<String,String>>> chartMap = null;
-    private static Long time = null; //过期时间
+    private static Long time = 0l; //过期时间
     private static final Logger log = Logger.getLogger(BlindStatisicController.class);
     
     //热力图
 	public void sum() {
+
 			List<Record> list1 = getBlindDateByType(1); 
 			List<Record> list3 = getBlindDateByType(3);
 			List<Record> list5 = getBlindDateByType(5);
