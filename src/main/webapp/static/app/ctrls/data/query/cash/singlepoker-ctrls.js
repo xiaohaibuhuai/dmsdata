@@ -28,7 +28,9 @@ MainApp.controller('SinglePokerCtrls',  function($scope,$http) {
 		    	    alert("ELK错误");
 		      }else if (callback == "2") {
 		        alert("服务出错请联系管理员");
-		      } else {
+		      } else if(callback == "3"){
+				  alert("该牌局正在进行中,请稍后查询");
+			  }else {
 		    	  var sign="============";
 		    	  
 		    	  
