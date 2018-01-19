@@ -1,5 +1,6 @@
 package com.illumi.oms;
 
+import com.illumi.oms.data.Interceptor.LogInterceptor;
 import com.illumi.oms.data.utils.DateUtils;
 import com.illumi.oms.task.DailyReportJobService;
 import com.illumi.oms.task.GameStatisticJobService;
@@ -165,6 +166,10 @@ public class MyConfig extends JFinalConfig
 
 		// 让 模版 可以使用session
 		me.add(new SessionInViewInterceptor());
+
+		//全局日志
+		me.add(new LogInterceptor());
+
 		
 	}
 
