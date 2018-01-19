@@ -352,41 +352,47 @@ public class StringUtil extends StringUtils {
 	 */
 	public static String report(Controller controller) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		StringBuilder sb = new StringBuilder("\nJFinal action report -------- ").append(simpleDateFormat.format(new Date())).append(" ------------------------------\n");
-		User user = ShiroExt.getSessionAttr(Consts.SESSION_USER);
-		sb.append("USER and Controller: ").append(user.getStr("account")+"/"+user.getName()+"\n");
+        StringBuilder sb = new StringBuilder("\nJFinal action report -------- ").append(simpleDateFormat.format(new Date())).append(" ------------------------------\n");
+        User user = ShiroExt.getSessionAttr(Consts.SESSION_USER);
+        sb.append("USER and Controller: ").append(user.getStr("account")+"/"+user.getName()+"\n");
+        String urlParas = controller.getPara();
+        if (urlParas != null) {
+            sb.append("UrlPara   : ").append(urlParas).append("\n");
+        }
+        // print all parameters
+        HttpServletRequest request = controller.getRequest();
+        Enumeration<String> e = request.getParameterNames();
+        if (e.hasMoreElements()) {
+            sb.append("Parameter   : ");
+            while (e.hasMoreElements()) {
+                String name = e.nextElement();
+                String[] values = request.getParameterValues(name);
+                if (values.length == 1) {
+                    sb.append(name).append("=").append(values[0]);
+                }
+                else {
+                    sb.append(name).append("[]={");
+                    for (int i=0; i<values.length; i++) {
+                        if (i > 0)
+                            sb.append(",");
+                        sb.append(values[i]);
+                    }
+                    sb.append("}");
+                }
+                sb.append("  ");
+            }
+            sb.append("\n");
+        }
 
-		String urlParas = controller.getPara();
-		if (urlParas != null) {
-			sb.append("UrlPara   : ").append(urlParas).append("\n");
-		}		
-		// print all parameters
-		HttpServletRequest request = controller.getRequest();
-		Enumeration<String> e = request.getParameterNames();
-		if (e.hasMoreElements()) {
-			sb.append("Parameter   : ");
-			while (e.hasMoreElements()) {
-				String name = e.nextElement();
-				String[] values = request.getParameterValues(name);
-				if (values.length == 1) {
-					sb.append(name).append("=").append(values[0]);
-				}
-				else {
-					sb.append(name).append("[]={");
-					for (int i=0; i<values.length; i++) {
-						if (i > 0)
-							sb.append(",");
-						sb.append(values[i]);
-					}
-					sb.append("}");
-				}
-				sb.append("  ");
-			}
-			sb.append("\n");
-		}
-		sb.append("--------------------------------------------------------------------------------\n");
-		return sb.toString();
-//		System.out.print(sb.toString());
+        String controllerStr = controller.toString();
+        controllerStr=controllerStr.substring(0,controllerStr.indexOf("@"));
+        String requestURI = request.getRequestURI();
+        requestURI=requestURI.substring(requestURI.lastIndexOf("/")+1);
+
+        sb.append("Controller  :"+controllerStr+":"+requestURI+"()");
+        sb.append("\n");
+        sb.append("--------------------------------------------------------------------------------\n");
+        return sb.toString();
 	}
 	
 	
