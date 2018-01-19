@@ -124,7 +124,13 @@ public class ExcelUtil {
 					}
 				} else {
 					if (list.get(i).containsKey(tansformMap.get(head[j]))) {
-						cell.setCellValue(list.get(i).get(tansformMap.get(head[j])).toString());
+
+						Object obj = list.get(i).get(tansformMap.get(head[j]));
+						String value="";
+						if(obj!=null) {
+							value=obj.toString();
+						}
+						cell.setCellValue(value);
 					} else {
 						cell.setCellValue(0);
 					}
