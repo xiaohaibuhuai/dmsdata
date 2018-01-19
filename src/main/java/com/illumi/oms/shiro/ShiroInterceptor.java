@@ -2,12 +2,14 @@ package com.illumi.oms.shiro;
 
 import java.util.List;
 
+import com.illumi.oms.common.utils.StringUtil;
 import com.illumi.oms.system.model.Log;
 import com.illumi.oms.system.model.Res;
 import com.jayqqaa12.jbase.jfinal.ext.ShiroExt;
 import com.jayqqaa12.jbase.util.L;
 import com.jfinal.aop.Interceptor;
 import com.jfinal.core.ActionInvocation;
+import com.jfinal.log.Logger;
 
 /***
  * 让 shiro 基于 url 拦截
@@ -20,6 +22,7 @@ import com.jfinal.core.ActionInvocation;
 public class ShiroInterceptor implements Interceptor
 {
 	private static ShiroExt ext = new ShiroExt();
+	private static final Logger log = Logger.getLogger(ShiroInterceptor.class);
 
 	/**
 	 * 获取全部 需要控制的权限
@@ -36,6 +39,7 @@ public class ShiroInterceptor implements Interceptor
 		if (urls == null) urls = Res.dao.getUrls();
 
 		String url = ai.getActionKey();
+		log.info(StringUtil.report(ai.getController()));
 		try
 		{
 			

@@ -119,14 +119,12 @@ MainApp.controller('ClubWeekCtrls',  function($scope,TabService) {
 	 });
 
     $("#down").click(function(){
-        alert($("#h_dateStart").val() + "," + $("#h_dateEnd").val());
     	if($("#h_dateStart").val()==""||$("#h_dateEnd").val()==""){
    		 alert("请选择时间");
    		 return;
    	    }
 
-   	    alert("1");
-    	
+
     	$('#exportForm').form('submit',{url:PATH+'/data/table/weekreport/clubweek/excelDown'});
     });
 });

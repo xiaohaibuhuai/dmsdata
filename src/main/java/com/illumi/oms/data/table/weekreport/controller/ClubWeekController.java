@@ -60,6 +60,8 @@ public class ClubWeekController extends ExcelController{
 		String dateStart = getPara("dateStart");
 		String dateEnd = getPara("dateEnd");
 
+		log.info("dateStart = " + dateStart);
+		log.info("dateEnd = " + dateEnd);
 		//数据源
 		List<Record> dataList = getDataList(dateStart,dateEnd,0,0);
 

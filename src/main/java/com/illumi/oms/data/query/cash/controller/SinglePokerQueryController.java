@@ -72,13 +72,14 @@ public class SinglePokerQueryController extends EasyuiController<Record>{
         }else {
         	//牌局正在进行
 			renderJson("3");
+			log.info("牌局正在进行");
+			return;
 //        	long  judgeTime= new Date().getTime();
 //        	  if(df.format(judgeTime).equals(formatTime)) {
 //        		  url=urlhead+formatTime+urlend;
 //        	  }else {
 //        		  url=ELKUtils.getIndices(DateUtils.changeHour(startTime, 24), urlhead, urlend, df);
 //        	  }
-        	
         }
 		//String url = ELKUtils.getUrlThreeDay(startTime, urlhead, urlend);
         System.out.println(url);
