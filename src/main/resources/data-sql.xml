@@ -270,7 +270,7 @@
     
      <sql id="getGameInfoByDay">
         SELECT
-          targetdate,g_normal,g_normalins,g_omahains,g_six,g_sng,g_sum      
+          targetdate,g_normal,g_normalins,g_omaha,g_omahains,g_six,g_sng,g_sum
         FROM
              t_game_daily_snapshot 
         WHERE 
@@ -288,7 +288,7 @@
    
       <sql id="getPlyerInfoByDay">
         SELECT
-        targetdate,p_normal,p_normalins,p_omahains,p_six,p_sng,p_sum   
+        targetdate,p_normal,p_normalins,p_omaha,p_omahains,p_six,p_sng,p_sum
         FROM
              t_game_daily_snapshot 
         WHERE isvalid= ? and targetdate  BETWEEN ? AND ? 
@@ -306,7 +306,7 @@
       <!-- 服务费 -->
       <sql id="getServiceByDay">
       SELECT
-        targetdate,s_normal,s_normalins,s_omahains,s_six,s_sng,s_sum   
+        targetdate,s_normal,s_normalins,s_omaha,s_omahains,s_six,s_sng,s_sum
         FROM
              t_game_ext_daily_snapshot 
         WHERE targetdate  BETWEEN ? AND ? 
@@ -325,7 +325,7 @@
       <!-- 手数 -->
       <sql id="getHandByDay">
       SELECT
-        targetdate,h_normal,h_normalins,h_omahains,h_six,h_sng,h_sum   
+        targetdate,h_normal,h_normalins, h_omaha,_h_omahains,h_six,h_sng,h_sum
         FROM
              t_game_ext_daily_snapshot 
         WHERE targetdate  BETWEEN ? AND ?  
