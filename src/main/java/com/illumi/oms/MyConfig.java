@@ -38,6 +38,8 @@ import com.jfinal.plugin.druid.DruidPlugin;
 import com.jfinal.plugin.druid.DruidStatViewHandler;
 import com.jfinal.plugin.ehcache.EhCachePlugin;
 
+import java.util.Date;
+
 
 /**
  * API引导式配置
@@ -198,7 +200,8 @@ public class MyConfig extends JFinalConfig
 	@Override
 	public void afterJFinalStart() {
 
-
+		long zeroTime = DateUtils.changeHour(DateUtils.getZeroTime(new Date()), -24);
+		new DailyReportJobService().defineExcuteByDay(zeroTime,41);
 	}
 
 	/**
