@@ -35,7 +35,7 @@ import com.jfinal.plugin.activerecord.Record;
 public class DailyReportJobService implements Job{
 	private static final Logger log = Logger.getLogger(DailyReportJobService.class);
 	private List<Record> uuids = null;
-	private String[] rechargeMapperArr= {,"101","102","201","202",
+	private String[] rechargeMapperArr= {"101","102","201","202",
 			"301","302","303","401","402","403","501","502","sum"};
 //	private Map<String,String> diamondMapperMap = null;
 //	private Map<String,String> moneyMapperMap = null;
