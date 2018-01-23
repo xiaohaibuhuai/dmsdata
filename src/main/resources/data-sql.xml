@@ -325,7 +325,7 @@
       <!-- 手数 -->
       <sql id="getHandByDay">
       SELECT
-        targetdate,h_normal,h_normalins, h_omaha,_h_omahains,h_six,h_sng,h_sum
+        targetdate,h_normal,h_normalins,h_omaha,h_omahains,h_six,h_sng,h_sum
         FROM
              t_game_ext_daily_snapshot 
         WHERE targetdate  BETWEEN ? AND ?  

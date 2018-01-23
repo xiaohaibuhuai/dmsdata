@@ -55,6 +55,7 @@ public class DataBaseMapperUtils {
 		}
 	public static Map<String, String> getRechargelMap() {
 		Map<String, String> map = new HashMap<String, String>();
+		map.put("网银个人","100");
 		map.put("苹果充值","101");
 		map.put("谷歌支付","102");
 		map.put("步步德扑","201");
@@ -65,6 +66,7 @@ public class DataBaseMapperUtils {
 		map.put("支付宝大额","401");
 		map.put("支付宝公众号","402");
 		map.put("支付宝CMS","403");
+		map.put("银联充值","501");
 
 		return map;
 	}

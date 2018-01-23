@@ -35,10 +35,10 @@ import com.jfinal.plugin.activerecord.Record;
 public class DailyReportJobService implements Job{
 	private static final Logger log = Logger.getLogger(DailyReportJobService.class);
 	private List<Record> uuids = null;
-	private String[] rechargeMapperArr= {"101","102","201","202","301","302","303","401","402","403","sum"};
+	private String[] rechargeMapperArr= {"100","101","102","201","202",
+			"301","302","303","401","402","403","501","sum"};
 //	private Map<String,String> diamondMapperMap = null;
 //	private Map<String,String> moneyMapperMap = null;
-
 	public static void main(String[] args) {
 
 	}
@@ -329,6 +329,7 @@ public class DailyReportJobService implements Job{
 
 		Response fullData = ResponseFullData(startTime, zeroTime, termsFiled, sumFiled,url,method);
 		Map<Long, Map<String, Long>> fullMap = ELKUtils.paseDailyResponse(fullData, "money");
+
 		DiamondSnapShotDate all = fillDiamondData(fullMap,0);
 
 		//国外
@@ -409,13 +410,13 @@ public class DailyReportJobService implements Job{
 			e.printStackTrace();
 		}
 		rs.set("type",type);
-		String[] arrs= {"101","102","201","202","301","302","303","401","402","403","sum"};
+		//String[] arrs= {"100","101","102","201","202","301","302","303","401","402","403","sum"};
 		Long sum = 0l;
 		//只有一个map
 		for(Entry<Long, Map<String, Long>> e :fullMap.entrySet()) {
 			rs.set("targetdate", e.getKey());
 			Map<String, Long> value = e.getValue();
-			for(String s :arrs) {
+			for(String s :rechargeMapperArr) {
 				if(value.containsKey(s)) {
 					long div = value.get(s);
 					rs.set(s, div);
@@ -441,13 +442,13 @@ public class DailyReportJobService implements Job{
 			e.printStackTrace();
 		}
 		rs.set("type",type);
-		String[] arrs= {"101","102","201","202","301","302","303","401","402","403","sum"};
+		//String[] arrs= {"100","101","102","201","202","301","302","303","401","402","403","sum"};
 		Double sum = 0.0;
 		//只有一个map
 		for(Entry<Long, Map<String, Long>> e :fullMap.entrySet()) {
 			rs.set("targetdate", e.getKey());
 			Map<String, Long> value = e.getValue();
-			for(String s :arrs) {
+			for(String s :rechargeMapperArr) {
 				if(value.containsKey(s)) {
 					double div = ArithUtils.div(value.get(s).doubleValue(),100);
 					rs.set(s, div);
