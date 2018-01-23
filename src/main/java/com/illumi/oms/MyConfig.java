@@ -199,9 +199,6 @@ public class MyConfig extends JFinalConfig
      */
 	@Override
 	public void afterJFinalStart() {
-
-		long zeroTime = DateUtils.changeHour(DateUtils.getZeroTime(new Date()), -24);
-		new DailyReportJobService().defineExcuteByDay(zeroTime,41);
 	}
 
 	/**
