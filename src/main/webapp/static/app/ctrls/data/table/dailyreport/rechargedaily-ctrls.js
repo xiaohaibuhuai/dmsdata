@@ -122,6 +122,9 @@ MainApp.controller('RechargeDailyCtrls',  function($scope,TabService) {
   		        {field:'402',title:'支付宝公众号',width:120,align:'left'},
   		        {field:'403',title:'支付宝CMS',width:120,align:'left'},
   		        {field:'301',title:'安卓微信充值',width:120,align:'left'},
+				{field:'501',title :'钻石基金',width : 120,align:'left',},
+				{field:'502',title :'个人大额充值',width : 120,align:'left',},
+
   		        {field:'sum',title:'汇总',width:120,align:'left'}
   		    
   		      ]],
