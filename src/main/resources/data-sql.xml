@@ -166,7 +166,7 @@
     SELECT 
     createtime,overtag
     FROM
-    test_poker.t_bill_base_info
+    t_bill_base_info
     WHERE
     roomid = ?
     </sql>
