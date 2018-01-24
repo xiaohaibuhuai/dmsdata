@@ -175,10 +175,14 @@ public class GameStatisticJobService implements Job {
 	private void handeServiceCharge(GameExtSnapShotDate gameExtSnapShotDate) {
 	 String[] attrNames = gameExtSnapShotDate.getAttrNames();
 	 for(String s:attrNames) {
-			if(s.equals(TYPE_SERVICE+"_normal")||
-			   s.equalsIgnoreCase(TYPE_SERVICE+"_normalins")||
-			   s.equals(TYPE_SERVICE+"_omaha")||s.equals(TYPE_SERVICE+"_omahains")||
-			   s.equals(TYPE_SERVICE+"_six")||s.equals(TYPE_SERVICE+"_sng")){
+		 if(s.equals(TYPE_SERVICE+"_normal")
+				 ||s.equalsIgnoreCase(TYPE_SERVICE+"_normalins")
+				 ||s.equals(TYPE_SERVICE+"_omaha")
+				 ||s.equals(TYPE_SERVICE+"_omahains")
+				 ||s.equals(TYPE_SERVICE+"_six")
+				 ||s.equals(TYPE_SERVICE+"_sng")
+				 ||s.equals(TYPE_SERVICE+"_short")
+				 ||s.equals(TYPE_SERVICE+"_shortins")){
 				Object obj = gameExtSnapShotDate.get(s);
 				Long value = Long.parseLong(String.valueOf(obj).equals("null")?"0":String.valueOf(obj));
 				//除以10
@@ -195,10 +199,14 @@ public class GameStatisticJobService implements Job {
 		String[] attrNames = gameSnapShotDate.getAttrNames();
 		for(String s:attrNames) {
 			
-			if(s.equals(type+"_normal")||
-			   s.equalsIgnoreCase(type+"_normalins")||
-			   s.equals(type+"_omaha")||s.equals(type+"_omahains")||
-			   s.equals(type+"_six")||s.equals(type+"_sng")){
+			if(s.equals(type+"_normal")
+					||s.equalsIgnoreCase(type+"_normalins")
+					||s.equals(type+"_omaha")
+					||s.equals(type+"_omahains")
+					||s.equals(type+"_six")
+					||s.equals(type+"_sng")
+					||s.equals(type+"_short")
+					||s.equals(type+"_shortins")){
 				Object obj = gameSnapShotDate.get(s);
 				result+=Long.parseLong(String.valueOf(obj).equals("null")?"0":String.valueOf(obj));
 			 }
@@ -372,6 +380,10 @@ public class GameStatisticJobService implements Job {
 			return type + "_omaha";
 		} else if (num == 6) {
 			return type + "_omahains";
+		} else if (num == 10){
+			return type + "_short";
+		} else if (num == 11){
+			return type + "_shortins";
 		}
 		return null;
 	}

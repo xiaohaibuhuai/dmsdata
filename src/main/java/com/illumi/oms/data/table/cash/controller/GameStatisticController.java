@@ -24,6 +24,9 @@ import com.jfinal.plugin.activerecord.Record;
 @ControllerBind(controllerKey = "/data/table/cash/gamestatistic", viewPath = UrlConfig.DATA_TAB_CASH)
 public class GameStatisticController extends EasyuiController<Record> {
 
+	/**
+	 * 14日开局柱行图
+	 */
 	public void chart() {
 	    long dateEnd = DateUtils.getCurrentZeroTime();
 		Chart chart = getChartDateByDay(14, dateEnd);

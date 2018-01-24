@@ -15,6 +15,8 @@ public class DataBaseMapperUtils {
 		map.put("奥马哈保险局",type+"_omahains");
 		map.put("6+局",type+"_six");
 		map.put("SNG局",type+"_sng");
+		map.put("短排局",type+"_short");
+		map.put("短排保险局",type+"_shortins");
 		map.put("日期", "targetdate");
 		map.put("汇总", type+"_sum");
 		return map;
