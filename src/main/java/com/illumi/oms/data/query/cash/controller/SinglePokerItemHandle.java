@@ -71,6 +71,8 @@ public class SinglePokerItemHandle {
 				return paseTurn(m, "Turn发牌");
 			case "river":
 				return paserRiver(m, "River发牌");
+			case "preaction":
+				return pasePreaction(m,"preaction");
 			default:
 				return paserOther(m);
 		}
@@ -362,6 +364,17 @@ public class SinglePokerItemHandle {
 		SinglePokerItemInfo sinfo = basePase(m, type);
 		//sinfo.setValue(m.get("ante_number").toString());
 		sinfo.setValue(m.get("coin_cost_no").toString());
+		return sinfo;
+	}
+
+
+	private SinglePokerItemInfo pasePreaction(Map<String, Object> m, String type) {
+		SinglePokerItemInfo sinfo = basePase(m, type);
+
+		sinfo.setValue(m.get("preaction_state"));
+
+
+
 		return sinfo;
 	}
 }
