@@ -44,22 +44,13 @@ public class ELKUtils {
 
     private static final Logger log = Logger.getLogger(ELKUtils.class);
 
+    private static final  String URL = "172.16.24.21";
     public static RestHighLevelClient client = new RestHighLevelClient(
             RestClient.builder(
-                    new HttpHost("10.105.92.212", 9200, "http")
+                    new HttpHost(URL, 9200, "http")
 //					,new HttpHost("10.154.15.9", 9200, "http"),new HttpHost("10.105.65.21", 9200, "http")
             ));
 
-
-    public static void main(String[] args) {
-
-        String[] urlhead = {"ilumi_transactionlog_", "ilumi_minigame_", "iii_ddd_bbb_"};
-        String urlend = "/_search?size=30";
-
-        String d = getUrl4SeletedTime(1504381500000l, 1511811900000l, urlhead, urlend);
-
-        System.out.println(d);
-    }
 
     public static List<ChartInfo> getchartChangeInfo(String urlheadTask, String target, long time, String timeformat) {
         String[] urlHead = {urlheadTask};
@@ -192,7 +183,7 @@ public class ELKUtils {
      */
     public static Response getData(String jsonString, String method, String url) {
         try {
-            HttpHost httpHost = new HttpHost("10.105.92.212", 9200, "http");
+            HttpHost httpHost = new HttpHost(URL, 9200, "http");
             RestClient restClient = RestClient.builder(httpHost).build();
             Map<String, String> params = Collections.singletonMap("pretty", "true");
             HttpEntity entity = new NStringEntity(jsonString, ContentType.APPLICATION_JSON);

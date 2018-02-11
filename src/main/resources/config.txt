@@ -1,4 +1,4 @@
-jdbcUrl = jdbc:mysql://10.66.121.121:3306/cms_support?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
+jdbcUrl = jdbc:mysql://172.16.24.101:3306/cms_support?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
 user = support_oms
 password =oms573583
 dbType=mysql
@@ -6,16 +6,16 @@ devMode = false
 decrypt=true
 
 
-pokerdata.jdbcUrl = jdbc:mysql://10.66.121.121:3306/oms_data?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
+pokerdata.jdbcUrl = jdbc:mysql://172.16.24.101:3306/oms_data?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
 pokerdata.user = support_data
 pokerdata.password = data576584
 
-poker.jdbcUrl = jdbc:mysql://10.66.102.169:3306/test_poker?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
+poker.jdbcUrl = jdbc:mysql://172.16.24.25:3306/test_poker?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
 poker.user = illuminate_oms
 poker.password =illuminate31516
 
-poker2.jdbcUrl = jdbc:mysql://10.66.119.3:3306/test_poker?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
-poker2.user = illuminate_cms
-poker2.password =illuminate31415
+poker2.jdbcUrl = jdbc:mysql://172.16.24.28:3306/test_poker?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
+poker2.user = illuminate_oms
+poker2.password =illuminate31516
 
 CheatFinderScriptPath=/data/work/share/query_1110.R

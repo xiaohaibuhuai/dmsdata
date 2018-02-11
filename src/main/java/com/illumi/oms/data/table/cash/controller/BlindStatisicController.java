@@ -97,8 +97,8 @@ public class BlindStatisicController extends EasyuiController<Record>{
 		 log.info("从map中获取数据||"+"牌局类型:"+type+"||"+formatTime(time));
 		}else {
 			// 2 查数据库   一次查询
-			// 定时任务3.45    判断是否已经跑完定时任务
-			if(System.currentTimeMillis()<=DateUtils.changeHour(dateEnd,+5)){
+			// 定时任务6.45    判断是否已经跑完定时任务
+			if(System.currentTimeMillis()<=DateUtils.changeHour(dateEnd,+7)){
 				gameInfo = map.get(type);
 				log.info("从map中获取数据||"+"牌局类型:"+type+"||"+formatTime(time));
 			}else{
