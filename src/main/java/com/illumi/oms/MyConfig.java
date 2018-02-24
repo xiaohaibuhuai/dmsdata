@@ -1,24 +1,14 @@
 package com.illumi.oms;
 
-import com.illumi.oms.data.Interceptor.LogInterceptor;
-import com.illumi.oms.data.utils.DateUtils;
-import com.illumi.oms.task.DailyReportJobService;
-import com.illumi.oms.task.GameStatisticJobService;
-import org.beetl.core.GroupTemplate;
-import org.beetl.ext.jfinal.BeetlRenderFactory;
-
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.wall.WallFilter;
+import com.illumi.oms.data.Interceptor.LogInterceptor;
 import com.illumi.oms.plugin.spring.SpringPlugin;
 import com.illumi.oms.shiro.SessionHandler;
+import com.illumi.oms.task.DailyReportJobService;
 import com.jayqqaa12.jbase.jfinal.ext.ShiroExt;
 import com.jayqqaa12.jbase.jfinal.ext.xss.XssHandler;
-import com.jfinal.config.Constants;
-import com.jfinal.config.Handlers;
-import com.jfinal.config.Interceptors;
-import com.jfinal.config.JFinalConfig;
-import com.jfinal.config.Plugins;
-import com.jfinal.config.Routes;
+import com.jfinal.config.*;
 import com.jfinal.core.JFinal;
 import com.jfinal.ext.handler.ContextPathHandler;
 import com.jfinal.ext.handler.FakeStaticHandler;
@@ -37,8 +27,8 @@ import com.jfinal.plugin.activerecord.cache.EhCache;
 import com.jfinal.plugin.druid.DruidPlugin;
 import com.jfinal.plugin.druid.DruidStatViewHandler;
 import com.jfinal.plugin.ehcache.EhCachePlugin;
-
-import java.util.Date;
+import org.beetl.core.GroupTemplate;
+import org.beetl.ext.jfinal.BeetlRenderFactory;
 
 
 /**
@@ -199,6 +189,8 @@ public class MyConfig extends JFinalConfig
      */
 	@Override
 	public void afterJFinalStart() {
+
+		new DailyReportJobService().defineExcuteByDay(1519401600000l,6);
 	}
 
 	/**

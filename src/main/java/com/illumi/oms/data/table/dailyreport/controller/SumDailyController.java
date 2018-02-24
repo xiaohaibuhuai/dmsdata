@@ -1,17 +1,8 @@
 package com.illumi.oms.data.table.dailyreport.controller;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import com.illumi.oms.common.Consts;
 import com.illumi.oms.common.UrlConfig;
+import com.illumi.oms.data.logs.ReportLogService;
 import com.illumi.oms.data.utils.ArithUtils;
 import com.illumi.oms.data.utils.DataBaseMapperUtils;
 import com.illumi.oms.data.utils.DateUtils;
@@ -21,6 +12,14 @@ import com.jfinal.ext.plugin.sqlinxml.SqlKit;
 import com.jfinal.ext.route.ControllerBind;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
+
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 @ControllerBind(controllerKey = "/data/table/dailyreport/sumdaily", viewPath = UrlConfig.DATA_TAB_DAILYREPORT)
 public class SumDailyController extends EasyuiController<Record> {
@@ -69,7 +68,13 @@ public class SumDailyController extends EasyuiController<Record> {
 				new Object[] {time, time});
 		Number num = Db.use(Consts.DB_POKERDATA).queryNumber(SqlKit.sql("data.dailyReport.getHandNumByDay"),new Object[]{stime,etime});
 		Double avgNum = ArithUtils.div(num.doubleValue(), 7, 2);
-		Double nowNum = Double.parseDouble(record.get("h_sum").toString());
+
+		Double nowNum = 0.0;
+		if(record!=null){
+			nowNum = Double.parseDouble(record.get("h_sum").toString());
+		}else{
+			ReportLogService.getInstance().error("gethandChart() 昨日:"+new SimpleDateFormat("yyyy-MM-dd").format(time)+"||数据为null");
+		}
 		String desc = getChangeDesc(avgNum,nowNum);
 		chart.setDesc(desc);
 		// 3 封装list
@@ -92,7 +97,13 @@ public class SumDailyController extends EasyuiController<Record> {
 				new Object[] {time, time});
 		Number num = Db.use(Consts.DB_POKERDATA).queryNumber(SqlKit.sql("data.dailyReport.getServiceNumByDay"),new Object[]{stime,etime});
 		Double avgNum = ArithUtils.div(num.doubleValue(), 7, 2);
-		Double nowNum = Double.parseDouble(record.get("s_sum").toString());
+
+		Double nowNum = 0.0;
+		if(record!=null){
+			 nowNum = Double.parseDouble(record.get("s_sum").toString());
+		}else{
+			ReportLogService.getInstance().error("getServiceChart() 昨日:"+new SimpleDateFormat("yyyy-MM-dd").format(time)+"||数据为null");
+		}
 		String desc = getChangeDesc(avgNum,nowNum);
 		chart.setDesc(desc);
 		// 3 封装list
@@ -115,7 +126,15 @@ public class SumDailyController extends EasyuiController<Record> {
 				new Object[] {"0",time, time });
 		Number num = Db.use(Consts.DB_POKERDATA).queryNumber(SqlKit.sql("data.dailyReport.getPlyerNumByDay"),new Object[]{"0",stime,etime});
 		Double avgNum = ArithUtils.div(num.doubleValue(), 7, 2);
-		Double nowNum = Double.parseDouble(record.get("p_sum").toString());
+
+		Double nowNum = 0.0;
+
+		if(record!=null){
+			nowNum = Double.parseDouble(record.get("p_sum").toString());
+		}else{
+			ReportLogService.getInstance().error("getPlayerCountChart() 昨日:"+new SimpleDateFormat("yyyy-MM-dd").format(time)+"||数据为null");
+		}
+
 		String desc = getChangeDesc(avgNum,nowNum);
 		chart.setDesc(desc);
 		// 3 封装list
@@ -138,7 +157,15 @@ public class SumDailyController extends EasyuiController<Record> {
 				new Object[] {"0",time, time });
 		Number num = Db.use(Consts.DB_POKERDATA).queryNumber(SqlKit.sql("data.dailyReport.getGameNumByDay"),new Object[]{"0",stime,etime});
 		Double avgNum = ArithUtils.div(num.doubleValue(), 7, 2);
-		Double nowNum = Double.parseDouble(record.get("g_sum").toString());
+
+		Double nowNum = 0.0;
+
+		if(record!=null){
+			 nowNum = Double.parseDouble(record.get("g_sum").toString());
+		}else{
+			ReportLogService.getInstance().error("getGameStartChart() 昨日:"+new SimpleDateFormat("yyyy-MM-dd").format(time)+"||数据为null");
+		}
+
 		String desc = getChangeDesc(avgNum,nowNum);
 		chart.setDesc(desc);
 		// 3 封装list
@@ -162,7 +189,15 @@ public class SumDailyController extends EasyuiController<Record> {
 				new Object[] { "0", time, time });
 		Number num = Db.use(Consts.DB_POKERDATA).queryNumber(SqlKit.sql("data.dailyReport.getMoneyNumByDay"),new Object[]{"0",stime,etime});
 		Double avgNum = ArithUtils.div(num.doubleValue(), 7, 2);
-		Double nowNum = Double.parseDouble(record.get("sum").toString());
+
+		Double nowNum = 0.0;
+		if(record!=null){
+			nowNum = Double.parseDouble(record.get("sum").toString());
+		}else{
+			ReportLogService.getInstance().error("getConsumeMoney() 昨日:"+new SimpleDateFormat("yyyy-MM-dd").format(time)+"||数据为null");
+		}
+
+
 		String desc = getChangeDesc(avgNum,nowNum);
 		chart.setDesc(desc);
 		// 3 封装list
@@ -191,7 +226,16 @@ public class SumDailyController extends EasyuiController<Record> {
 				new Object[] { "0", time, time });
 		Number num = Db.use(Consts.DB_POKERDATA).queryNumber(SqlKit.sql("data.dailyReport.getDiamondNumByDay"),new Object[]{"0",stime,etime});
 		Double avgNum = ArithUtils.div(num.doubleValue(), 7, 2);
-		Double nowNum = Double.parseDouble(record.get("sum").toString());
+
+		Double nowNum = 0.0;
+		if(record!=null){
+			nowNum = Double.parseDouble(record.get("sum").toString());
+		}else{
+			ReportLogService.getInstance().error("getConsumeDiamond() 昨日:"+new SimpleDateFormat("yyyy-MM-dd").format(time)+"||数据为null");
+		}
+
+
+
 		String desc = getChangeDesc(avgNum,nowNum);
 		chart.setDesc(desc);
 		// 3 封装list
@@ -222,7 +266,14 @@ public class SumDailyController extends EasyuiController<Record> {
 		if(num!=null) {
 		avgNum = ArithUtils.div(num.doubleValue(), 7, 2);
 		}
-		Double nowNum = Double.parseDouble(record.get("sum").toString());
+
+		Double nowNum = 0.0;
+		if(record!=null){
+			 nowNum = Double.parseDouble(record.get("sum").toString());
+		}else{
+			ReportLogService.getInstance().error("getAddDiamond(),昨日:"+new SimpleDateFormat("yyyy-MM-dd").format(time)+"||数据为null");
+		}
+
 		String desc = getChangeDesc(avgNum,nowNum);
 		chart.setDesc(desc);
 		// 3 封装list
