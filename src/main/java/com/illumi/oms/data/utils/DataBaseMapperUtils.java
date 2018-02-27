@@ -63,12 +63,17 @@ public class DataBaseMapperUtils {
 		map.put("九格创想","202");
 		map.put("微信安卓","301");
 		map.put("微信公众号","302");
+
+		//安卓微信充值
 		map.put("微信CMS","303");
 		map.put("支付宝大额","401");
 		map.put("支付宝公众号","402");
 		map.put("支付宝CMS","403");
 		map.put("钻石基金","501");
 		map.put("个人大额充值","502");
+
+		map.put("安卓微信充值","301");
+
 
 		return map;
 	}

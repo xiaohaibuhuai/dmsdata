@@ -1,31 +1,9 @@
 package com.illumi.oms.data.table.dailyreport.controller;
 
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import org.apache.http.ParseException;
-import org.apache.http.util.EntityUtils;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.elasticsearch.client.Response;
-
 import com.illumi.oms.common.Consts;
 import com.illumi.oms.common.UrlConfig;
 import com.illumi.oms.data.model.ExcelTableSheet;
-import com.illumi.oms.data.utils.ArithUtils;
-import com.illumi.oms.data.utils.DataBaseMapperUtils;
-import com.illumi.oms.data.utils.DateUtils;
-import com.illumi.oms.data.utils.ELKUtils;
-import com.illumi.oms.data.utils.ExcelController;
-import com.illumi.oms.data.utils.ExcelUtil;
-import com.illumi.oms.data.utils.IErrCodeEnum;
+import com.illumi.oms.data.utils.*;
 import com.illumi.oms.system.model.Chart;
 import com.jayqqaa12.model.easyui.DataGrid;
 import com.jfinal.ext.plugin.sqlinxml.SqlKit;
@@ -33,6 +11,15 @@ import com.jfinal.ext.route.ControllerBind;
 import com.jfinal.log.Logger;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 @ControllerBind(controllerKey = "/data/table/dailyreport/rechargedaily", viewPath = UrlConfig.DATA_TAB_DAILYREPORT)
 public class RechargeDailyController extends ExcelController {
@@ -80,7 +67,7 @@ public class RechargeDailyController extends ExcelController {
 		channelMap.put("日期", "targetdate");
 		channelMap.put("汇总", "sum");
 		
-		String[]  head = {"日期","苹果充值","步步德扑","九格创想","微信公众号","微信CMS","支付宝大额","支付宝CMS","安卓微信充值","钻石基金","个人大额充值","汇总"};
+		String[]  head = {"日期","苹果充值","步步德扑","九格创想","微信公众号","微信CMS","支付宝大额","支付宝公众号","支付宝CMS","安卓微信充值","钻石基金","个人大额充值","汇总"};
 		List<Record> dataList = getDataList();
 		//标题时间类型  并格式化时间
 		String timeDes=FormatExcelTime(dataList);
