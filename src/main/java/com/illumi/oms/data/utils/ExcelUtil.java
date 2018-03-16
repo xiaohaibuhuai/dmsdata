@@ -72,7 +72,7 @@ public class ExcelUtil {
 	}
 
 	/**
-	 * 0.1版本 有bu'f
+	 * 0.1版本
 	 * 
 	 * @param workBook
 	 * @param titlename

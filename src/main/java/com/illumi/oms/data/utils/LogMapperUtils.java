@@ -7,13 +7,29 @@ import java.util.Map;
 public class LogMapperUtils {
 
 	private LogMapperUtils() {};
+
+
+    /**
+	 * 充值渠道
+	 *
+	 * 前端进行匹配解析
+	 */
+
+	public static String[]  getRechargeMapper(){
+
+		String[] rechargeMapperArr= {"101","102","201","202",
+				"301","302","303","401","402","403","501","502","sum"};
+
+		return rechargeMapperArr;
+	}
+
 	/**
 	 * 
 	 * @return  钻石日志消耗映射
 	 */
 	public static Map<String,String> getDiamondMapper(){
 		Map<String,String> map  = new HashMap<String,String>();
-		 map.put("sum", null);
+		map.put("sum", null);
 		
 		
 		// 110001 -- 联盟局设置.          alliance   null
@@ -46,6 +62,7 @@ public class LogMapperUtils {
 	    	   map.put("service", "玩家买入");
 			//430001    表情id      1 魔法表情   2互动道具   null
 	    	   map.put("Interprops", "互动道具");
+
 	    	   map.put("magic", "魔法表情");
 			//430004 翻翻看   
 	    	   map.put("lookover", "翻翻看");
@@ -55,23 +72,19 @@ public class LogMapperUtils {
 	    	   map.put("pokermachine", "扑克机游戏");
 			//500001   加勒比
 	    	   map.put("caribbean", "加勒比游戏");
-
 		   //600001  牛牛_一粒大米
 	    	   map.put("cow", "600001");
 	    	   //600002 八八碰_一粒大米
 	    	   map.put("eight", "600002");
 	    	   //600003 奔驰宝马_一粒大米
-	       map.put("benz_bmw", "600003");
+	           map.put("benz_bmw", "600003");
 	       //600004 捕鱼_一粒大米
-	       map.put("fish", "600004");
+	           map.put("fish", "600004");
 
 		    //800002  打赏牌谱
 	    	   map.put("rewardpoker", "牌谱打赏");
 			//120001 德扑币报名
 	    	   map.put("mttsign", "德扑币报名MTT");
-
-
-
 	    	   return map;
 	}
 

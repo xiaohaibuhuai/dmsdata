@@ -2,10 +2,56 @@ package com.illumi.oms.data.utils;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class DataBaseMapperUtils {
+	public static ConcurrentHashMap<String,Map<Integer,String>> TypeMaps = new ConcurrentHashMap<>();
 
-	
+
+
+	public static void main(String[] args){
+		Map<Integer, String> g = getGameroomTypeMap("g");
+		getGameroomTypeMap("g");
+
+
+		getGameroomTypeMap("g");
+		getGameroomTypeMap("g");
+		getGameroomTypeMap("h");
+		Map<Integer, String> g1 = getGameroomTypeMap("h");
+
+		for(Map.Entry<Integer,String> e:g1.entrySet())
+		{
+
+			System.out.println(e.getKey()+"||"+e.getValue());
+		}
+
+	}
+	public static Map<Integer,String> getGameroomTypeMap(String type){
+
+		Map<Integer, String> targetMap = TypeMaps.get(type);
+		if(targetMap==null){
+			Map<Integer, String> map = new HashMap<Integer, String>();
+			map.put(1,type+"_normal");
+			map.put(3,type+"_normalins");
+			map.put(4,type+"_six");
+			map.put(5,type+"_omaha");
+			map.put(6,type+"_omahains");
+			map.put(10,type+"_short");
+			map.put(11,type+"_shortins");
+			//sng 单独库 查
+			//map.put("6",type+"_sng");
+			Map<Integer, String> gameMap = TypeMaps.putIfAbsent(type, map);
+
+			return map;
+		}
+
+
+		System.out.println("直接获取");
+		return targetMap;
+	}
+
+
+
 	//玩家活跃 和牌局统计表
 	public static Map<String,String> getGameMap(String type){
 		Map<String, String> map = new HashMap<String, String>();
@@ -21,6 +67,23 @@ public class DataBaseMapperUtils {
 		map.put("汇总", type+"_sum");
 		return map;
 	}
+
+
+	public static Map<String,String> getBaseGameMap(String type){
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("普通局",type+"_normal");
+		map.put("普通保险局",type+"_normalins");
+		map.put("奥马哈局",type+"_omaha");
+		map.put("奥马哈保险局",type+"_omahains");
+		map.put("6+局",type+"_six");
+		map.put("SNG局",type+"_sng");
+		map.put("短排局",type+"_short");
+		map.put("短排保险局",type+"_shortins");
+		return map;
+	}
+
+
+
 	public static Map<String,String> getConsumeDiamondlMap(){
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("联盟局","alliance");

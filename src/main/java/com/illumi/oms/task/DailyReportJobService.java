@@ -1,42 +1,34 @@
 package com.illumi.oms.task;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import org.apache.http.ParseException;
-import org.apache.http.util.EntityUtils;
-import org.elasticsearch.client.Response;
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-
 import com.illumi.oms.common.Consts;
 import com.illumi.oms.data.model.SnapShot.DiamondRechargeSnapShotDate;
 import com.illumi.oms.data.model.SnapShot.DiamondSnapShotDate;
 import com.illumi.oms.data.model.SnapShot.MoneySnapShotDate;
 import com.illumi.oms.data.model.SnapShot.RechargeSnapShotDate;
-import com.illumi.oms.data.utils.ArithUtils;
-import com.illumi.oms.data.utils.DateUtils;
-import com.illumi.oms.data.utils.ELKUtils;
-import com.illumi.oms.data.utils.LogMapperUtils;
-import com.illumi.oms.data.utils.Look;
+import com.illumi.oms.data.utils.*;
 import com.jayqqaa12.jbase.jfinal.ext.model.EasyuiModel;
 import com.jfinal.ext.plugin.sqlinxml.SqlKit;
 import com.jfinal.log.Logger;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
+import org.elasticsearch.client.Response;
+import org.quartz.Job;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 //每日日报快照
 public class DailyReportJobService implements Job{
 	private static final Logger log = Logger.getLogger(DailyReportJobService.class);
 	private List<Record> uuids = null;
-	private String[] rechargeMapperArr= {"101","102","201","202",
-			"301","302","303","401","402","403","501","502","sum"};
+	/*private String[] rechargeMapperArr= {"101","102","201","202",
+			"301","302","303","401","402","403","501","502","sum"};*/
+	private  String[] rechargeMapperArr = LogMapperUtils.getRechargeMapper();
 //	private Map<String,String> diamondMapperMap = null;
 //	private Map<String,String> moneyMapperMap = null;
 	public static void main(String[] args) {
@@ -413,9 +405,11 @@ public class DailyReportJobService implements Job{
 		//String[] arrs= {"100","101","102","201","202","301","302","303","401","402","403","sum"};
 		Long sum = 0l;
 		//只有一个map
+
 		for(Entry<Long, Map<String, Long>> e :fullMap.entrySet()) {
 			rs.set("targetdate", e.getKey());
 			Map<String, Long> value = e.getValue();
+
 			for(String s :rechargeMapperArr) {
 				if(value.containsKey(s)) {
 					long div = value.get(s);
@@ -715,7 +709,6 @@ public class DailyReportJobService implements Job{
 		for(int i=0;i<num-1;i++) {
 			zeroTime = DateUtils.changeHour(zeroTime, -24);
 		}
-
 
 		for(int i=0;i<num-1;i++) {
 			startJob(zeroTime);

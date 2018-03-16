@@ -1,21 +1,9 @@
 package com.illumi.oms.task;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-
 import com.illumi.oms.common.Consts;
 import com.illumi.oms.data.model.SnapShot.BlindSnapShotDate;
 import com.illumi.oms.data.model.SnapShot.GameExtSnapShotDate;
 import com.illumi.oms.data.model.SnapShot.GameSnapShotDate;
-import com.illumi.oms.data.utils.ArithUtils;
 import com.illumi.oms.data.utils.DataBaseMapperUtils;
 import com.illumi.oms.data.utils.DateUtils;
 import com.jayqqaa12.jbase.jfinal.ext.model.Db;
@@ -23,6 +11,15 @@ import com.jayqqaa12.jbase.jfinal.ext.model.EasyuiModel;
 import com.jfinal.ext.plugin.sqlinxml.SqlKit;
 import com.jfinal.log.Logger;
 import com.jfinal.plugin.activerecord.Record;
+import org.quartz.Job;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 public class GameStatisticJobService implements Job {
 
@@ -174,7 +171,22 @@ public class GameStatisticJobService implements Job {
 
 	private void handeServiceCharge(GameExtSnapShotDate gameExtSnapShotDate) {
 	 String[] attrNames = gameExtSnapShotDate.getAttrNames();
-	 for(String s:attrNames) {
+
+		Map<String, String> gameMap = DataBaseMapperUtils.getBaseGameMap(TYPE_SERVICE);
+
+		Collection<String> values = gameMap.values();
+
+		for(String s:attrNames){
+			for(String v:values){
+				if(v.equals(s)){
+					Object obj = gameExtSnapShotDate.get(s);
+					Long value = Long.parseLong(String.valueOf(obj).equals("null")?"0":String.valueOf(obj));
+					//除以10
+					gameExtSnapShotDate.set(s, value/10);
+				}
+			}
+		}
+	/*	for(String s:attrNames) {
 		 if(s.equals(TYPE_SERVICE+"_normal")
 				 ||s.equalsIgnoreCase(TYPE_SERVICE+"_normalins")
 				 ||s.equals(TYPE_SERVICE+"_omaha")
@@ -189,17 +201,27 @@ public class GameStatisticJobService implements Job {
 				
 				gameExtSnapShotDate.set(s, value/10);
 			 }
-		}
+		}*/
 	
 }
 
 	// 总数
 	private void setNum2GameSnapShot(EasyuiModel gameSnapShotDate, String type) {
 		Long result = 0l;
+
+
+		Map<String, String> baseGameMap = DataBaseMapperUtils.getBaseGameMap(type);
+
 		String[] attrNames = gameSnapShotDate.getAttrNames();
 		for(String s:attrNames) {
-			
-			if(s.equals(type+"_normal")
+			for(String str:baseGameMap.values()){
+				if(s.equals(str)){
+					Object obj = gameSnapShotDate.get(s);
+					result+=Long.parseLong(String.valueOf(obj).equals("null")?"0":String.valueOf(obj));
+					break;
+				}
+			}
+			/*if(s.equals(type+"_normal")
 					||s.equalsIgnoreCase(type+"_normalins")
 					||s.equals(type+"_omaha")
 					||s.equals(type+"_omahains")
@@ -209,8 +231,11 @@ public class GameStatisticJobService implements Job {
 					||s.equals(type+"_shortins")){
 				Object obj = gameSnapShotDate.get(s);
 				result+=Long.parseLong(String.valueOf(obj).equals("null")?"0":String.valueOf(obj));
-			 }
+			 }*/
 		}
+
+
+
 		gameSnapShotDate.set(type+"_sum", result);
 //		result+=gameSnapShotDate.getLong(type+"_normal");
 //		result+=gameSnapShotDate.getLong(type+"_normalins");
@@ -317,7 +342,7 @@ public class GameStatisticJobService implements Job {
 
 	/**
 	 * 
-	 * @param gameSnapShotDate
+	 * @param snapshot
 	 * @param list
 	 * @param columnName    数据库表字段名
 	 * @param type          类型
@@ -370,7 +395,12 @@ public class GameStatisticJobService implements Job {
 
 	// p牌局类型 解析
 	private String paserGameroomtype(Integer num, String type) {
-		if (num == 1) {
+
+
+		Map<Integer, String> gameroomTypeMap = DataBaseMapperUtils.getGameroomTypeMap(type);
+
+		return gameroomTypeMap.get(num);
+		/*if (num == 1) {
 			return type + "_normal";
 		} else if (num == 3) {
 			return type + "_normalins";
@@ -385,7 +415,7 @@ public class GameStatisticJobService implements Job {
 		} else if (num == 11){
 			return type + "_shortins";
 		}
-		return null;
+		return null;*/
 	}
 
 	public void defineExcuteByDay(long startTime, long zeroTime, int num) {
