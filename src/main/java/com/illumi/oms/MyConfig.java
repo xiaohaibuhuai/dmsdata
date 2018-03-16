@@ -5,7 +5,6 @@ import com.alibaba.druid.wall.WallFilter;
 import com.illumi.oms.data.Interceptor.LogInterceptor;
 import com.illumi.oms.plugin.spring.SpringPlugin;
 import com.illumi.oms.shiro.SessionHandler;
-import com.illumi.oms.task.DailyReportJobService;
 import com.jayqqaa12.jbase.jfinal.ext.ShiroExt;
 import com.jayqqaa12.jbase.jfinal.ext.xss.XssHandler;
 import com.jfinal.config.*;
@@ -190,7 +189,7 @@ public class MyConfig extends JFinalConfig
 	@Override
 	public void afterJFinalStart() {
 
-		new DailyReportJobService().defineExcuteByDay(1519401600000l,6);
+	//	new DailyReportJobService().defineExcuteByDay(1519401600000l,6);
 	}
 
 	/**
