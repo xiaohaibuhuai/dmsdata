@@ -114,6 +114,7 @@ MainApp.controller('RechargeDailyCtrls',  function($scope,TabService) {
   	                return jsonYearMonthDay(val);
   	            },sortable:true },
   		        {field:'101',title : '苹果充值',width : 120,align:'left',},
+				{field:'102',title : '谷歌支付',width : 120,align:'left',},
   		        {field:'201',title:'步步德普',width:120,align:'left'},
   		        {field:'202',title:'九格创想',width:120,align:'left'},
   		        {field:'302',title:'微信公众号',width:120,align:'left'},
@@ -124,6 +125,10 @@ MainApp.controller('RechargeDailyCtrls',  function($scope,TabService) {
   		        {field:'301',title:'安卓微信充值',width:120,align:'left'},
 				{field:'501',title :'钻石基金',width : 120,align:'left',},
 				{field:'502',title :'个人大额充值',width : 120,align:'left',},
+				{field:'503',title :'DMP钻石--指有付',width : 120,align:'left',},
+				{field:'601',title :'钻石基金--DP',width : 120,align:'left',},
+				{field:'602',title :'CMS钻石--DP',width : 120,align:'left',},
+				{field:'603',title :'DMP钻石--DP',width : 120,align:'left',},
 
   		        {field:'sum',title:'汇总',width:120,align:'left'}
   		    

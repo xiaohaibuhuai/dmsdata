@@ -18,7 +18,7 @@ public class LogMapperUtils {
 	public static String[]  getRechargeMapper(){
 
 		String[] rechargeMapperArr= {"101","102","201","202",
-				"301","302","303","401","402","403","501","502","sum"};
+				"301","302","303","401","402","403","501","502","503","601","602","603","sum"};
 
 		return rechargeMapperArr;
 	}

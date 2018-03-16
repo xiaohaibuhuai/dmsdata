@@ -67,7 +67,7 @@ public class RechargeDailyController extends ExcelController {
 		channelMap.put("日期", "targetdate");
 		channelMap.put("汇总", "sum");
 		
-		String[]  head = {"日期","苹果充值","步步德扑","九格创想","微信公众号","微信CMS","支付宝大额","支付宝公众号","支付宝CMS","安卓微信充值","钻石基金","个人大额充值","汇总"};
+		String[]  head = {"日期","苹果充值","谷歌支付","步步德扑","九格创想","微信公众号","微信CMS","支付宝大额","支付宝公众号","支付宝CMS","安卓微信充值","钻石基金","个人大额充值","DMP钻石--指有付","钻石基金--DP","CMS钻石--DP","DMP钻石--DP","汇总"};
 		List<Record> dataList = getDataList();
 		//标题时间类型  并格式化时间
 		String timeDes=FormatExcelTime(dataList);

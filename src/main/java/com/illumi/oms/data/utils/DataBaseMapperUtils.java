@@ -138,6 +138,14 @@ public class DataBaseMapperUtils {
 		map.put("安卓微信充值","301");
 
 
+		//2018.3.16 mbf
+		map.put("DMP钻石--指有付","503");
+		map.put("钻石基金--DP","601");
+		map.put("CMS钻石--DP","602");
+		map.put("DMP钻石--DP","603");
+
+
+
 		return map;
 	}
 }
