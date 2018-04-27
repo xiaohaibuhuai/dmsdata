@@ -381,6 +381,8 @@
 					<stopPort>5599</stopPort>
 					<webAppConfig>
 						<contextPath>/</contextPath>
+						<classesDirectory>/Users/liweichao/IdeaProjects/dmsdata/src/main/webapp/WEB-INF/classes</classesDirectory>
+						<extraClasspath>/Users/liweichao/IdeaProjects/dmsdata/src/main/webapp/WEB-INF/lib</extraClasspath>
 					</webAppConfig>
 					<scanIntervalSeconds>5</scanIntervalSeconds>
 					<connectors>
