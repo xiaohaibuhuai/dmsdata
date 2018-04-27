@@ -1,0 +1,1 @@
+package com.illumi.dms.system.controller;import com.jfinal.core.Controller;public class HelloController extends Controller {    public  void index(){        renderText("hello world");    }    public  void jump(){        renderText("hello world");    }}
