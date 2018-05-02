@@ -33,6 +33,7 @@ public class ESUtils {
             CLUSTER_NAME=properties.getProperty("es.cluster.name");
             TRANSPORT_SINFF=properties.getProperty("es.transport.sinff");
             logger.info(String.format("ClusterName:%s; Host:%s; Port:%s; TransportSinff:%s",CLUSTER_NAME,HOST,PORT,TRANSPORT_SINFF));
+            System.out.print(String.format("ClusterName:%s; Host:%s; Port:%s; TransportSinff:%s",CLUSTER_NAME,HOST,PORT,TRANSPORT_SINFF));
         }catch (IOException ex){
             logger.error("es资源文件没找到",ex);
         }
