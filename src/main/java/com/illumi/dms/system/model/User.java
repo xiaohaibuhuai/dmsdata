@@ -29,7 +29,7 @@ public class User extends EasyuiModel<User>
 	{
 		dg = super.listByDataGrid(sql("system.user.list"), dg, f);
 		Iterator<User> list = dg.rows.iterator();
-		User now = ShiroExt.getSessionAttr(Consts.SESSION_USER);
+		//User now = ShiroExt.getSessionAttr(Consts.SESSION_USER);
 
 		while (list.hasNext())
 		{
@@ -37,7 +37,7 @@ public class User extends EasyuiModel<User>
 			List<Role> role = Role.dao.getRole(u.getId());
 			u.put("role_ids", ListUtil.listToString(role, "id"));
 			u.put("role_names", ListUtil.listToString(role, "name"));
-			if (u.getId() == 1 && now.getId() != 1) list.remove();
+			if (u.getId() == 1 /*&& now.getId() != 1*/) list.remove();
 		}
 
 		return dg;

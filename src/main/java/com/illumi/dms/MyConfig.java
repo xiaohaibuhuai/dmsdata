@@ -45,10 +45,10 @@ public class MyConfig extends JFinalConfig
 	 */
 	public void configConstant(Constants me)
 	{
-		me.setError404View("/page/error/404.html");
-		me.setError401View("/page/error/401.html");
-		me.setError403View("/page/error/403.html");
-		me.setError500View("/page/error/500.html");
+		me.setError404View("page/error/404.html");
+		me.setError401View("page/error/401.html");
+		me.setError403View("page/error/403.html");
+		me.setError500View("page/error/500.html");
 		
 		new ConfigPlugin("config.txt").reload(false).start();
 //		new ConfigPlugin("dev.txt").reload(false).start();
