@@ -27,22 +27,10 @@ public class UrlConfig {
 
   
   
-  public static final String DATA = BASE+"/data";
-  public static final String MONITORING = DATA+"/monitoring";
-  public static final String TAB = DATA+"/table";
-  public static final String QUERY=DATA+"/query";
-  
-  
-  public static final String DATA_MONITORING_MONEYSYSTEM = MONITORING+"/moneysystem";
-  
-  
-  public static final String DATA_TAB_CASH = TAB+"/cash";
-  public static final String DATA_TAB_DAILYREPORT= TAB+"/dailyreport";
-  public static final String DATA_TAB_WEEKREPORT= TAB+"/weekreport";
+
 
   
-  public static final String DATA_QUERY_CASH = QUERY+"/cash";
-  
+
   public static final String VIEW_COMMON_LOGIN = COMMON + "/login.html";
   public static final String VIEW_COMMON_INIT = COMMON + "/init.html";
   public static final String VIEW_COMMON_JUMP = COMMON + "/jump.html";
