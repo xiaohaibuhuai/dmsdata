@@ -1,7 +1,7 @@
 package com.illumi.dms.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.illumi.oms.common.utils.ValidateObjectUtil;
+import com.illumi.dms.common.utils.ValidateObjectUtil;
 import org.eclipse.jetty.util.UrlEncoded;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

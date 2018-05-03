@@ -1,7 +1,7 @@
 package com.illumi.dms.common.utils;
 
 import com.illumi.dms.model.test_poker.StatisticsCollectUser;
-import com.illumi.oms.common.utils.ValidateObjectUtil;
+import com.illumi.dms.common.utils.ValidateObjectUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.elasticsearch.client.transport.TransportClient;

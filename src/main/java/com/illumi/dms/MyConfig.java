@@ -106,11 +106,11 @@ public class MyConfig extends JFinalConfig
 		SqlReporter.setLogger(true);
 
 
-		// 配置只读库
+		/*// 配置只读库
 		DruidPlugin pokerDbPlugin = new DruidPlugin(ConfigKit.getStr("master_jdbc_url"), ConfigKit.getStr("master_user"), ConfigKit.getStr("master_password"));
 		me.add(pokerDbPlugin);
-		/*ActiveRecordPlugin arpMysql = new ActiveRecordPlugin("master_pokerdb", pokerDbPlugin);
-		me.add(arpMysql);*/
+		*//*ActiveRecordPlugin arpMysql = new ActiveRecordPlugin("master_pokerdb", pokerDbPlugin);
+		me.add(arpMysql);*//*
 		me.add(new EhCachePlugin());
 		me.add(new SqlInXmlPlugin());
 		AutoTableBindPlugin atbp2 = new AutoTableBindPlugin("dbconfig2",pokerDbPlugin);
@@ -118,7 +118,7 @@ public class MyConfig extends JFinalConfig
 		atbp2.autoScan(false);
 		me.add(atbp2);
 		SqlReporter.setLogger(true);
-		//atbp2.start();
+		//atbp2.start();*/
 
 	
         
