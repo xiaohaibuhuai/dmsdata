@@ -7,7 +7,6 @@ import com.jayqqaa12.jbase.jfinal.ext.xss.XssHandler;
 import com.jfinal.config.*;
 import com.jfinal.core.JFinal;
 import com.jfinal.ext.handler.ContextPathHandler;
-import com.jfinal.ext.handler.FakeStaticHandler;
 import com.jfinal.ext.plugin.config.ConfigKit;
 import com.jfinal.ext.plugin.config.ConfigPlugin;
 import com.jfinal.ext.plugin.shiro.ShiroInterceptor;
@@ -15,9 +14,7 @@ import com.jfinal.ext.plugin.shiro.ShiroPlugin;
 import com.jfinal.ext.plugin.sqlinxml.SqlInXmlPlugin;
 import com.jfinal.ext.plugin.tablebind.AutoTableBindPlugin;
 import com.jfinal.ext.route.AutoBindRoutes;
-import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.plugin.activerecord.SqlReporter;
-import com.jfinal.plugin.activerecord.cache.EhCache;
 import com.jfinal.plugin.druid.DruidPlugin;
 import com.jfinal.plugin.druid.DruidStatViewHandler;
 import com.jfinal.plugin.ehcache.EhCachePlugin;
@@ -174,7 +171,7 @@ public class MyConfig extends JFinalConfig
 		// xss 过滤
 		me.add(new XssHandler("s"));
 		// 伪静态处理
-		me.add(new FakeStaticHandler());
+//		me.add(new FakeStaticHandler());
 		// 去掉 jsessionid 防止找不到action
 //		me.add(new SessionHandler());
 		me.add(new DruidStatViewHandler("/druid"));
