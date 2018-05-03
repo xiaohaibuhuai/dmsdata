@@ -39,7 +39,7 @@ public class MyConfig extends JFinalConfig
 	private boolean isDevMode()
 	{
 		String osName = System.getProperty("os.name");
-		return osName.indexOf("Windows") != -1;
+		return osName.indexOf("Windows") != -1||osName.indexOf("Mac") !=-1;
 	}
 
 	/**
