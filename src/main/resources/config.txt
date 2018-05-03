@@ -7,15 +7,4 @@ decrypt=true
 
 
 
-
-
-
-master_jdbc_url = jdbc:mysql://172.16.24.25:3306/test_poker?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
-master_user = cheat_check
-master_password = yilumi6784782
-master_db_type= mysql
-master_dev_mode = false
-master_decrypt=true
-
-
 CheatFinderScriptPath=/data/work/share/query_1110.R
