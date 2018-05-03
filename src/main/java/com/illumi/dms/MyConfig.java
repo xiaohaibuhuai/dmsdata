@@ -15,7 +15,9 @@ import com.jfinal.ext.plugin.shiro.ShiroPlugin;
 import com.jfinal.ext.plugin.sqlinxml.SqlInXmlPlugin;
 import com.jfinal.ext.plugin.tablebind.AutoTableBindPlugin;
 import com.jfinal.ext.route.AutoBindRoutes;
+import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.plugin.activerecord.SqlReporter;
+import com.jfinal.plugin.activerecord.cache.EhCache;
 import com.jfinal.plugin.druid.DruidPlugin;
 import com.jfinal.plugin.druid.DruidStatViewHandler;
 import com.jfinal.plugin.ehcache.EhCachePlugin;
@@ -97,23 +99,27 @@ public class MyConfig extends JFinalConfig
 		// 配置AutoTableBindPlugin插件
 		AutoTableBindPlugin atbp = new AutoTableBindPlugin("dbconfig",dbPlugin);
 		if (isDev) atbp.setShowSql(true);
-		atbp.scanPackages("com.illumi.dms.model","com.illumi.dms.system.model");
+		atbp.scanPackages("com.illumi.dms.model.test_dms","com.illumi.dms.system.model.test_dms");
 		atbp.autoScan(false);
 		me.add(atbp);
 		// sql记录
 		SqlReporter.setLogger(true);
+
+
 		// 配置只读库
-//		DruidPlugin pokerDbPlugin = new DruidPlugin(ConfigKit.getStr("poker.jdbcUrl"), ConfigKit.getStr("poker.user"), ConfigKit.getStr("poker.password"));
-//		me.add(pokerDbPlugin);
-//		ActiveRecordPlugin arpMysql = new ActiveRecordPlugin("pokerdb", pokerDbPlugin);
-//		me.add(arpMysql);
-//		arpMysql.setCache(new EhCache());
-//		//配置拆分库
-//		DruidPlugin pokerDbPlugin2 = new DruidPlugin(ConfigKit.getStr("poker2.jdbcUrl"), ConfigKit.getStr("poker2.user"), ConfigKit.getStr("poker2.password"));
-//		me.add(pokerDbPlugin2);
-//		ActiveRecordPlugin arpMysql2 = new ActiveRecordPlugin("pokerdb2", pokerDbPlugin2);
-//		me.add(arpMysql2);
-//		arpMysql2.setCache(new EhCache());
+		DruidPlugin pokerDbPlugin = new DruidPlugin(ConfigKit.getStr("master_jdbc_url"), ConfigKit.getStr("master_user"), ConfigKit.getStr("master_password"));
+		me.add(pokerDbPlugin);
+		/*ActiveRecordPlugin arpMysql = new ActiveRecordPlugin("master_pokerdb", pokerDbPlugin);
+		me.add(arpMysql);*/
+		me.add(new EhCachePlugin());
+		me.add(new SqlInXmlPlugin());
+		AutoTableBindPlugin atbp2 = new AutoTableBindPlugin("dbconfig2",pokerDbPlugin);
+		atbp2.scanPackages("com.illumi.dms.model.test_poker","com.illumi.dms.system.model.test_poker");
+		atbp2.autoScan(false);
+		me.add(atbp2);
+		SqlReporter.setLogger(true);
+		//atbp2.start();
+
 	
         
         

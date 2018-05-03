@@ -2,6 +2,7 @@ package com.illumi.oms.common.utils;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.InetAddress;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -287,14 +288,14 @@ public class ValidateObjectUtil {
 		
 	}
 	public static void main(String[] args) {
-        /*List<String> test =new LinkedList<>();
-        test.add("asdf");*/
-        //String test ="";
-        //isNotBlank(test);
-        //System.out.println(numberIsNotBlank((short)2,300000));
-        //boolean isMatch = Pattern.matches("^(\\-|\\+)?\\d+(\\.\\d+)?$",(CharSequence)"2.2");
-        //System.out.println(isMatch);
-        System.out.println(isBlankDefault(0,"asdf",0));
+
+            try {
+                System.out.print(InetAddress.getByName("172.16.24.21"));
+            }catch (Exception ex){
+                ex.printStackTrace();
+            }
+
+
 
 	}
 }

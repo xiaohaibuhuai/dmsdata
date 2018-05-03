@@ -1,16 +1,19 @@
 package com.illumi.dms.common.utils;
 
+import com.illumi.dms.model.test_poker.StatisticsCollectUser;
 import com.illumi.oms.common.utils.ValidateObjectUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.node.Node;
-import org.springframework.core.env.PropertiesPropertySource;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.transport.TransportAddress;
+import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-
-import java.io.FileInputStream;
+//import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Properties;
 
 public class ESUtils {
@@ -42,9 +45,16 @@ public class ESUtils {
     }
 
     public  static TransportClient  getClient(){
+        return getClient(1);
+    }
+
+    private static TransportClient getClient(int times){
         try{
+            if(times>=10){
+                return null;
+            }
             if(ValidateObjectUtil.isBlank(client)){
-                synchronized (client){
+                synchronized (ESUtils.class){
                     if(ValidateObjectUtil.isBlank(client)){
                         init();
                         return client;
@@ -58,12 +68,31 @@ public class ESUtils {
         }catch (Exception ex) {
             ex.printStackTrace();
             logger.error("es client exception", ex);
-            return null; //getClient();
+            try {
+                Thread.sleep(5000);
+            }catch (Exception x){
+                x.printStackTrace();
+            }
+            System.out.print(String.format("------------初始化失败--------：第{}次", times));
+            return getClient(times+1);
         }
     }
 
-    public static void init(){
-
+    public static void init() throws UnknownHostException{
+            System.out.println("TransportClient init...");
+            Settings setting = Settings.builder().put("cluster.name",CLUSTER_NAME).build();
+            client = new PreBuiltTransportClient(setting);
+            System.out.println("ADDRESS:" +HOST);
+            System.out.println("Port:" +ValidateObjectUtil.isBlankDefault(PORT,9200,0));
+            client.addTransportAddress(
+                    new TransportAddress(
+                            InetAddress.getByName(HOST),ValidateObjectUtil.isBlankDefault(PORT,9200,0)
+                    )
+            );
     }
 
+
+    public static void main(String[] args) {
+        StatisticsCollectUser.dao.collectDataUser();
+    }
 }
