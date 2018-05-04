@@ -120,8 +120,8 @@ var frame = {
                     "firstDay": 1
                 },
                 "linkedCalendars": false,
-                "startDate": "04/19/2018",
-                "endDate": "04/25/2018"
+                "startDate": "04/19/2017",
+                "endDate": "04/25/2019"
             }, function(start, end, label) {
                 console.log("New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')");
             });

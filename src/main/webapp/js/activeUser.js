@@ -12,8 +12,10 @@ window.onload = function () {
         $(".table-title-info").css("display","none");
     });
 
-    var myChart = echarts.init(document.getElementById('dms-chart'));
-    option = {
+    window.user= {
+        myChart : echarts.init(document.getElementById('dms-chart'))
+    };
+    window.user.option = {
         tooltip: {
             trigger: 'axis'
         },
@@ -50,5 +52,6 @@ window.onload = function () {
             }
         ]
     };
-    myChart.setOption(option);
+
+    user.myChart.setOption(option);
 };
