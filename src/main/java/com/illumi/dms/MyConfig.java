@@ -94,7 +94,7 @@ public class MyConfig extends JFinalConfig
 		// add sql xml plugin
 		me.add(new SqlInXmlPlugin());
 		// add shrio
-		if (OPEN_SHIRO) me.add(new ShiroPlugin(this.routes));
+		//if (OPEN_SHIRO) me.add(new ShiroPlugin(this.routes));
 
 		// 配置AutoTableBindPlugin插件
 		AutoTableBindPlugin atbp = new AutoTableBindPlugin("dbconfig",dbPlugin);
@@ -151,8 +151,8 @@ public class MyConfig extends JFinalConfig
 	public void configInterceptor(Interceptors me)
 	{
 		// shiro权限拦截器配置
-		if (OPEN_SHIRO) me.add(new ShiroInterceptor());
-		if (OPEN_SHIRO) me.add(new com.illumi.dms.shiro.ShiroInterceptor());
+		//if (OPEN_SHIRO) me.add(new ShiroInterceptor());
+		//if (OPEN_SHIRO) me.add(new com.illumi.dms.shiro.ShiroInterceptor());
 
 		// 让 模版 可以使用session
 //		me.add(new SessionInViewInterceptor());
@@ -174,7 +174,7 @@ public class MyConfig extends JFinalConfig
 		// xss 过滤
 		me.add(new XssHandler("s"));
 		// 伪静态处理
-		me.add(new FakeStaticHandler());
+		//me.add(new FakeStaticHandler());
 		// 去掉 jsessionid 防止找不到action
 //		me.add(new SessionHandler());
 		me.add(new DruidStatViewHandler("/druid"));

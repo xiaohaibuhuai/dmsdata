@@ -2,6 +2,12 @@ package com.illumi.dms.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.illumi.dms.common.utils.ValidateObjectUtil;
+import com.illumi.dms.model.test_dms.DmsUserView;
+import com.jayqqaa12.model.easyui.DataGrid;
+import com.jfinal.ext.route.ControllerBind;
+import com.jfinal.render.Render;
+import com.jfinal.render.RenderException;
+import com.jfinal.render.RenderFactory;
 import org.eclipse.jetty.util.UrlEncoded;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,22 +15,23 @@ import com.jayqqaa12.jbase.jfinal.ext.ctrl.EasyuiController;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.io.*;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
+@ControllerBind(controllerKey = "/export",viewPath="/page/system")
 public class ExportExcelController extends  EasyuiController  {
     private static final Logger LOGGER = LoggerFactory.getLogger(ExportExcelController.class);
 
     private static abstract class ColumnFormat<T> {
         protected static Map<String, Object> REQUEST_PARAM = new HashMap<String, Object>();
-        protected static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        protected static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+        protected static String FIELD = "name";
         protected static Map<String, Object> QUERY_PARAM =  new HashMap<String, Object>();
-        public static String TIELD = "field";
+
         public static void intData(Map<String, Object> requestParams) {
-            REQUEST_PARAM = requestParams;
-            QUERY_PARAM=ValidateObjectUtil.isBlankDefault(requestParams.get("queryParams"),new HashMap<String, Object>());
-            List<Map<String, Object>> org = ValidateObjectUtil.isBlankDefault(REQUEST_PARAM.get("organization"), new ArrayList<Map<String, Object>>());
+            REQUEST_PARAM.putAll(requestParams);
+            QUERY_PARAM=ValidateObjectUtil.isBlankDefault(REQUEST_PARAM.get("queryParams"),new HashMap<String, Object>());
         }
         public abstract String[] format(Map<String, Object> row, List<Map<String, Object>> column);
 
@@ -35,119 +42,22 @@ public class ExportExcelController extends  EasyuiController  {
 
 
 
-    /*public static class ReceiveGift extends ColumnFormat<ExchangeOrderResult> {
-        *//*
-                                      {field: 'toUserId', title: '收礼物用户ID', align: 'center', width: '10%'},
-                                      {field: 'toUser.name', title: '收用户昵称', align: 'center', width: '10%',formatter:function(value, row){
-                                          return  row.toUser==undefined?"":row.toUser.name==undefined?"":row.toUser.name;
-                                      }},
-                                      {field: 'toOrgName', title: '所属工会', align: 'center', width: '10%',formatter:function(value, row){
-                                          return util.statusFormat("exchangeOrder.toOrgName",row);
-                                      }},
-                                      {field: 'toAmountA', title: 'D1金币数', align: 'center', width: '10%',formatter:function(value, row){
-                                          return util.statusFormat(" ",value);
-                                      }},
-                                      {field: 'toAmountB', title: 'D2金币数', align: 'center', width: '10%',formatter:function(value, row){
-                                          return util.statusFormat("exchangeOrder.toAmountB",value);
-                                      }},
-                                      {field: 'productName', title: '礼物名称', align: 'center', width: '10%'},
-                                      {field: 'productNum', title: '礼物数量', align: 'center', width: '10%'},
-                                      {field: 'fromUserId',title: '赠送礼物用户ID', align: 'center', width: '10%'},
-                                      {field: 'fromUser.name', title: '赠送礼物用户昵称', align: 'center', width: '10%',formatter:function(value, row){
-                                          return  row.fromUser==undefined?"":row.fromUser.name==undefined?"":row.fromUser.name;
-                                      }},
-                                      {field: 'fromOrgName', title: '所属工会', align: 'center', width: '10%',formatter:function(value, row){
-                                          return util.statusFormat("exchangeOrder.fromOrgName",row);
-                                      }},
-                                      {field: 'createAt', title: '时间', align: 'center', width: '10%',formatter:function(value, row){
-                                          return $.fn.datebox.defaults.formatterTimestamp(new Date(value))
-                                      }}
-     *//*
+    public static class DmsUserViewCSV extends ColumnFormat<DmsUserView> {
+        //columns:[{name:"date",text:"日期"},{name:"regist_user_num",text:"注册人数"},{name:"regist_buyin_user_num",text:"当日注册且买入人数"},{name:"total_buyin_user_num",text:"当日总买入用户数"},{name:"total_user_num",text:"累计注册人数"},{name:"total_buyin_user_num",text:"累计买入独立用户数"}],
         @Override
         public String[] format(Map<String, Object> row, List<Map<String, Object>> column) {
+           return  null;
+        }
+
+        @Override
+        public String[] format(DmsUserView row, List<Map<String, Object>> column) {
             String[] result = null;
             if (ValidateObjectUtil.isNotBlank(column, row)) {
                 result = new String[column.size()];
-                Map<String, Object> rowMap = row;
                 for (int i = 0; i < result.length; i++) {
-                    String field = ValidateObjectUtil.isBlankDefault(column.get(i).get(TopUp.TIELD), "");
-                    String value = null;
-                    switch (field) {
-                        case "toUserId": {
-                            value = ValidateObjectUtil.isBlankDefault(rowMap.get(field), "");
-                        }
-                        break;
-                        case "toUser.name": {
-                            Map<String, Object> formUser = ValidateObjectUtil.isBlankDefault(rowMap.get("toUser"), new HashMap<String, Object>());
-                            if (ValidateObjectUtil.isNotBlank(formUser)) {
-                                value = ValidateObjectUtil.isBlankDefault(formUser.get("name"), "");
-                            } else {
-                                value = "";
-                            }
-                        }
-                        break;
-                        case "toOrgName": {
-                            value = ValidateObjectUtil.isBlankDefault(
-                                    rowMap.get(field),
-                                    this.getOrganizationName(
-                                            ValidateObjectUtil.isBlankDefault(
-                                                    rowMap.get("toOrgId"), "0"
-                                            )
-                                    )
-                            );
-                        }
-                        break;
-                        case "toAmountA": {
-                            value = jiaGe(ValidateObjectUtil.isBlankDefault(rowMap.get(field), "0"));
-                        }
-                        break;
-                        case "toAmountB": {
-                            value = jiaGe(ValidateObjectUtil.isBlankDefault(rowMap.get(field), "0"));
-                        }
-                        break;
-                        case "productName": {
-                            value = ValidateObjectUtil.isBlankDefault(rowMap.get(field), "");
-                        }
-                        break;
-                        case "productNum": {
-                            value = ValidateObjectUtil.isBlankDefault(rowMap.get(field), "0");
-                        }
-                        break;
-                        case "fromUserId": {
-                            value = ValidateObjectUtil.isBlankDefault(rowMap.get(field), "");
-                        }
-                        break;
-                        case "fromUser.name": {
-                            Map<String, Object> formUser = ValidateObjectUtil.isBlankDefault(rowMap.get("fromUser"), new HashMap<String, Object>());
-                            if (ValidateObjectUtil.isNotBlank(formUser)) {
-                                value = ValidateObjectUtil.isBlankDefault(formUser.get("name"), "");
-                            } else {
-                                value = "";
-                            }
-                        }
-                        break;
-                        case "fromOrgName": {
-                            value = ValidateObjectUtil.isBlankDefault(
-                                    rowMap.get(field),
-                                    this.getOrganizationName(
-                                            ValidateObjectUtil.isBlankDefault(
-                                                    rowMap.get("fromOrgId"), "0"
-                                            )
-                                    )
-                            );
-                        }
-                        break;
-                        case "createAt": {
-                            Calendar calendar = Calendar.getInstance();
-                            calendar.setTimeInMillis(ValidateObjectUtil.isBlankDefault(rowMap.get(field), 0L));
-                            value = DATE_FORMAT.format(calendar.getTime());
-                        }
-                        break;
-                        default: {
-                            value = "";
-                        }
-                        break;
-                    }
+                    String field = ValidateObjectUtil.isBlankDefault(column.get(i).get(DmsUserViewCSV.FIELD), "");
+                    //Map<String, Object> fieldMap = column.get(i);
+                    String value = ValidateObjectUtil.isBlankDefault(row.get(field),"");
                     result[i] = value;
                 }
             }
@@ -155,197 +65,47 @@ public class ExportExcelController extends  EasyuiController  {
         }
 
         @Override
-        public String[] format(ExchangeOrderResult row, List<Map<String, Object>> column) {
-            String[] result = null;
-            if (ValidateObjectUtil.isNotBlank(column, row)) {
-                result = new String[column.size()];
-                for (int i = 0; i < result.length; i++) {
-                    String field = ValidateObjectUtil.isBlankDefault(column.get(i).get(TopUp.TIELD), "");
-                    String value = null;
-                    switch (field) {
-                        case "toUserId": {
-                            //value = ValidateObjectUtil.isBlankDefault(row.getToUserId(), "");
-                            value=formatUserId(row.getToUser(),null);
-                        }
-                        break;
-                        case "toUser.name": {
-                            if(ValidateObjectUtil.isNotBlank(row.getToUser())){
-                                value=ValidateObjectUtil.isBlankDefault(row.getToUser().getName(), "");
-                            }
-                            else {
-                                value = "";
-                            }
-                            value = value.replace(",","，");
-                        }
-                        break;
-                        case "toOrgName": {
-                            value = ValidateObjectUtil.isBlankDefault(
-                                    row.getToOrgName(),
-                                    this.getOrganizationName(
-                                            ValidateObjectUtil.isBlankDefault(
-                                                    row.getToOrgId(), "0"
-                                            )
-                                    )
-                            );
-                        }
-                        break;
-                        case "toAmountA": {
-                            value = jiaGe(ValidateObjectUtil.isBlankDefault(row.getToAmountA(), "0"));
-                        }
-                        break;
-                        case "toAmountB": {
-                            value = jiaGe(ValidateObjectUtil.isBlankDefault(row.getToAmountB(), "0"));
-                        }
-                        break;
-                        case "productName": {
-                            value = ValidateObjectUtil.isBlankDefault(row.getProductName(), "");
-                        }
-                        break;
-                        case "productNum": {
-                            value = ValidateObjectUtil.isBlankDefault(row.getProductNum(), "0");
-                        }
-                        break;
-                        case "fromUserId": {
-                            //value = ValidateObjectUtil.isBlankDefault(row.getFromUserId(), "");
-                            value=formatUserId(row.getFromUser(),null);
-                        }
-                        break;
-                        case "fromUser.name": {
-                            if(ValidateObjectUtil.isNotBlank(row.getFromUser())){
-                                value = ValidateObjectUtil.isBlankDefault(row.getFromUser().getName(), "");
-                            }
-                            else {
-                                value = "";
-                            }
-                            value = value.replace(",","，");
-                        }
-                        break;
-                        case "fromOrgName": {
-                            value = ValidateObjectUtil.isBlankDefault(
-                                    row.getFromOrgName(),
-                                    this.getOrganizationName(
-                                            ValidateObjectUtil.isBlankDefault(
-                                                    row.getFromOrgId(), "0"
-                                            )
-                                    )
-                            );
-                        }
-                        break;
-                        case "createAt": {
-                            if(ValidateObjectUtil.isNotBlank(row.getCreateAt())){
-                                Calendar calendar = Calendar.getInstance();
-                                calendar.setTimeInMillis(row.getCreateAt().getTime());
-                                value = DATE_FORMAT.format(calendar.getTime());
-                            }else{
-                                value="";
-                            }
-
-                        }
-                        break;
-                        case "toDid": {
-                            value = ValidateObjectUtil.isBlankDefault(row.getToDid(), "");
-                        }
-                        break;
-                        case "toClientIp": {
-                            value = ValidateObjectUtil.isBlankDefault(row.getToClientIp(), "");
-                        }
-                        break;
-                        default: {
-                            value = "";
-                        }
-                        break;
-                    }
-                    result[i] = value;
-                }
-            }
-            return result;
-        }
-
-        @Override
-        public List<ExchangeOrderResult> execute() {
+        public List<DmsUserView> execute() {
             try {
-                int page =  ValidateObjectUtil.isBlankDefault(ReceiveGift.QUERY_PARAM.get("page"), 1);
-                int pageSize = ValidateObjectUtil.isBlankDefault(ReceiveGift.REQUEST_PARAM.get("total"), 10000);
-                long toUserId =ValidateObjectUtil.isBlankDefault(ReceiveGift.QUERY_PARAM.get("userId"), 0L);
-                long toOrgId = ValidateObjectUtil.isBlankDefault(ReceiveGift.QUERY_PARAM.get("organizationId"), 0L);
-                String startTime = ValidateObjectUtil.isBlankDefault(ReceiveGift.QUERY_PARAM.get("startDate"), null);
-                String endTime = ValidateObjectUtil.isBlankDefault(ReceiveGift.QUERY_PARAM.get("endDate"), null);
-                String productName = ValidateObjectUtil.isBlankDefault(ReceiveGift.QUERY_PARAM.get("giftName"), null);
-                List<ExchangeOrderResult> list = new ArrayList<ExchangeOrderResult>();
-                *//*-----------------查询数据------------------*//*
-                Map<String, Object> params = new HashMap<String, Object>();
-                params.put("toUserId", ValidateObjectUtil.isBlankDefault(toUserId, null));
-                params.put("toOrgId", ValidateObjectUtil.isBlankDefault(toOrgId, null));
-                params.put("productName", ValidateObjectUtil.isBlankDefault(productName, null));
-                params.put("startTime", ValidateObjectUtil.isBlankDefault(startTime, null));
-                params.put("endTime", ValidateObjectUtil.isBlankDefault(endTime, null));
-                System.out.println(String.format("收礼物列表参数：%s", JSON.toJSONString(params)));
-                int total=pageSize;
-                pageSize=10000;
-                int totalPage=((total)%pageSize)==0?((total)/pageSize):((total)+pageSize)/pageSize;
+                int page =  ValidateObjectUtil.isBlankDefault(DmsUserViewCSV.QUERY_PARAM.get("page"), 1);
+                int pageSize = ValidateObjectUtil.isBlankDefault(DmsUserViewCSV.REQUEST_PARAM.get("total"), 10000);
+                String type= ValidateObjectUtil.isBlankDefault(DmsUserViewCSV.REQUEST_PARAM.get("_type"), "all");
+                String startDate = ValidateObjectUtil.isBlankDefault(DmsUserViewCSV.QUERY_PARAM.get("startDate"), null);
+                String endDate = ValidateObjectUtil.isBlankDefault(DmsUserViewCSV.QUERY_PARAM.get("endDate"), null);
+                String sort= ValidateObjectUtil.isBlankDefault(DmsUserViewCSV.QUERY_PARAM.get("sort"),"date");
+                StringBuffer sql = new StringBuffer("select 1 as gpid, date ,sum(regist_user_num) as regist_user_num, sum(buyin_user_num) as buyin_user_num,sum(regist_buyin_user_num)as regist_buyin_user_num,sum(total_user_num) as total_user_num, sum(total_buyin_user_num)as total_buyin_user_num from dms_user_view where 1=1");
 
-                for(int i=page;i<=totalPage;i++){
-                    RespEntity<AccountEntityPage<ExchangeOrder>> respEntity1=this.orderRespService.getReceiveGiftQueryList(params, i, pageSize);
-                    if (ValidateObjectUtil.isNotBlank(respEntity1)&&ValidateObjectUtil.isNotBlank(respEntity1.getEntinty())&&ValidateObjectUtil.isNotBlank(respEntity1.getEntinty().getList())) {
-                        AccountEntityPage<ExchangeOrder> pageList2=respEntity1.getEntinty();
-                        StringBuffer fromUserBuffer=new StringBuffer();
-                        StringBuffer toUserBuffer=new StringBuffer();
-                        Map<String,User> fromUserMap=new HashMap<String, User>();
-                        Map<String,User> toUserMap=new HashMap<String, User>();
-                        for (ExchangeOrder exchangeOrder : pageList2.getList()) {
-                            fromUserBuffer.append(exchangeOrder.getFromUserId()).append(",");
-                            toUserBuffer.append(exchangeOrder.getToUserId()).append(",");
-                        }
-                        if(fromUserBuffer.length()>0){
-                            fromUserBuffer.substring(0, fromUserBuffer.length()-1);
-                        }
-                        if(toUserBuffer.length()>0){
-                            toUserBuffer.substring(0, toUserBuffer.length()-1);
-                        }
-                        List<User> fromUsers=this.userService.getUserByIds(fromUserBuffer.toString());
-                        List<User> toUsers=this.userService.getUserByIds(toUserBuffer.toString());
-                        if(ValidateObjectUtil.isNotBlank(fromUsers)){
-                            for (User user : fromUsers) {
-                                fromUserMap.put(String.valueOf(user.getId()), user);
-                            }
-                        }
-                        if(ValidateObjectUtil.isNotBlank(toUsers)){
-                            for (User user : toUsers) {
-                                toUserMap.put(String.valueOf(user.getId()), user);
-                            }
-                        }
-                        for (ExchangeOrder exchangeOrder : pageList2.getList()) {
-                            ExchangeOrderResult exchangeRecordResult = new ExchangeOrderResult(
-                                    exchangeOrder);
-                            UserResult fromUser=new UserResult();
-                            fromUser.setId(exchangeOrder.getFromUserId());
-                            if(ValidateObjectUtil.isNotBlank(fromUserMap.get(String.valueOf(ValidateObjectUtil.isBlankDefault(exchangeOrder.getFromUserId(),""))))){
-                                fromUser.setName(ValidateObjectUtil.isBlankDefault(fromUserMap.get(String.valueOf(exchangeOrder.getFromUserId())).getName(),""));
-                                fromUser.setDepartment(ValidateObjectUtil.isBlankDefault(fromUserMap.get(String.valueOf(exchangeOrder.getFromUserId())).getDepartment(),""));
-                                fromUser.setType(ValidateObjectUtil.isBlankDefault(fromUserMap.get(String.valueOf(exchangeOrder.getFromUserId())).getType(),""));
+                if(ValidateObjectUtil.isNotBlank(startDate)){
 
-                            }
-                            UserResult toUser=new UserResult();
-                            toUser.setId(exchangeOrder.getToUserId());
-                            if(ValidateObjectUtil.isNotBlank(toUserMap.get(String.valueOf(ValidateObjectUtil.isBlankDefault(exchangeOrder.getToUserId(),""))))){
-                                toUser.setName(ValidateObjectUtil.isBlankDefault(toUserMap.get(String.valueOf(exchangeOrder.getToUserId())).getName(),""));
-                                toUser.setDepartment(ValidateObjectUtil.isBlankDefault(toUserMap.get(String.valueOf(exchangeOrder.getToUserId())).getDepartment(),""));
-                                toUser.setType(ValidateObjectUtil.isBlankDefault(toUserMap.get(String.valueOf(exchangeOrder.getToUserId())).getType(),""));
-                            }
-                            exchangeRecordResult.setFromUser(fromUser);
-                            exchangeRecordResult.setToUser(toUser);
-                            list.add(exchangeRecordResult);
-                        }
+                    sql.append(" and date ").append(">= '").append(startDate).append("'");
+                }
+                if(ValidateObjectUtil.isNotBlank(endDate)){
+                    sql.append(" and date ").append("< '").append(endDate).append("'");
+                }
+
+                if(ValidateObjectUtil.isNotBlank(type)){
+                    if(type.equals("all")){
+                        sql.append(" group by ").append(" date ");
+                    }else if(type.equals("abroad")){
+                        sql.append(" and is_abroad ").append("=").append("1");
+                        sql.append(" group by ").append(" date ");
+                    }else {
+                        sql.append(" and is_abroad ").append("=").append("0");
+                        sql.append(" group by ").append(" date ");
                     }
                 }
+                if(ValidateObjectUtil.isNotBlank(sort)){
+                    sql.append(" order by ").append(sort).append(" desc ");
+                }
+                List<DmsUserView> list = DmsUserView.dao.find(sql.toString());
             return  list;
-        *//*-----------------查询数据------------------*//*
+
             } catch (Exception e) {
                 LOGGER.error(e.getMessage(), e);
                 throw  new RuntimeException(e);
             }
         }
-    }*/
+    }
 
 
 
@@ -359,8 +119,8 @@ public class ExportExcelController extends  EasyuiController  {
 
         enum TableExcel {
             //["/cms/transactionLog/topUpList","/cms/transactionLog/withDrawList","/cms/transactionLog/goldToGoldBeanList","/cms/transactionLog/goldBeanTogoldDiamondList","/cms/transactionLog/receiveGiftList","/cms/transactionLog/sendGiftList","/cms/transactionLog/floodScreenList","/cms/transactionLog/transferList","/cms/transactionLog/recycleList","/cms/transactionLog/freezeList","/cms/transactionLog/consumeDiamendList","/cms/transactionLog/sendGoldList"];
-            TOP_UP("/cms/transactionLog/topUpList",null);
-
+            //TOP_UP("/cms/transactionLog/topUpList",null);
+            DMS_USER_VIEW("/statistic/dmsuserview/user/list",new DmsUserViewCSV());
             private String url;
             private ColumnFormat columnFormat;
 
@@ -380,8 +140,8 @@ public class ExportExcelController extends  EasyuiController  {
             public static ColumnFormat getFormatInstance(String url) {
                 if (ValidateObjectUtil.isNotBlank(url)) {
                     switch (url) {
-                        case "/cms/transactionLog/topUpList": {
-                            return TOP_UP.getFormat();
+                        case "/statistic/dmsuserview/user/list": {
+                            return DMS_USER_VIEW.getFormat();
                         }
                         default: {
                             return null;
@@ -397,64 +157,79 @@ public class ExportExcelController extends  EasyuiController  {
 
 
         public void csv() {
-            try {
-                final HttpServletRequest request = null;
-                final HttpServletResponse response = null;
-                String data = null;
-                final Map<String, Object> requestParam = JSON.parseObject(data, Map.class);
-                List<List<Map<String, Object>>> column = (List<List<Map<String, Object>>>) requestParam.get("column");
-                LOGGER.info(String.format("------------->>>>>>> %s", requestParam));
-                ColumnFormat.intData(requestParam);
+            render(new Render() {
+                @Override
+                public void render() {
+                    try {
 
-                int toatl = ValidateObjectUtil.isBlankDefault(requestParam.get("total").toString(), 0);
-                Map<String, Object> excelDatas = new HashMap<String, Object>();
-
-                String fileName = request.getParameter("fileName");
-                response.setCharacterEncoding("UTF-8");
-                response.setContentType("multipart/form-data");
-                response.setHeader("Content-Disposition",
-                        "attachment;fileName=" + UrlEncoded.encodeString(fileName + "_" + new SimpleDateFormat("yyyy.MM.dd").format(Calendar.getInstance().getTime()) + "_.csv", "utf-8"));
-                ServletOutputStream output = response.getOutputStream();
-                String excelData[][] = null;
-                List<Map<String, Object>> rows = null;
-                if (ValidateObjectUtil.isNotBlank(column)) {
-                    excelData = new String[toatl + 1][column.get(0).size()];
-                    String title[] = new String[column.get(0).size()];
-                    for (int i = 0; i < column.get(0).size(); i++) {
-                        title[i] = ValidateObjectUtil.isBlankDefault(column.get(0).get(i).get("title"), "");
-                    }
-                    excelData[0] = title;
-                }
-                List<Object> list=TableExcel.getFormatInstance(requestParam.get("url").toString()).execute();
-                for (int i = 1; i < excelData.length; i++) {
-                    String dataSub[] = TableExcel.getFormatInstance(requestParam.get("url").toString()).format(list.get(i-1),column.get(0));
-                    excelData[i] = dataSub;
-                }
-                StringBuffer buffer = new StringBuffer();
-                if (ValidateObjectUtil.isNotBlank(excelData)) {
-                    for (int i = 0; i < excelData.length; i++) {
-                        String temp = Arrays.toString(excelData[i]);
-                        buffer.append(temp.substring(1, temp.length() - 1)).append("\r");
-                    }
-                }
-                try {
-                    output.write(buffer.toString().getBytes("GBK"));
-                } catch (Exception e) {
-                    LOGGER.error(e.getMessage(), e);
-                } finally {
-                    if (output != null)
-                        try {
-                            output.close();
-                        } catch (IOException e) {
-                            LOGGER.error("文件下载失败", e);
+                        final HttpServletResponse response = getResponse();
+                        String data = getPara("data");
+                        if(ValidateObjectUtil.isBlank(data)){
+                            throw  new RuntimeException("参数异常");
                         }
+                        data = data.replace("&quot;","\"");
+                        final Map<String, Object> requestParam = JSON.parseObject(data, Map.class);
+                        List<Map<String, Object>> column = (List<Map<String, Object>>) requestParam.get("column");
+                        LOGGER.info(String.format("------------->>>>>>> %s", requestParam));
+                        ColumnFormat.intData(requestParam);
+
+                        int toatl = ValidateObjectUtil.isBlankDefault(requestParam.get("total").toString(), 0);
+                        Map<String, Object> excelDatas = new HashMap<String, Object>();
+
+                        String fileName =  getPara("fileName");
+                        fileName = fileName + "_" + new SimpleDateFormat("yyyy.MM.dd").format(Calendar.getInstance().getTime()) + "_.csv";
+                        if (request.getHeader("User-Agent").toUpperCase().indexOf("MSIE") > 0) {
+                            fileName = URLEncoder.encode(fileName, "UTF-8");
+                        } else {
+                            fileName = new String(fileName.getBytes("UTF-8"), "ISO8859-1");
+                        }
+/*                        response.setCharacterEncoding("UTF-8");
+                        response.setContentType("multipart/form-data");
+                        response.setHeader("Content-Disposition",
+                                "attachment;fileName=" + fileName);*/
+                        ServletOutputStream output = response.getOutputStream();
+                        String excelData[][] = null;
+                        List<Map<String, Object>> rows = null;
+                        if (ValidateObjectUtil.isNotBlank(column)) {
+                            excelData = new String[toatl + 1][column.size()];
+                            String title[] = new String[column.size()];
+                            for (int i = 0; i < column.size(); i++) {
+                                title[i] = ValidateObjectUtil.isBlankDefault(column.get(i).get("text"), "");
+                            }
+                            excelData[0] = title;
+                        }
+                        List<Object> list=TableExcel.getFormatInstance(requestParam.get("url").toString()).execute();
+                        for (int i = 1; i < excelData.length; i++) {
+                            String dataSub[] = TableExcel.getFormatInstance(requestParam.get("url").toString()).format(list.get(i-1),column);
+                            excelData[i] = dataSub;
+                        }
+                        StringBuffer buffer = new StringBuffer();
+                        if (ValidateObjectUtil.isNotBlank(excelData)) {
+                            for (int i = 0; i < excelData.length; i++) {
+                                String temp = Arrays.toString(excelData[i]);
+                                buffer.append(temp.substring(1, temp.length() - 1)).append("\r");
+                            }
+                        }
+                        try {
+                            output.write(buffer.toString().getBytes("GBK"));
+                            //output.flush();
+                        } catch (Exception e) {
+                            LOGGER.error(e.getMessage(), e);
+                        } finally {
+                            if (output != null)
+                                try {
+                                    output.close();
+                                } catch (IOException e) {
+                                    LOGGER.error("文件下载失败", e);
+                                }
+                        }
+
+                    }catch (IOException ex){
+                        ex.printStackTrace();
+                    }
                 }
-
-            }catch (IOException ex){
-                ex.printStackTrace();
-            }
-
-
+            });
         }
+
 
 }

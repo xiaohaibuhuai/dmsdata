@@ -3,9 +3,8 @@ package com.illumi.dms.common.utils;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.InetAddress;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -147,12 +146,15 @@ public class ValidateObjectUtil {
         if(isBlank){
             return t;
         }else{
-            if(List.class.isAssignableFrom(t.getClass())){
-                return null;
+            if(null == t){
+                return (T)object;
+            }
+            else if(List.class.isAssignableFrom(t.getClass())){
+                return (T)object;
             }else if(Map.class.isAssignableFrom(t.getClass())){
-                return null;
+                return (T)object;
             }else if(Set.class.isAssignableFrom(t.getClass())){
-                return null;
+                return (T)object;
             }else if(CharSequence.class.isAssignableFrom(t.getClass())){
                 return (T)object.toString();
             }else if(Boolean.class.isAssignableFrom(t.getClass())){
@@ -294,14 +296,13 @@ public class ValidateObjectUtil {
 		
 	}
 	public static void main(String[] args) {
-        /*List<String> test =new LinkedList<>();
-        test.add("asdf");*/
-        //String test ="";
-        //isNotBlank(test);
-        //System.out.println(numberIsNotBlank((short)2,300000));
-        //boolean isMatch = Pattern.matches("^(\\-|\\+)?\\d+(\\.\\d+)?$",(CharSequence)"2.2");
-        //System.out.println(isMatch);
-        System.out.println(isBlankDefault(0,"asdf",0));
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH,-7);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        System.out.println(format.format(calendar.getTime()));
+
+        String   test = "{&quot;total&quot;:7,&quot;queryParams&quot;:{&quot;_type&quot;:&quot;all&quot;,&quot;rows&quot;:10,&quot;page&quot;:1,&quot;startDate&quot;:&quot;2018-5-1&quot;,&quot;endDate&quot;:&quot;2018-5-8&quot;},&quot;url&quot;:&quot;/statistic/dmsuserview/user/list&quot;,&quot;column&quot;:[{&quot;name&quot;:&quot;date&quot;,&quot;text&quot;:&quot;日期&quot;},{&quot;name&quot;:&quot;regist_user_num&quot;,&quot;text&quot;:&quot;注册人数&quot;},{&quot;name&quot;:&quot;regist_buyin_user_num&quot;,&quot;text&quot;:&quot;当日注册且买入人数&quot;},{&quot;name&quot;:&quot;total_buyin_user_num&quot;,&quot;text&quot;:&quot;当日总买入用户数&quot;},{&quot;name&quot;:&quot;total_user_num&quot;,&quot;text&quot;:&quot;累计注册人数&quot;},{&quot;name&quot;:&quot;total_buyin_user_num&quot;,&quot;text&quot;:&quot;累计买入独立用户数&quot;}]}";
+        System.out.println(test.replace("&quot;","\""));
 
 	}
 }
