@@ -5,6 +5,12 @@ dbType=mysql
 devMode = false
 decrypt=true
 
+#jdbcUrl = jdbc:mysql://172.16.24.20:3306/dms_support?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
+#user = cheat_check
+#password =yilumi6784782
+#dbType=mysql
+#devMode = false
+#decrypt=true
 
 
 CheatFinderScriptPath=/data/work/share/query_1110.R

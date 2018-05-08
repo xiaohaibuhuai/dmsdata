@@ -1,8 +1,7 @@
 var frame = {
    init: function () {
         this.elHeight();
-        this.dmsDate();
-        this.dmsPagination();
+        // this.dmsDate();
     },
     //左侧菜单元素渲染
     leftMenu:function () {
@@ -24,13 +23,18 @@ var frame = {
         }
 
         $(' #dms_left>ul ').html(leftStr);
-        this.btnActive();
         this.leftMenuEffect()
     },
-    //筛选条件按钮交互效果
+    //国内国外筛选条件按钮交互效果
     btnActive:function (el) {
         $(el).click(function () {
             $(this).toggleClass('active').siblings(el).removeClass('active');
+        })
+    },
+    //图表表格筛选条件按钮交互效果
+    btn2Active:function (el) {
+        $(el).click(function () {
+            $(this).addClass('active').siblings(el).removeClass('active');
         })
     },
     //左侧菜单事件
@@ -80,67 +84,53 @@ var frame = {
         var winHeight;
         winHeight = $(window).height();
         return winHeight;
-    },
-//    日期插件
-    dmsDate:function () {
-        if($('#dms_date').length > 0){
-            $('#dms_date').daterangepicker({
-                "locale": {
-                    "direction": "ltr",
-                    "format": "MM/DD/YYYY",
-                    "separator": " - ",
-                    "applyLabel": "确定",
-                    "cancelLabel": "取消",
-                    "fromLabel": "From",
-                    "toLabel": "To",
-                    "customRangeLabel": "Custom",
-                    "daysOfWeek": [
-                        "日",
-                        "一",
-                        "二",
-                        "三",
-                        "四",
-                        "五",
-                        "六"
-                    ],
-                    "monthNames": [
-                        "一月",
-                        "二月",
-                        "三月",
-                        "四月",
-                        "五月",
-                        "六月",
-                        "七月",
-                        "八月",
-                        "九月",
-                        "十月",
-                        "十一月",
-                        "十二月"
-                    ],
-                    "firstDay": 1
-                },
-                "linkedCalendars": false,
-                "startDate": "04/19/2017",
-                "endDate": "04/25/2019"
-            }, function(start, end, label) {
-                console.log("New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')");
-            });
-        }
-    },
-//    分页插件
-    dmsPagination:function () {
-       if($('#pagination').length > 0){
-           $("#pagination").pagination({
-               dataSource: [1, 2, 3, 4,5,6,7,8,9,10],
-               pageSize: 1,
-               showGoInput:true,
-               showNavigator:true,
-               showGoButton:true,
-               className: 'paginationjs-theme-blue'
-           });
-       }
-
     }
+//    日期插件
+//     dmsDate:function () {
+//         if($('#dms_date').length > 0){
+//             $('#dms_date').daterangepicker({
+//                 "locale": {
+//                     "direction": "ltr",
+//                     "format": "MM/DD/YYYY",
+//                     "separator": " - ",
+//                     "applyLabel": "确定",
+//                     "cancelLabel": "取消",
+//                     "fromLabel": "From",
+//                     "toLabel": "To",
+//                     "customRangeLabel": "Custom",
+//                     "daysOfWeek": [
+//                         "日",
+//                         "一",
+//                         "二",
+//                         "三",
+//                         "四",
+//                         "五",
+//                         "六"
+//                     ],
+//                     "monthNames": [
+//                         "一月",
+//                         "二月",
+//                         "三月",
+//                         "四月",
+//                         "五月",
+//                         "六月",
+//                         "七月",
+//                         "八月",
+//                         "九月",
+//                         "十月",
+//                         "十一月",
+//                         "十二月"
+//                     ],
+//                     "firstDay": 1
+//                 },
+//                 "linkedCalendars": false,
+//                 "startDate": "04/19/2018",
+//                 "endDate": "04/25/2018"
+//             }, function(start, end, label) {
+//                 console.log( start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') );
+//             });
+//         }
+//     }
 };
 frame.init();
 $(document).ready(function () {

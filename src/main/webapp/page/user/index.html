@@ -4,9 +4,8 @@
     <meta charset="UTF-8">
     <title>用户数据汇总-实时数据</title>
     <link rel="stylesheet" href="../../lib/bootstrap-3.3.7-dist/css/bootstrap.min.css">
-    <link href="http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../lib/date/css/daterangepicker.css">
-    <link rel="stylesheet" href="../../lib/pagination/css/pagination.css">
+    <link rel="stylesheet" href="../../lib/pagination1/css/pagination.css">
 
     <link rel="stylesheet" href="../../css/public/reset.css">
     <link rel="stylesheet" href="../../css/public/frame.css">
@@ -176,7 +175,25 @@
                     </tbody>
                 </table>
                 <!--分页器-->
-                <div id="pagination" class="pagination"></div>
+                <div class="pagination-wrap">
+                    <div class="pagination pagination-esp">
+                        <span>共<span class="totalPage">5</span>页</span>
+                        <span>每页</span>
+                        <select name="" id="perPageItems">
+                            <option value="10">10</option>
+                            <option value="20">20</option>
+                            <option value="30">30</option>
+                        </select>
+                        <span>条记录</span>
+                        <span>当前<i id="currentPage">1</i>/<i class="totalPage">5</i>页</span>
+                        <span id="pageFirst">首页</span>
+                    </div>
+                    <div id="pagination" class="pagination"></div>
+                    <div class="pagination pagination-esp">
+                        <span id="pageLast">尾页</span>
+                        <span>跳转到</span><input id="jumpPageInput" class="jumpPage" type="text"><span>页</span><button id="jumpPageBtn" class="jumpPageBtn">GO</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -186,7 +203,7 @@
 <script src="../../lib/date/js/jquery-1.11.0.min.js"></script>
 <script src="../../lib/date/js/moment.min.js"></script>
 <script src="../../lib/date/js/daterangepicker.js"></script>
-<script src="../../lib/pagination/js/pagination.min.js"></script>
+<script src="../../lib/pagination1/js/jquery.pagination.js"></script>
 <script src="../../lib/echart/echarts.min.js"></script>
 <script src="../../js/public/frame.js"></script>
 <script src="../../js/index.js"></script>

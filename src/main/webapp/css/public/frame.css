@@ -125,6 +125,11 @@ body{
     margin: 0 auto;
     margin-bottom: 22px
 }
+
+.table-icon{
+    width: 20px;
+    margin-left: 5px;
+}
 .dms-table-wrap{
     background-color: #fff;
     padding: 36px 0;
@@ -151,6 +156,11 @@ body{
     text-align: center;
     height: 40px;
 }
+/*5-4修改*/
+.dms-table tr th{
+    height: 45px;
+}
+/*5-4修改end*/
 
 /*折线图样式*/
 .dms-chart-wrap{
@@ -166,9 +176,8 @@ body{
     margin: 0 auto;
 }
 
-.pagination{
-    margin-left: 39px;
-    margin-top: 30px;
+.pagination-wrap{
+   text-align: center;
 }
 .dms-chart-time{
     font-size: 18px;

@@ -4,9 +4,8 @@
     <meta charset="UTF-8">
     <title>活跃用户</title>
     <link rel="stylesheet" href="../../lib/bootstrap-3.3.7-dist/css/bootstrap.min.css">
-    <link href="http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../lib/date/css/daterangepicker.css">
-    <link rel="stylesheet" href="../../lib/pagination/css/pagination.css">
+    <link rel="stylesheet" href="../../lib/pagination1/css/pagination.css">
 
     <link rel="stylesheet" href="../../css/public/reset.css">
     <link rel="stylesheet" href="../../css/public/frame.css">
@@ -110,8 +109,9 @@
             <!--筛选条件-->
             <div class="dms-filter clearfix">
                 <div class="fr">
-                    <button class="dms-btn active dms-btn-regional" value="0">国内</button><button class="dms-btn dms-btn-regional" value="1">海外</button>
-                    <input id="dms_date" class="dms-date form-control" type="text" name="date">
+                    <button onclick="area(this)" class="dms-btn dms-btn-regional" value="0">国内</button>
+                    <button onclick="area(this)" class="dms-btn dms-btn-regional" value="1">海外</button>
+                    <input id="dms_date"   class="dms-date form-control" type="text" name="date" />
                     <button id="export" class="dms-btn active">导出</button>
                 </div>
             </div>
@@ -119,12 +119,12 @@
             <div class="dms-chart-wrap">
                 <h2 class="dms-title">活跃用户明细</h2>
                 <div class="dms-condition">
-                    <button class="dms-btn active dms-btn-date" value="1">当日活跃人数</button>
-                    <button class="dms-btn dms-btn-date" value="7">过去7日活跃人数</button>
-                    <button class="dms-btn dms-btn-date" value="30">过去30日活跃人数</button>
+                    <button onclick="activeNum(this)" class="dms-btn dms-btn-date active" value="1">当日活跃人数</button>
+                    <button onclick="activeNum(this)" class="dms-btn dms-btn-date" value="7">过去7日活跃人数</button>
+                    <button onclick="activeNum(this)" class="dms-btn dms-btn-date" value="30">过去30日活跃人数</button>
                 </div>
                 <div id="dms-chart" class="dms-chart"></div>
-                <div class="dms-chart-time"><span>03.28</span>-<span>04.03</span></div>
+                <div class="dms-chart-time"><span id="start">03.28</span>/<span id="end">04.03</span></div>
             </div>
             <div class="dms-table-wrap">
                 <h2 class="dms-title"><span>用户汇总明细</span><img class="table-icon" src="../../imgs/tableIcon.png" alt=""></h2>
@@ -132,44 +132,35 @@
                 <table class="dms-table">
                     <thead>
                     <tr>
-                        <th>日期</th>
-                        <th>当日活跃用户</th>
-                        <th>过去7日活跃用户</th>
-                        <th>过去30日活跃用户</th>
+                        <th class = "activeUserDetail"  value="date">日期</th>
+                        <th class = "activeUserDetail"  value="period_01">当日活跃用户</th>
+                        <th class = "activeUserDetail"  value="period_07">过去7日活跃用户</th>
+                        <th class = "activeUserDetail"  value="period_30">过去30日活跃用户</th>
                     </tr>
                     </thead>
-                    <tbody>
-                    <tr>
-                        <td>2018-05-01</td>
-                        <td>66666</td>
-                        <td>6666</td>
-                        <td>66666</td>
-                    </tr> <tr>
-                        <td>2018-05-01</td>
-                        <td>66666</td>
-                        <td>6666</td>
-                        <td>66666</td>
-                    </tr> <tr>
-                        <td>2018-05-01</td>
-                        <td>66666</td>
-                        <td>6666</td>
-                        <td>66666</td>
-                    </tr> <tr>
-                        <td>2018-05-01</td>
-                        <td>66666</td>
-                        <td>6666</td>
-                        <td>66666</td>
-                    </tr> <tr>
-                        <td>2018-05-01</td>
-                        <td>66666</td>
-                        <td>6666</td>
-                        <td>66666</td>
-                    </tr>
-
+                    <tbody id="body">
                     </tbody>
                 </table>
                 <!--分页器-->
-                <div id="pagination" class="pagination"></div>
+                <div class="pagination-wrap">
+                    <div class="pagination pagination-esp">
+                        <span>共<span class="totalPage">5</span>页</span>
+                        <span>每页</span>
+                        <select name="" onclick="fullTable()" id="perPageItems">
+                            <option value="10">10</option>
+                            <option value="20">20</option>
+                            <option value="30">30</option>
+                        </select>
+                        <span>条记录</span>
+                        <span>当前<i id="currentPage">1</i>/<i class="totalPage">5</i>页</span>
+                        <span id="pageFirst">首页</span>
+                    </div>
+                    <div id="pagination" class="pagination"></div>
+                    <div class="pagination pagination-esp">
+                        <span id="pageLast">尾页</span>
+                        <span>跳转到</span><input id="jumpPageInput" class="jumpPage" type="text"><span>页</span><button id="jumpPageBtn" class="jumpPageBtn">GO</button>
+                    </div>
+                </div>
                 <div class="table-title-info">
                     <h3>说明</h3>
                     <p>活跃用户：有买入行为的用户</p>
@@ -185,93 +176,10 @@
 <script src="../../lib/date/js/jquery-1.11.0.min.js"></script>
 <script src="../../lib/date/js/moment.min.js"></script>
 <script src="../../lib/date/js/daterangepicker.js"></script>
-<script src="../../lib/pagination/js/pagination.min.js"></script>
+<script src="../../lib/pagination1/js/jquery.pagination.js"></script>
 <script src="../../lib/echart/echarts.min.js"></script>
 <script src="../../js/public/frame.js"></script>
 <script src="../../js/activeUser.js"></script>
-
-<script>
-    // 页面加载 执行
-    $(document).ready(function(){
-
-        var para = getViewParamter();
-
-        var uri = "/user/active/foldLine"+para;
-
-        $.get(uri,function (result) {
-            // [{"date":"2018-04-09","period_7":231,"id":1,"active_user_num":234,"period_1":1,"period_30":423,"is_abroad":0},
-            // {"date":"2018-04-02","period_7":112,"id":3,"active_user_num":232,"period_1":1,"period_30":423,"is_abroad":0}]
-            console.log(result);
-            var period = $(".dms-btn.active.dms-btn-date").val();
-
-            var dataArr = new Array();
-            var numArr = new Array();
-
-
-            for (var i in result ){
-                dataArr[i] = result[i].date;
-                if(period=1){
-                    numArr[i] = result[i].period_1;
-                }else if(period=7){
-                    numArr[i] = result[i].period_7;
-                }else if(period=30){
-                    numArr[i] = result[i].period_30;
-                }
-            }
-            user.option.xAxis.data = dataArr;
-            user.option.series[0].data = numArr;
-
-            window.user.myChart.setOption(option);
-
-        });
-
-
-    });
-
-    function getViewParamter() {
-
-        // 是否是海外
-        var is_abroad = $(".dms-btn.active.dms-btn-regional").val()
-        // 时间间隔
-
-        // 时间控件的值
-        var dataArr = $("#dms_date").val().split(" - ")
-        // 开始时间和结束时间
-        var start_time = new Date((new Date(dataArr[0])).getTime()).Format("yyyy-MM-dd");
-        var end_time = new Date((new Date(dataArr[1])).getTime()).Format("yyyy-MM-dd");
-
-        var para = "?start_time="+start_time+"&end_time="+end_time;
-
-        if(is_abroad!=null&&is_abroad!=""){
-            para += "&is_abroad="+is_abroad;
-        }
-
-        return para;
-    }
-
-    Date.prototype.Format = function(fmt) {
-        var o = {
-            "M+" : this.getMonth() + 1, // 月份
-            "d+" : this.getDate(), // 日
-            "h+" : this.getHours(), // 小时
-            "m+" : this.getMinutes(), // 分
-            "s+" : this.getSeconds(), // 秒
-            "q+" : Math.floor((this.getMonth() + 3) / 3), // 季度
-            "S" : this.getMilliseconds()
-            // 毫秒
-        };
-        if (/(y+)/.test(fmt))
-            fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "")
-                .substr(4 - RegExp.$1.length));
-        for ( var k in o)
-            if (new RegExp("(" + k + ")").test(fmt))
-                fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k])
-                    : (("00" + o[k]).substr(("" + o[k]).length)));
-        return fmt;
-    }
-
-</script>
-
 
 </body>
 </html>
