@@ -97,7 +97,7 @@ public class MyConfig extends JFinalConfig
 		// 配置AutoTableBindPlugin插件
 		AutoTableBindPlugin atbp = new AutoTableBindPlugin("dbconfig",dbPlugin);
 		if (isDev) atbp.setShowSql(true);
-		atbp.scanPackages("com.illumi.dms.model.test_dms","com.illumi.dms.system.model.test_dms");
+		atbp.scanPackages("com.illumi.dms.model.user","com.illumi.dms.system.model.test_dms");
 		atbp.autoScan(false);
 		me.add(atbp);
 		// sql记录
@@ -178,7 +178,7 @@ public class MyConfig extends JFinalConfig
 
 		// xss 过滤
 		me.add(new XssHandler("s"));
-		// 伪静态处理git
+
 		// 去掉 jsessionid 防止找不到action
 //		me.add(new SessionHandler());
 		me.add(new DruidStatViewHandler("/druid"));
