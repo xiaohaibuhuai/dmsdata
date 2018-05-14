@@ -1,0 +1,23 @@
+/*table表头说明框*/
+.dms-table-wrap{
+    position: relative;
+}
+.table-title-info{
+    width: 320px;
+    padding: 15px 10px;
+    border: 1px solid #aaa;
+    font-size: 12px;
+    background-color: #fff;
+    display: none;
+    position: absolute;
+    top: -100px;
+    left: 176px;
+    z-index: 9999;
+}
+.table-title-info h3{
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+.table-title-info p{
+    line-height: 21px;
+}
