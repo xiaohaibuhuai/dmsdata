@@ -31,6 +31,13 @@ public class Consts
 
 	// ----------------------end---------------------
 
+	// ----------------------版本------------------
+
+	// app 版本
+	public static final String APP_VERSION ="app_version";
+
+	// ---------------------end ------------------
+
 	public static final boolean OPEN_REDIS = true;
 
 	public static void main(String[] args){

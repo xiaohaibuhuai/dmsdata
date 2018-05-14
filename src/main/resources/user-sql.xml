@@ -1,0 +1,20 @@
+
+
+<!-- 复杂的 sql 写在 这里  简单的 直接 拼接了    -->
+<sqlGroup name="user">
+
+	<sqlGroup name="retain">
+	
+		<sql id="download"><![CDATA[select DATE_FORMAT(date,'%Y-%m-%d') date,sum(regist_user_num) regist_user_num  , concat(left((sum(period_02)/sum(regist_user_num))*100,2),'%') period_02 , concat(left((sum(period_03)/sum(regist_user_num))*100,2),'%') period_03 , concat(left((sum(period_07)/sum(regist_user_num))*100,2),'%') period_07 , concat(left((sum(period_15)/sum(regist_user_num))*100,2),'%') period_15 , concat(left((sum(period_30)/sum(regist_user_num))*100,2),'%') period_30 from dms_retain_user_view where 1=1 and date >= '2018-03-01' and date <= '2018-06-30' group by date order by date desc]]></sql>
+
+	</sqlGroup>
+
+</sqlGroup>
+
+
+
+
+
+
+
+

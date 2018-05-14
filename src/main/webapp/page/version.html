@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>版本统计</title>
-    <link rel="stylesheet" href="../../lib/bootSelect/css/bootstrap-select.min.css">
-    <link rel="stylesheet" href="../../lib/bootstrap-3.3.7-dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../../lib/date/css/daterangepicker.css">
-    <link rel="stylesheet" href="../../lib/pagination1/css/pagination.css">
+    <link rel="stylesheet" href="../lib/bootSelect/css/bootstrap-select.min.css">
+    <link rel="stylesheet" href="../lib/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../lib/date/css/daterangepicker.css">
+    <link rel="stylesheet" href="../lib/pagination1/css/pagination.css">
 
-    <link rel="stylesheet" href="../../css/public/reset.css">
-    <link rel="stylesheet" href="../../css/public/frame.css">
-    <link rel="stylesheet" href="../../css/version.css">
+    <link rel="stylesheet" href="../css/public/reset.css">
+    <link rel="stylesheet" href="../css/public/frame.css">
+    <link rel="stylesheet" href="../css/version.css">
 </head>
 <body>
 <div class="dms">
@@ -26,7 +26,7 @@
                     <!--<p>切换皮肤</p>-->
                     <!--</li>-->
                     <li>
-                        <img src="../../imgs/name.png">
+                        <img src="../imgs/name.png">
                         <span>用户名</span>
                     </li>
                 </ul>
@@ -41,7 +41,7 @@
                 <li>
                     <div class="menu-item-til">
                         <span>用户统计</span>
-                        <img class="fr menu-default" src="../../imgs/left_menu_default.png">
+                        <img class="fr menu-default" src="../imgs/left_menu_default.png">
                     </div>
                     <ul class="menu-item-list">
                         <li data-url="index">用户数据汇总-实时数据</li>
@@ -53,7 +53,7 @@
                 <li>
                     <div class="menu-item-til">
                         <span>终端属性统计</span>
-                        <img class="fr menu-default" src="../../imgs/left_menu_default.png">
+                        <img class="fr menu-default" src="../imgs/left_menu_default.png">
                     </div>
                     <ul class="menu-item-list">
                         <li data-url="territory">地域统计</li>
@@ -64,43 +64,43 @@
                 <li>
                     <div class="menu-item-til">
                         <span>并发统计</span>
-                        <img class="fr menu-default" src="../../imgs/left_menu_default.png">
+                        <img class="fr menu-default" src="../imgs/left_menu_default.png">
                     </div>
                 </li>
                 <li>
                     <div class="menu-item-til">
                         <span>收入统计</span>
-                        <img class="fr menu-default" src="../../imgs/left_menu_default.png">
+                        <img class="fr menu-default" src="../imgs/left_menu_default.png">
                     </div>
                 </li>
                 <li>
                     <div class="menu-item-til">
                         <span> 牌局统计</span>
-                        <img class="fr menu-default" src="../../imgs/left_menu_default.png">
+                        <img class="fr menu-default" src="../imgs/left_menu_default.png">
                     </div>
                 </li>
                 <li>
                     <div class="menu-item-til">
                         <span> 联盟、俱乐部数据统计</span>
-                        <img class="fr menu-default" src="../../imgs/left_menu_default.png">
+                        <img class="fr menu-default" src="../imgs/left_menu_default.png">
                     </div>
                 </li>
                 <li>
                     <div class="menu-item-til">
                         <span> 道具数据统计</span>
-                        <img class="fr menu-default" src="../../imgs/left_menu_default.png">
+                        <img class="fr menu-default" src="../imgs/left_menu_default.png">
                     </div>
                 </li>
                 <li>
                     <div class="menu-item-til">
                         <span>小游戏统计</span>
-                        <img class="fr menu-default" src="../../imgs/left_menu_default.png">
+                        <img class="fr menu-default" src="../imgs/left_menu_default.png">
                     </div>
                 </li>
                 <li>
                     <div class="menu-item-til">
                         <span>权限设置</span>
-                        <img class="fr menu-default" src="../../imgs/left_menu_default.png">
+                        <img class="fr menu-default" src="../imgs/left_menu_default.png">
                     </div>
                 </li>
             </ul>
@@ -111,63 +111,60 @@
             <div class="dms-filter clearfix">
                 <div class="fr">
                     <select id="id_select" class="selectpicker" data-live-search="true" title="App版本">
-                        <option>1.1.0</option>
-                        <option>2.1.0</option>
-                        <option class="get-class">3.1.0</option>
-                    </select><button class="dms-btn active dms-btn-regional" >国内</button><button class="dms-btn dms-btn-regional">海外</button><input id="dms_date" class="dms-date form-control" type="text" name="date"><button class="dms-btn active">导出</button>
+
+                    </select>
+                    <button class="dms-btn dms-btn-regional" value="0">国内</button>
+                    <button class="dms-btn dms-btn-regional" value="1">海外</button>
+                    <input id="dms_date" class="dms-date form-control" type="text" name="date">
+                    <button id="export" class="dms-btn active">导出</button>
                 </div>
             </div>
             <!--图表和表格部分-->
             <div class="dms-table-wrap">
                 <h2 class="dms-title">版本分布明细</h2>
                 <div class="dms-condition">
-                    <button class="dms-btn active dms-btn-date">新增版本</button><button class="dms-btn dms-btn-date">汇总统计</button>
+                    <button id="newVersion_btn" value = "newVersion" class="dms-btn active dms-btn-date">新增版本</button><button id="totalVersion_btn" value = "totalVersion" class="dms-btn dms-btn-date">汇总统计</button>
                 </div>
-                <table class="dms-table">
+                <table id="newVersion" class="dms-table">
                     <thead>
                     <tr>
-                        <th>日期</th>
-                        <th>新增用户</th>
-                        <th>次日留存</th>
-                        <th>3日留存</th>
-                        <th>7日留存</th>
-                        <th>15日留存</th>
-                        <th>30日留存</th>
+                        <th class="version" name="date">日期</th>
+                        <th class="version" name="app_version">App版本号</th>
+                        <th class="version" name="is_new">新增人数</th>
+                        <th class="version" name="isupdate">升级用户</th>
+                        <th class="version" name="sum_two">新增+升级用户数</th>
+                        <th class="version" name="token_num">活跃设备数</th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="addVersion">
+
+                    </tbody>
+                </table>
+                <table id="totalVersion" class="dms-table" >
+                    <thead>
                     <tr>
-                        <td>2018-05-01</td>
+                        <th class="version" name="app_version">App版本号</th>
+                        <th class="version" name="token_num">累计设备数</th>
+                        <th class="version" name="user_num">累计独立用户数</th>
+                    </tr>
+                    </thead>
+                    <tbody id="totalVersionBody">
+                    <tr>
+                        <td>1.1.0</td>
                         <td>666</td>
-                        <td>66</td>
-                        <td>666</td>
-                        <td>6666</td>
                         <td>66666</td>
-                        <td>666666</td>
-                    </tr> <tr>
-                        <td>2018-05-01</td>
+                    </tr><tr>
+                        <td>1.1.0</td>
                         <td>666</td>
-                        <td>66</td>
-                        <td>666</td>
-                        <td>6666</td>
                         <td>66666</td>
-                        <td>666666</td>
-                    </tr> <tr>
-                        <td>2018-05-01</td>
+                    </tr><tr>
+                        <td>1.1.0</td>
                         <td>666</td>
-                        <td>66</td>
-                        <td>666</td>
-                        <td>6666</td>
                         <td>66666</td>
-                        <td>666666</td>
-                    </tr> <tr>
-                        <td>2018-05-01</td>
+                    </tr><tr>
+                        <td>1.1.0</td>
                         <td>666</td>
-                        <td>66</td>
-                        <td>666</td>
-                        <td>6666</td>
                         <td>66666</td>
-                        <td>666666</td>
                     </tr>
 
                     </tbody>
@@ -177,10 +174,12 @@
                     <div class="pagination pagination-esp">
                         <span>共<span class="totalPage">5</span>页</span>
                         <span>每页</span>
-                        <select name="" id="perPageItems">
+                        <select name="" onchange="fullTable()" id="perPageItems">
                             <option value="10">10</option>
-                            <option value="20">20</option>
+                            <option value="20" selected="selected">20</option>
                             <option value="30">30</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
                         </select>
                         <span>条记录</span>
                         <span>当前<i id="currentPage">1</i>/<i class="totalPage">5</i>页</span>
@@ -195,21 +194,21 @@
             </div>
         </div>
     </div>
-
 </div>
 
 
-
-<script src="../../lib/date/js/jquery-1.11.0.min.js"></script>
-<script src="../../lib/bootSelect/js/bootstrap-select.min.js"></script>
-<script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.js"></script>
-<script src="../../lib/date/js/moment.min.js"></script>
-<script src="../../lib/date/js/daterangepicker.js"></script>
-<script src="../../lib/pagination1/js/jquery.pagination.js"></script>
-<script src="../../js/public/frame.js"></script>
-<script src="../../js/version.js"></script>
+<script src="../lib/date/js/jquery-1.11.0.min.js"></script>
+<script src="../lib/bootSelect/js/bootstrap-select.min.js"></script>
+<script src="../lib/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+<script src="../lib/date/js/moment.min.js"></script>
+<script src="../lib/date/js/daterangepicker.js"></script>
+<script src="../lib/pagination1/js/jquery.pagination.js"></script>
+<script src="../js/public/frame.js"></script>
+<script src="../js/version.js"></script>
 
 <script>
+
+
 
 </script>
 </body>

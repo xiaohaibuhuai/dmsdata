@@ -2,6 +2,12 @@ body{
     min-height: 832px;
     padding-bottom: 22px
 }
+.dms-nav,body{
+    min-width: 1100px;
+}
+button{
+    background-color: #fff;
+}
 /*顶部nav*/
 .dms-nav{
     width: 100%;
@@ -180,7 +186,7 @@ body{
    text-align: center;
 }
 .dms-chart-time{
-    font-size: 18px;
+    font-size: 17px;
     color: #36404a;
     text-align: center;
 }

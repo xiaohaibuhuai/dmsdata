@@ -12,3 +12,6 @@
 .dms-chart{
     height: 85%;
 }
+#totalVersion, #totalVersion_pagination{
+    display: none;
+}

@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>留存用户统计</title>
-    <link rel="stylesheet" href="../../lib/bootstrap-3.3.7-dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../../lib/date/css/daterangepicker.css">
-    <link rel="stylesheet" href="../../lib/pagination1/css/pagination.css">
+    <title>活跃用户</title>
+    <link rel="stylesheet" href="../lib/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../lib/date/css/daterangepicker.css">
+    <link rel="stylesheet" href="../lib/pagination1/css/pagination.css">
 
-    <link rel="stylesheet" href="../../css/public/reset.css">
-    <link rel="stylesheet" href="../../css/public/frame.css">
-    <link rel="stylesheet" href="../../css/retain.css">
+    <link rel="stylesheet" href="../css/public/reset.css">
+    <link rel="stylesheet" href="../css/public/frame.css">
+    <link rel="stylesheet" href="../css/activeUser.css">
 </head>
 <body>
 <div class="dms">
@@ -25,7 +25,7 @@
                     <!--<p>切换皮肤</p>-->
                     <!--</li>-->
                     <li>
-                        <img src="../../imgs/name.png">
+                        <img src="../imgs/name.png">
                         <span>用户名</span>
                     </li>
                 </ul>
@@ -40,11 +40,11 @@
                 <li>
                     <div class="menu-item-til">
                         <span>用户统计</span>
-                        <img class="fr menu-default" src="../../imgs/left_menu_default.png">
+                        <img class="fr menu-default" src="../imgs/left_menu_default.png">
                     </div>
                     <ul class="menu-item-list">
                         <li data-url="index">用户数据汇总-实时数据</li>
-                        <li>活跃用户统计</li>
+                        <li data-url="activeUser">活跃用户统计</li>
                         <li data-url="retain">留存用户统计</li>
                         <li>版本统计</li>
                     </ul>
@@ -52,7 +52,7 @@
                 <li>
                     <div class="menu-item-til">
                         <span>终端属性统计</span>
-                        <img class="fr menu-default" src="../../imgs/left_menu_default.png">
+                        <img class="fr menu-default" src="../imgs/left_menu_default.png">
                     </div>
                     <ul class="menu-item-list">
                         <li data-url="territory">地域统计</li>
@@ -63,43 +63,43 @@
                 <li>
                     <div class="menu-item-til">
                         <span>并发统计</span>
-                        <img class="fr menu-default" src="../../imgs/left_menu_default.png">
+                        <img class="fr menu-default" src="../imgs/left_menu_default.png">
                     </div>
                 </li>
                 <li>
                     <div class="menu-item-til">
                         <span>收入统计</span>
-                        <img class="fr menu-default" src="../../imgs/left_menu_default.png">
+                        <img class="fr menu-default" src="../imgs/left_menu_default.png">
                     </div>
                 </li>
                 <li>
                     <div class="menu-item-til">
                         <span> 牌局统计</span>
-                        <img class="fr menu-default" src="../../imgs/left_menu_default.png">
+                        <img class="fr menu-default" src="../imgs/left_menu_default.png">
                     </div>
                 </li>
                 <li>
                     <div class="menu-item-til">
                         <span> 联盟、俱乐部数据统计</span>
-                        <img class="fr menu-default" src="../../imgs/left_menu_default.png">
+                        <img class="fr menu-default" src="../imgs/left_menu_default.png">
                     </div>
                 </li>
                 <li>
                     <div class="menu-item-til">
                         <span> 道具数据统计</span>
-                        <img class="fr menu-default" src="../../imgs/left_menu_default.png">
+                        <img class="fr menu-default" src="../imgs/left_menu_default.png">
                     </div>
                 </li>
                 <li>
                     <div class="menu-item-til">
                         <span>小游戏统计</span>
-                        <img class="fr menu-default" src="../../imgs/left_menu_default.png">
+                        <img class="fr menu-default" src="../imgs/left_menu_default.png">
                     </div>
                 </li>
                 <li>
                     <div class="menu-item-til">
                         <span>权限设置</span>
-                        <img class="fr menu-default" src="../../imgs/left_menu_default.png">
+                        <img class="fr menu-default" src="../imgs/left_menu_default.png">
                     </div>
                 </li>
             </ul>
@@ -109,60 +109,36 @@
             <!--筛选条件-->
             <div class="dms-filter clearfix">
                 <div class="fr">
-                    <button class="dms-btn active dms-btn-regional" >国内</button><button class="dms-btn dms-btn-regional">海外</button><input id="dms_date" class="dms-date form-control" type="text" name="date"><button class="dms-btn active">导出</button>
+                    <button onclick="area(this)" class="dms-btn dms-btn-regional" value="0">国内</button>
+                    <button onclick="area(this)" class="dms-btn dms-btn-regional" value="1">海外</button>
+                    <input id="dms_date"   class="dms-date form-control" type="text" name="date" />
+                    <button id="export" class="dms-btn active">导出</button>
                 </div>
             </div>
             <!--图表和表格部分-->
+            <div class="dms-chart-wrap">
+                <h2 class="dms-title">活跃用户明细</h2>
+                <div class="dms-condition">
+                    <button onclick="activeNum(this)" class="dms-btn dms-btn-date active" value="1">当日活跃人数</button>
+                    <button onclick="activeNum(this)" class="dms-btn dms-btn-date" value="7">过去7日活跃人数</button>
+                    <button onclick="activeNum(this)" class="dms-btn dms-btn-date" value="30">过去30日活跃人数</button>
+                </div>
+                <div id="dms-chart" class="dms-chart"></div>
+                <div class="dms-chart-time"><span id="start">03.28</span>-<span id="end">04.03</span></div>
+            </div>
             <div class="dms-table-wrap">
-                <h2 class="dms-title"><span>用户汇总明细</span><img class="table-icon" src="../../imgs/tableIcon.png" alt=""></h2>
+                <h2 class="dms-title"><span>用户汇总明细</span><img class="table-icon" src="../imgs/tableIcon.png" alt=""></h2>
 
                 <table class="dms-table">
                     <thead>
                     <tr>
-                        <th>日期</th>
-                        <th>新增用户</th>
-                        <th>次日留存</th>
-                        <th>3日留存</th>
-                        <th>7日留存</th>
-                        <th>15日留存</th>
-                        <th>30日留存</th>
+                        <th class = "activeUserDetail"  name="date">日期</th>
+                        <th class = "activeUserDetail"  name="period_01">当日活跃用户</th>
+                        <th class = "activeUserDetail"  name="period_07">过去7日活跃用户</th>
+                        <th class = "activeUserDetail"  name="period_30">过去30日活跃用户</th>
                     </tr>
                     </thead>
-                    <tbody>
-                    <tr>
-                        <td>2018-05-01</td>
-                        <td>666</td>
-                        <td>66</td>
-                        <td>666</td>
-                        <td>6666</td>
-                        <td>66666</td>
-                        <td>666666</td>
-                    </tr> <tr>
-                        <td>2018-05-01</td>
-                        <td>666</td>
-                        <td>66</td>
-                        <td>666</td>
-                        <td>6666</td>
-                        <td>66666</td>
-                        <td>666666</td>
-                    </tr> <tr>
-                        <td>2018-05-01</td>
-                        <td>666</td>
-                        <td>66</td>
-                        <td>666</td>
-                        <td>6666</td>
-                        <td>66666</td>
-                        <td>666666</td>
-                    </tr> <tr>
-                        <td>2018-05-01</td>
-                        <td>666</td>
-                        <td>66</td>
-                        <td>666</td>
-                        <td>6666</td>
-                        <td>66666</td>
-                        <td>666666</td>
-                    </tr>
-
+                    <tbody id="body">
                     </tbody>
                 </table>
                 <!--分页器-->
@@ -170,10 +146,12 @@
                     <div class="pagination pagination-esp">
                         <span>共<span class="totalPage">5</span>页</span>
                         <span>每页</span>
-                        <select name="" id="perPageItems">
+                        <select name="" onchange="fullTable()" id="perPageItems">
                             <option value="10">10</option>
-                            <option value="20">20</option>
+                            <option value="20" selected="selected">20</option>
                             <option value="30">30</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
                         </select>
                         <span>条记录</span>
                         <span>当前<i id="currentPage">1</i>/<i class="totalPage">5</i>页</span>
@@ -185,23 +163,25 @@
                         <span>跳转到</span><input id="jumpPageInput" class="jumpPage" type="text"><span>页</span><button id="jumpPageBtn" class="jumpPageBtn">GO</button>
                     </div>
                 </div>
-
                 <div class="table-title-info">
                     <h3>说明</h3>
-                    <p>某段时间内的新增用户，经过一段时间后，仍继续使用应用的被认作是留存用户，这部分用户占当时新增用户的比例即为留存率；继续使用应用的条件为，app请求响应服务器；例如，3月份新增的人数100人，这100人中，4月份继续使用应用的有50人，5月份继续使用应用的有20人，则3月份新增的这100人，一个月后的留存率是50%，二个月后的留存率是20%</p>
+                    <p>活跃用户：有买入行为的用户</p>
+                    <p>过去7日活跃：统计日前7日内，有过买入行为的用户，多次买入需去重，只算1次</p>
+                    <p>过去7日活跃：统计日前7日内，有过买入行为的用户，多次买入需去重，只算1次</p>
+                    <p>过去30日活跃：统计日前30日内，有过买入行为的用户，多次买入需去重，只算1次</p>
                 </div>
             </div>
         </div>
     </div>
-
 </div>
 
+<script src="../lib/date/js/jquery-1.11.0.min.js"></script>
+<script src="../lib/date/js/moment.min.js"></script>
+<script src="../lib/date/js/daterangepicker.js"></script>
+<script src="../lib/pagination1/js/jquery.pagination.js"></script>
+<script src="../lib/echart/echarts.min.js"></script>
+<script src="../js/public/frame.js"></script>
+<script src="../js/activeUser.js"></script>
 
-<script src="../../lib/date/js/jquery-1.11.0.min.js"></script>
-<script src="../../lib/date/js/moment.min.js"></script>
-<script src="../../lib/date/js/daterangepicker.js"></script>
-<script src="../../lib/pagination1/js/jquery.pagination.js"></script>
-<script src="../../js/public/frame.js"></script>
-<script src="../../js/retain.js"></script>
 </body>
 </html>

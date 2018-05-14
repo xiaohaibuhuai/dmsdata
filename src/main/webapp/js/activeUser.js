@@ -1,8 +1,45 @@
+Date.prototype.formatterDate = function(param,parrent){
+    var parrent =  parrent|| "yyyy-MM-dd HH:mm:ss"
+    var ms=[1,2,3,4,5,6,7,8,9,10,11,12];
+    var y = this.getFullYear();
+    var m = this.getMonth()+1;
+    var d = this.getDate();
+    var H = this.getHours();
+    var M = this.getMinutes();
+    var s = this.getSeconds();
+    if(param&&param.year)
+    {
+        y+=param.year;
+    }
+    if(param&&param.month)
+    {
+        var subtractYear=param.month<0?Math.floor(((param.month+m==0)?-1:(param.month+m)%ms.length==0?(param.month+m-1):(param.month+m))/ms.length):Math.floor(param.month/ms.length);
+        y+=subtractYear;
+        var subtractMonth=(param.month+m)%ms.length;
+        m=ms[subtractMonth<0?ms.length+subtractMonth-1:subtractMonth==0?ms.length-1:subtractMonth-1];
+    }
+    if(param&&param.day)
+    {
+        var time=this.getTime();
+        time +=(param.day*1000*60*60*24);
+        var date=new Date(time);
+        y = date.getFullYear();
+        m = date.getMonth()+1;
+        d = date.getDate();
+    }
+    if(param&&param.time)
+    {
+        //return y+"-"+m+"-"+d + " " +param.time
+        parrent.replace(/yyyy/g,y).replace(/MM/g,m).replace(/dd/g,d)+" "+time
+
+    }
+    return parrent.replace(/yyyy/g,y).replace(/MM/g,m).replace(/dd/g,d)
+};
 var activeUser =  {
     startDate:null, //开始时间
     endDate:null, //结束时间
     tablePage:null, //table 分页当前页
-    perPageItem:null, //每页显示条数
+    perPageItem:20, //每页显示条数
     totalPage:20, //总页数
     init:function () {
         this.dmsDate();
@@ -50,8 +87,8 @@ var activeUser =  {
                     "firstDay": 1
                 },
                 "linkedCalendars": false,
-                "startDate": "04/19/2018",
-                "endDate": "04/25/2018"
+                "startDate": new Date().formatterDate({day:-7},"MM/dd/yyyy"),
+                "endDate": new Date().formatterDate({},"MM/dd/yyyy")
             }, function(start, end, label) {
                 _this.startDate = start.format('YYYY-MM-DD');
                 _this.endDate = end.format('YYYY-MM-DD');
@@ -130,7 +167,7 @@ $('#dms_date').change(function () {
 
 window.onload = function () {
     //    国内国外点击样式切换
-    frame.btnActive('.dms-btn-regional');
+    // frame.btnActive('.dms-btn-regional',area());
     //   日期按钮击样式切换
     frame.btn2Active('.dms-btn-date');
 
@@ -151,7 +188,7 @@ window.onload = function () {
             trigger: 'axis'
         },
         grid: {
-            left: '2%',
+            left: '0%',
             right: '3%',
             bottom: '3%',
             top:'10%',
@@ -202,7 +239,7 @@ function  full(){
 }
 
 // 填充表格
-function fullTable(sortField,is_abroad) {
+function fullTable(sortField,is_abroad,order) {
 
     var para;
     if(is_abroad!=null){
@@ -211,7 +248,7 @@ function fullTable(sortField,is_abroad) {
         para = getTableParamter();
     }
     if(sortField!=null){
-         para = para +"&sortField="+sortField+"&order=desc";
+         para = para +"&sortField="+sortField+"&order="+order;
     }else {
         // 默认按时间排序
          para = para +"&sortField=date&order=desc";
@@ -280,8 +317,8 @@ function getViewParamter(is_abroad) {
     // 开始时间和结束时间
     var start_time = new Date((new Date(dataArr[0])).getTime()).Format("yyyy-MM-dd");
     var end_time = new Date((new Date(dataArr[1])).getTime()).Format("yyyy-MM-dd");
-    $("#start").text(start_time);
-    $("#end").text(end_time);
+    $("#start").text(start_time.replace("-",".").replace("-","."));
+    $("#end").text(end_time.replace("-",".").replace("-","."));
     var para = "?start_time="+start_time+"&end_time="+end_time;
 
     if(is_abroad!=null&&is_abroad!=""){
@@ -293,7 +330,7 @@ function getViewParamter(is_abroad) {
 function getTableParamter(is_abroad){
     // 是否是海外
     if (is_abroad==null){
-        is_abroad = $(".dms-btn.active.dms-btn-regional").val()
+        is_abroad = $(".dms-btn.dms-btn-regional.active").val()
     }
     // 时间控件的值
     var dataArr = $("#dms_date").val().split(" - ")
@@ -323,14 +360,25 @@ function activeNum(obj){
     fullView($(obj).attr("value"));
 }
 
-//  点击活跃用户明细
+//  排序
 $(".activeUserDetail").click(function () {
+
+    var sortField = $(this).attr("name");
+    if ($(this).attr("value")==null||$(this).attr("value")==undefined){
+        $(this).attr("value","desc");
+    }else if ($(this).attr("value")=="desc"){
+        $(this).attr("value","asc");
+    } else if ($(this).attr("value")=="asc"){
+        $(this).attr("value","desc");
+    }
+    var order = $(this).attr("value");
+    fullTable(sortField,null,order);
     // console.log("--->"+$(this).attr("value"));
-    var sortField = $(this).attr("value");
-    fullTable(sortField);
 });
 
+// 点击国内
 function area(obj){
+    $(this).toggleClass('active').siblings(".dms-btn-regional").removeClass('active');
     fullView(null,$(obj).attr("value"));
     fullTable(null,$(obj).attr("value"));
 }
@@ -361,5 +409,28 @@ Date.prototype.Format = function(fmt) {
 $("#dms_date").change(function () {
     full();
 });
+
+
+$("#export").click(function () {
+    var uri = "/user/active/download"+getDownLoadParam();
+    window.location.href=uri;
+});
+
+function getDownLoadParam() {
+
+    // 时间控件的值
+    var dataArr = $("#dms_date").val().split(" - ")
+    // 开始时间和结束时间
+    var start_time = new Date((new Date(dataArr[0])).getTime()).Format("yyyy-MM-dd");
+    var end_time = new Date((new Date(dataArr[1])).getTime()).Format("yyyy-MM-dd");
+    var is_abroad = $(".dms-btn.active.dms-btn-regional").val();
+    var param;
+    if (is_abroad==null||is_abroad==undefined){
+      param = "?start_time="+start_time+"&end_time="+end_time;
+    } else {
+      param = "?start_time="+start_time+"&end_time="+end_time+"&is_abroad="+is_abroad;
+    }
+    return param;
+}
 
 
