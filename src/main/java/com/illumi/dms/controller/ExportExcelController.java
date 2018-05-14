@@ -73,6 +73,7 @@ public class ExportExcelController extends  EasyuiController  {
                 String startDate = ValidateObjectUtil.isBlankDefault(DmsUserViewCSV.QUERY_PARAM.get("startDate"), null);
                 String endDate = ValidateObjectUtil.isBlankDefault(DmsUserViewCSV.QUERY_PARAM.get("endDate"), null);
                 String sort= ValidateObjectUtil.isBlankDefault(DmsUserViewCSV.QUERY_PARAM.get("sort"),"date");
+                String by= ValidateObjectUtil.isBlankDefault(DmsUserViewCSV.QUERY_PARAM.get("by"),"desc");
                 StringBuffer sql = new StringBuffer("select 1 as gpid, date ,sum(regist_user_num) as regist_user_num, sum(buyin_user_num) as buyin_user_num,sum(regist_buyin_user_num)as regist_buyin_user_num,sum(total_user_num) as total_user_num, sum(total_buyin_user_num)as total_buyin_user_num from dms_user_view where 1=1");
 
                 if(ValidateObjectUtil.isNotBlank(startDate)){
@@ -95,9 +96,11 @@ public class ExportExcelController extends  EasyuiController  {
                     }
                 }
                 if(ValidateObjectUtil.isNotBlank(sort)){
-                    sql.append(" order by ").append(sort).append(" desc ");
+                    sql.append(" order by ").append(sort).append(" ").append(by);
                 }
+                DmsUserView view0 = DmsUserView.getTodayView(type);
                 List<DmsUserView> list = DmsUserView.dao.find(sql.toString());
+                list.add(0,view0);
             return  list;
 
             } catch (Exception e) {
@@ -183,10 +186,10 @@ public class ExportExcelController extends  EasyuiController  {
                         } else {
                             fileName = new String(fileName.getBytes("UTF-8"), "ISO8859-1");
                         }
-/*                        response.setCharacterEncoding("UTF-8");
+                        response.setCharacterEncoding("UTF-8");
                         response.setContentType("multipart/form-data");
                         response.setHeader("Content-Disposition",
-                                "attachment;fileName=" + fileName);*/
+                                "attachment;fileName=" + fileName);
                         ServletOutputStream output = response.getOutputStream();
                         String excelData[][] = null;
                         List<Map<String, Object>> rows = null;

@@ -7,7 +7,6 @@ import com.jayqqaa12.jbase.jfinal.ext.xss.XssHandler;
 import com.jfinal.config.*;
 import com.jfinal.core.JFinal;
 import com.jfinal.ext.handler.ContextPathHandler;
-import com.jfinal.ext.handler.FakeStaticHandler;
 import com.jfinal.ext.plugin.config.ConfigKit;
 import com.jfinal.ext.plugin.config.ConfigPlugin;
 import com.jfinal.ext.plugin.shiro.ShiroInterceptor;
@@ -15,9 +14,7 @@ import com.jfinal.ext.plugin.shiro.ShiroPlugin;
 import com.jfinal.ext.plugin.sqlinxml.SqlInXmlPlugin;
 import com.jfinal.ext.plugin.tablebind.AutoTableBindPlugin;
 import com.jfinal.ext.route.AutoBindRoutes;
-import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.plugin.activerecord.SqlReporter;
-import com.jfinal.plugin.activerecord.cache.EhCache;
 import com.jfinal.plugin.druid.DruidPlugin;
 import com.jfinal.plugin.druid.DruidStatViewHandler;
 import com.jfinal.plugin.ehcache.EhCachePlugin;
@@ -38,8 +35,9 @@ public class MyConfig extends JFinalConfig
 
 	private boolean isDevMode()
 	{
-		String osName = System.getProperty("os.name");
-		return osName.indexOf("Windows") != -1||osName.indexOf("Mac") !=-1;
+		//String osName = System.getProperty("os.name");
+		//return osName.indexOf("Windows") != -1||osName.indexOf("Mac") !=-1;
+		return true;
 	}
 
 	/**
@@ -106,19 +104,26 @@ public class MyConfig extends JFinalConfig
 		SqlReporter.setLogger(true);
 
 
-		/*// 配置只读库
+
 		DruidPlugin pokerDbPlugin = new DruidPlugin(ConfigKit.getStr("master_jdbc_url"), ConfigKit.getStr("master_user"), ConfigKit.getStr("master_password"));
+
+		WallFilter wall2 = new WallFilter();
+		wall2.setDbType(ConfigKit.getStr("master_db_type"));
+		pokerDbPlugin.addFilter(wall);
+		pokerDbPlugin.addFilter(new StatFilter());
+
 		me.add(pokerDbPlugin);
-		*//*ActiveRecordPlugin arpMysql = new ActiveRecordPlugin("master_pokerdb", pokerDbPlugin);
-		me.add(arpMysql);*//*
+		me.add(pokerDbPlugin);
 		me.add(new EhCachePlugin());
 		me.add(new SqlInXmlPlugin());
+
 		AutoTableBindPlugin atbp2 = new AutoTableBindPlugin("dbconfig2",pokerDbPlugin);
+		if (isDev) atbp2.setShowSql(true);
 		atbp2.scanPackages("com.illumi.dms.model.test_poker","com.illumi.dms.system.model.test_poker");
 		atbp2.autoScan(false);
 		me.add(atbp2);
 		SqlReporter.setLogger(true);
-		//atbp2.start();*/
+
 
 	
         
@@ -173,8 +178,7 @@ public class MyConfig extends JFinalConfig
 
 		// xss 过滤
 		me.add(new XssHandler("s"));
-		// 伪静态处理
-		//me.add(new FakeStaticHandler());
+		// 伪静态处理git
 		// 去掉 jsessionid 防止找不到action
 //		me.add(new SessionHandler());
 		me.add(new DruidStatViewHandler("/druid"));

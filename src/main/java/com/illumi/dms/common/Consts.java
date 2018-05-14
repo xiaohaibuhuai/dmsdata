@@ -23,7 +23,7 @@ public class Consts
 	// 页数
 	public static final String PAGE = "page";
 	// 每页的数量
-	public static final Integer TOTAL = 50;
+	public static final String TOTAL = "total";
 	// 排序 asc 或者desc
 	public static final String ORDER = "order";
 	// 排序字段名称

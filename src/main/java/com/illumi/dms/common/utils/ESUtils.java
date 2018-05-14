@@ -1,13 +1,17 @@
 package com.illumi.dms.common.utils;
 
-import com.illumi.dms.model.test_poker.StatisticsCollectUser;
+//import com.illumi.dms.model.test_poker.StatisticsCollectUser;
 import com.illumi.dms.common.utils.ValidateObjectUtil;
+import com.illumi.dms.controller.DmsUserVewController;
+import com.illumi.dms.model.test_poker.TUserBaseIinfo;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 //import org.elasticsearch.common.transport.InetSocketTransportAddress;
@@ -17,7 +21,10 @@ import java.net.UnknownHostException;
 import java.util.Properties;
 
 public class ESUtils {
-    private static Log logger = LogFactory.getLog(ESUtils.class);
+    //private static Log logger = LogFactory.getLog(ESUtils.class);
+    private static org.slf4j.Logger logger = LoggerFactory.getLogger(DmsUserVewController.class);
+    //private static Log logger  = LogFactory.getLog(DmsUserVewController.class);
+    //private static final com.jfinal.log.Logger logger = com.jfinal.log.Logger.getLogger(HttpClientUtil.class);
     private static String HOST=""; //集群地址
     private static String PORT=""; //集群端口
     private static String CLUSTER_NAME="";  //集群名称
@@ -27,7 +34,8 @@ public class ESUtils {
         try {
             Properties properties = new Properties();
             //properties.load(new FileInputStream());
-            System.out.print("--------------------"+System.getProperty("user.dir"));
+            //System.out.print("--------------------"+System.getProperty("user.dir"));
+            logger.info("--------------------"+System.getProperty("user.dir"));
             Resource resource = new ClassPathResource("es.properties");
             System.out.print(resource.getFile().getPath());
             properties.load(resource.getInputStream());
@@ -73,7 +81,7 @@ public class ESUtils {
             }catch (Exception x){
                 x.printStackTrace();
             }
-            System.out.print(String.format("------------初始化失败--------：第{}次", times));
+            System.out.print(String.format("------------初始化失败--------：第%s次", times));
             return getClient(times+1);
         }
     }
@@ -93,6 +101,7 @@ public class ESUtils {
 
 
     public static void main(String[] args) {
-        StatisticsCollectUser.dao.collectDataUser();
+        //StatisticsCollectUser.dao.collectDataUser();
+        TUserBaseIinfo.dao.collectDataUser();
     }
 }

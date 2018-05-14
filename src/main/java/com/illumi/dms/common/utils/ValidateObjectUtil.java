@@ -175,19 +175,20 @@ public class ValidateObjectUtil {
                 if(bigDecimal.longValue()>Integer.MAX_VALUE||bigDecimal.longValue()<Integer.MIN_VALUE){
                     throw new IllegalArgumentException("数据越界");
                 }
-                return (T)new Integer(value);
+
+                return (T)Integer.valueOf(bigDecimal.intValue());
             }else if(t.getClass().isAssignableFrom(Short.class)){
                 BigDecimal bigDecimal = new BigDecimal(value);
                 if(bigDecimal.intValue()>Short.MAX_VALUE||bigDecimal.intValue()<Short.MIN_VALUE){
                     throw new IllegalArgumentException("数据越界");
                 }
-                return (T)new Short(value);
+                return (T)Short.valueOf(bigDecimal.shortValue());
             }else if(t.getClass().isAssignableFrom(Long.class)){
                 BigDecimal bigDecimal = new BigDecimal(value);
                 if(bigDecimal.doubleValue()>Long.MAX_VALUE||bigDecimal.doubleValue()<Long.MIN_VALUE){
                     throw new IllegalArgumentException("数据越界");
                 }
-                return (T)new Long(value);
+                return (T)Long.valueOf(bigDecimal.longValue());
             }else if(t.getClass().isAssignableFrom(Double.class)){
                 return (T)new Double(value);
             }else if(t.getClass().isAssignableFrom(Float.class)){
@@ -195,7 +196,7 @@ public class ValidateObjectUtil {
                 if(bigDecimal.doubleValue()>Long.MAX_VALUE||bigDecimal.doubleValue()<Long.MIN_VALUE){
                     throw new IllegalArgumentException("数据越界");
                 }
-                return (T)new Float(value);
+                return (T)Float.valueOf(bigDecimal.longValue());
             }else if(t.getClass().isAssignableFrom(BigDecimal.class)){
                 return (T)new BigDecimal(value);
             }else if(t.getClass().isAssignableFrom(BigInteger.class)){
@@ -296,13 +297,17 @@ public class ValidateObjectUtil {
 		
 	}
 	public static void main(String[] args) {
-        Calendar calendar = Calendar.getInstance();
+       /* Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_MONTH,-7);
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         System.out.println(format.format(calendar.getTime()));
 
         String   test = "{&quot;total&quot;:7,&quot;queryParams&quot;:{&quot;_type&quot;:&quot;all&quot;,&quot;rows&quot;:10,&quot;page&quot;:1,&quot;startDate&quot;:&quot;2018-5-1&quot;,&quot;endDate&quot;:&quot;2018-5-8&quot;},&quot;url&quot;:&quot;/statistic/dmsuserview/user/list&quot;,&quot;column&quot;:[{&quot;name&quot;:&quot;date&quot;,&quot;text&quot;:&quot;日期&quot;},{&quot;name&quot;:&quot;regist_user_num&quot;,&quot;text&quot;:&quot;注册人数&quot;},{&quot;name&quot;:&quot;regist_buyin_user_num&quot;,&quot;text&quot;:&quot;当日注册且买入人数&quot;},{&quot;name&quot;:&quot;total_buyin_user_num&quot;,&quot;text&quot;:&quot;当日总买入用户数&quot;},{&quot;name&quot;:&quot;total_user_num&quot;,&quot;text&quot;:&quot;累计注册人数&quot;},{&quot;name&quot;:&quot;total_buyin_user_num&quot;,&quot;text&quot;:&quot;累计买入独立用户数&quot;}]}";
-        System.out.println(test.replace("&quot;","\""));
+        */
+        System.out.println(ValidateObjectUtil.numberIsNotBlank(1,1));
+
+
+
 
 	}
 }
