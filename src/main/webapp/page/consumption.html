@@ -2,14 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>充值统计</title>
+    <title>德扑币消耗</title>
+    <link rel="shortcut icon" href="../imgs/new_icon_58.png">
     <link rel="stylesheet" href="../lib/bootstrap-3.3.7-dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="../lib/date/css/daterangepicker.css">
     <link rel="stylesheet" href="../lib/pagination1/css/pagination.css">
 
     <link rel="stylesheet" href="../css/public/reset.css">
     <link rel="stylesheet" href="../css/public/frame.css">
-    <link rel="stylesheet" href="../css/topUp.css">
+    <link rel="stylesheet" href="../css/consumption.css">
 
 </head>
 <body>
@@ -115,30 +116,35 @@
             </div>
             <!--图表和表格部分-->
             <div class="dms-chart-wrap">
-                <h2 class="dms-title">充值占比</h2>
-                <div class="dms-condition">
-                    <button id="topUP_detail_btn" class="dms-btn active dms-btn-date" onclick="action.topUpDetail(this)">充值详情</button><button id="topUP_total_btn" class="dms-btn dms-btn-date" onclick="action.topUpCollect(this)">汇总统计</button>
-                </div>
+                <h2 class="dms-title">德扑币消耗占比</h2>
                 <div id="dms-chart" class="dms-chart"></div>
                 <div class="dms-chart-time"><span>03.28</span>-<span>04.03</span></div>
             </div>
             <div class="dms-table-wrap">
                 <!--充值详情table-->
-                <h2 id="topUP_detail_title" class="dms-title">充值渠道明细</h2>
-                <table id="topUP_detail"  class="dms-table">
+                <h2 class="dms-title">德扑币消耗明细</h2>
+                <table class="dms-table">
                     <thead>
                     <tr>
                         <th class="first">日期</th>
-                        <th>安卓微信充值</th>
-                        <th>苹果充值</th>
-                        <th>谷歌充值</th>
-                        <th>公众号微信支付</th>
-                        <th>公众号支付宝支付</th>
-                        <th>步步德扑</th>
-                        <th>九格创想</th>
-                        <th>Cms支付宝</th>
-                        <th>钻石基金</th>
-                        <th>个人大额充值</th>
+                        <th>牌局总服务费</th>
+                        <th>打赏牌普服务费</th>
+                        <th>德扑币报名MTT</th>
+                        <th class="min-wid">魔法表情</th>
+                        <th class="min-wid">互动道具</th>
+                        <th class="min-wid">普通弹幕</th>
+                        <th class="min-wid">酷玩弹幕</th>
+                        <th class="min-wid">炫彩弹幕</th>
+                        <th>翻翻看消耗</th>
+                        <th class="min-wid">扑克机</th>
+                        <th class="min-wid">加勒比</th>
+                        <th>牛牛_一粒大米</th>
+                        <th>八八碰_一粒大米</th>
+                        <th>奔驰宝马_一粒大米</th>
+                        <th>捕鱼_一粒大米</th>
+                        <th>表情总消耗</th>
+                        <th>弹幕总消耗</th>
+                        <th>小游戏总消耗</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -148,12 +154,20 @@
                         <td>66666</td>
                         <td>6666</td>
                         <td>66666</td>
-                        <td>6666666</td>
+                        <td>666666</td>
                         <td>66666</td>
                         <td>66666</td>
                         <td>6666</td>
                         <td>66666</td>
-                        <td>6666666</td>
+                        <td>66666</td>
+                        <td>66666</td>
+                        <td>66666</td>
+                        <td>66666</td>
+                        <td>66666</td>
+                        <td>66666</td>
+                        <td>66666</td>
+                        <td>66666</td>
+                        <td>66666</td>
                         <td>66666</td>
                     </tr>
                     <tr>
@@ -161,12 +175,20 @@
                         <td>66666</td>
                         <td>6666</td>
                         <td>66666</td>
-                        <td>6666666</td>
+                        <td>666666</td>
                         <td>66666</td>
                         <td>66666</td>
                         <td>6666</td>
                         <td>66666</td>
-                        <td>6666666</td>
+                        <td>66666</td>
+                        <td>66666</td>
+                        <td>66666</td>
+                        <td>66666</td>
+                        <td>66666</td>
+                        <td>66666</td>
+                        <td>66666</td>
+                        <td>66666</td>
+                        <td>66666</td>
                         <td>66666</td>
                     </tr>
                     <tr>
@@ -174,12 +196,20 @@
                         <td>66666</td>
                         <td>6666</td>
                         <td>66666</td>
-                        <td>6666666</td>
+                        <td>666666</td>
                         <td>66666</td>
                         <td>66666</td>
                         <td>6666</td>
                         <td>66666</td>
-                        <td>6666666</td>
+                        <td>66666</td>
+                        <td>66666</td>
+                        <td>66666</td>
+                        <td>66666</td>
+                        <td>66666</td>
+                        <td>66666</td>
+                        <td>66666</td>
+                        <td>66666</td>
+                        <td>66666</td>
                         <td>66666</td>
                     </tr>
                     <tr>
@@ -187,12 +217,20 @@
                         <td>66666</td>
                         <td>6666</td>
                         <td>66666</td>
-                        <td>6666666</td>
+                        <td>666666</td>
                         <td>66666</td>
                         <td>66666</td>
                         <td>6666</td>
                         <td>66666</td>
-                        <td>6666666</td>
+                        <td>66666</td>
+                        <td>66666</td>
+                        <td>66666</td>
+                        <td>66666</td>
+                        <td>66666</td>
+                        <td>66666</td>
+                        <td>66666</td>
+                        <td>66666</td>
+                        <td>66666</td>
                         <td>66666</td>
                     </tr>
                     <tr>
@@ -200,53 +238,21 @@
                         <td>66666</td>
                         <td>6666</td>
                         <td>66666</td>
-                        <td>6666666</td>
+                        <td>666666</td>
                         <td>66666</td>
                         <td>66666</td>
                         <td>6666</td>
                         <td>66666</td>
-                        <td>6666666</td>
                         <td>66666</td>
-                    </tr>
-                    -->
-                    </tbody>
-                </table>
-                <!--汇总统计table-->
-                <h2 id="topUP_total_title" class="dms-title">充值类型汇总</h2>
-                <table id="topUP_total" class="dms-table">
-                    <thead>
-                    <tr>
-                        <th>充值类型</th>
-                        <th>充值人数</th>
-                        <th>充值次数</th>
-                        <th>充值金额</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <!--
-                    <tr>
-                        <td>9999钻石礼包</td>
-                        <td>6666</td>
                         <td>66666</td>
-                        <td>6666666</td>
-                    </tr>
-                    <tr>
-                        <td>9999钻石礼包</td>
-                        <td>6666</td>
                         <td>66666</td>
-                        <td>6666666</td>
-                    </tr>
-                    <tr>
-                        <td>9999钻石礼包</td>
-                        <td>6666</td>
                         <td>66666</td>
-                        <td>6666666</td>
-                    </tr>
-                    <tr>
-                        <td>9999钻石礼包</td>
-                        <td>6666</td>
                         <td>66666</td>
-                        <td>6666666</td>
+                        <td>66666</td>
+                        <td>66666</td>
+                        <td>66666</td>
+                        <td>66666</td>
+                        <td>66666</td>
                     </tr>
                     -->
                     </tbody>
@@ -284,6 +290,6 @@
 <script src="../lib/pagination1/js/jquery.pagination.js"></script>
 <script src="../lib/echart/echarts.min.js"></script>
 <script src="../js/public/frame.js"></script>
-<script src="../js/topUP.js"></script>
+<script src="../js/consumption.js"></script>
 </body>
 </html>

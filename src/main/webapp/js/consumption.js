@@ -1,195 +1,3 @@
-/*var index = {
-    startDate:null, //开始时间
-    endDate:null, //结束时间
-    tablePage:null, //table 分页当前页
-    perPageItem:null, //每页显示条数
-    totalPage:20, //总页数
-    init:function () {
-        this.dmsDate();
-        this.currentPage(0,this.totalPage); //1是变量 this.totalPage 后台需要返回;
-        this.pageJump();
-    },
-    //    日期插件
-    dmsDate:function () {
-        var  _this = this;
-        if($('#dms_date').length > 0){
-            $('#dms_date').daterangepicker({
-                "locale": {
-                    "direction": "ltr",
-                    "format": "MM/DD/YYYY",
-                    "separator": " - ",
-                    "applyLabel": "确定",
-                    "cancelLabel": "取消",
-                    "fromLabel": "From",
-                    "toLabel": "To",
-                    "customRangeLabel": "Custom",
-                    "daysOfWeek": [
-                        "日",
-                        "一",
-                        "二",
-                        "三",
-                        "四",
-                        "五",
-                        "六"
-                    ],
-                    "monthNames": [
-                        "一月",
-                        "二月",
-                        "三月",
-                        "四月",
-                        "五月",
-                        "六月",
-                        "七月",
-                        "八月",
-                        "九月",
-                        "十月",
-                        "十一月",
-                        "十二月"
-                    ],
-                    "firstDay": 1
-                },
-                "linkedCalendars": false,
-                "startDate": "04/19/2018",
-                "endDate": "04/25/2018"
-            }, function(start, end, label) {
-                _this.startDate = start.format('YYYY-MM-DD');
-                _this.endDate = end.format('YYYY-MM-DD');
-                console.log( start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') );
-            });
-        }
-    },
-    //分页插件
-    currentPage:function (current,tableTotalPage) {
-        var _this = this;
-        $('#pagination').pagination(tableTotalPage,{
-            prev_text:'上一页', //上一页
-            next_text:'下一页', //下一页
-            current_page:current,  //当前页
-            items_per_page:1,
-            callback: function (page_index,jq) { //获取数据后的徽调函数
-                _this.tablePage = page_index;
-                $('#currentPage').text(page_index + 1);
-                $('.totalPage').text(tableTotalPage);
-                //跳到首页
-                if(page_index ==0 ){
-                    $('#pageFirst').css('color','#999').addClass('disabled');
-                }else {
-                    $('#pageFirst').css('color','#12a0ff').removeClass('disabled');
-                }
-                //跳到尾页
-                if(page_index == (tableTotalPage-1) ){
-                    $('#pageLast').css('color','#999').addClass('disabled');
-                }else {
-                    $('#pageLast').css('color','#12a0ff').removeClass('disabled');
-                }
-                alert(page_index);
-            }
-        });
-    },
-    //分页跳转
-    pageJump:function () {
-        var _this = this;
-        // 页面跳转到第几页
-        $('#jumpPageBtn').click(function () {
-            var jumpPage = $('#jumpPageInput').val();
-            if( jumpPage <= _this.totalPage){
-                _this.currentPage(jumpPage-1,_this.totalPage);
-            }else {
-                alert('页码超出范围');
-            }
-
-        });
-        //跳到首页
-        $('#pageFirst').click(function () {
-            _this.currentPage(0,_this.totalPage)
-        });
-        //跳到尾页
-        $('#pageLast').click(function () {
-            _this.currentPage(_this.totalPage-1,_this.totalPage)
-        });
-    },
-    //每页显示条数设置
-    PageItem:function () {
-        var _this = this;
-        $('#perPageItems').change(function () {
-            _this.perPageItem = $('#perPageItems').val();
-            _this.currentPage(0,_this.totalPage)
-        });
-    }
-};
-
-//输出时间值
-$('#dms_date').change(function () {
-    console.log('开始时间'+index.startDate);
-});
-
-window.onload =function () {
-    //    国内国外点击样式切换
-    frame.btnActive('.dms-btn-regional');
-    //   充值详情汇总统计切换
-    frame.btn2Active('.dms-btn-date');
-    // 充值详情汇总统计点击table切换
-    $('#topUP_detail_btn').click(function () {
-        $('#topUP_detail').show();
-        $('#topUP_detail_title').show();
-        $('#topUP_total').hide();
-        $('#topUP_total_title').hide();
-    });
-    $('#topUP_total_btn').click(function () {
-        $('#topUP_detail').hide();
-        $('#topUP_detail_title').hide();
-        $('#topUP_total').show();
-        $('#topUP_total_title').show();
-    });
-
-    var myChart = echarts.init(document.getElementById('dms-chart'));
-    option = {
-        tooltip : {
-            trigger: 'item',
-            formatter: "{a} <br/>{b} : {c} ({d}%)"
-        },
-        series : [
-            {
-                name: '充值',
-                type: 'pie',
-                radius : '80%',
-                center: ['50%', '50%'],
-                label: {
-                    normal: {
-                        formatter: '{b} : {d}%'
-                    }
-                },
-                data:[
-                    {value:335, name:'直接访问'},
-                    {value:310, name:'邮件营销'},
-                    {value:234, name:'联盟广告'},
-                    {value:234, name:'联盟广告1'},
-                    {value:300, name:'联盟广告2'},
-                    {value:234, name:'联盟广告3'},
-                    {value:135, name:'视频广告4'},
-                    {value:135, name:'视频广告1'},
-                    {value:500, name:'视频广告2'},
-                    {value:135, name:'视频广告3'},
-                    {value:1548, name:'搜索引擎1'},
-                    {value:1548, name:'搜索引擎2'},
-                    {value:548, name:'搜索引擎3'},
-                    {value:1548, name:'搜索引擎4'}
-                ]
-
-            }
-        ],
-        color: ['rgb(18,160,255)','rgb(131,175,155)','rgb(200,200,169)','rgb(54,64,74)','rgb(254,164,64)','rgb(252,157,154)']
-    };
-    myChart.setOption(option);
-    //页面初始化
-    index.init();
-};*/
-
-
-
-
-
-
 Date.prototype.formatterDate = function(param,parrent){
      var parrent =  parrent|| "yyyy-MM-dd HH:mm:ss"
      var ms=[1,2,3,4,5,6,7,8,9,10,11,12];
@@ -351,7 +159,7 @@ Date.prototype.formatterDate = function(param,parrent){
 
     var chart={
           //echarts:{},
-          url:"/statistic/dmschanelview/user/chartdata",
+          url:"/statistic/dmscoinview/user/chartdata",
           div_class_dms_chart_time:'.dms-chart-time',
           chartOptions:{},
           getRemoteData:function(param){
@@ -381,7 +189,25 @@ Date.prototype.formatterDate = function(param,parrent){
     chart.bind(w.myChart)
 
 
+/**
 
+
+                JSONObject object601 = new JSONObject();
+                object601.put("name","表情总消耗");
+                object601.put("value",ValidateObjectUtil.isBlankDefault(view.get("total_emoji"),0,0));
+                listData.add(object601);
+
+                JSONObject object602 = new JSONObject();
+                object602.put("name","弹幕总消耗");
+                object602.put("value",ValidateObjectUtil.isBlankDefault(view.get("total_barrage"),0,0));
+                listData.add(object602);
+
+                JSONObject object603 = new JSONObject();
+                object603.put("name","小游戏总消耗");
+                object603.put("value",ValidateObjectUtil.isBlankDefault(view.get("total_minigame"),0,0));
+                listData.add(object603);
+
+**/
 
 
      var list={
@@ -389,13 +215,15 @@ Date.prototype.formatterDate = function(param,parrent){
               getIndex:function(){return this.index},
               setIndex:function(index){this.index=index;this.initTable()},
               columns:[
-                       [{name:"date",text:"日期"},{name:"pay_301",text:"安卓微信充值"},{name:"pay_101",text:"苹果充值"},{name:"pay_102",text:"谷歌充值"},{name:"pay_302",text:"公众号微信支付"},{name:"pay_402",text:"公众号支付宝支付"},{name:"pay_201",text:"步步德扑"},{name:"pay_202",text:"九格创想"},{name:"pay_403",text:"Cms支付宝"},{name:"pay_501",text:"钻石基金"},{name:"pay_502",text:"个人大额充值"}],
-                       [{name:"pay_type",text:"充值类型"},{name:"person_num",text:"充值人数"},{name:"pay_times",text:"充值次数"},{name:"pay_sum",text:"充值金额"}]
+                       [{name:"date",text:"日期"},{name:"service_fee",text:"服务费"},{name:"reward_service_fee",text:"打赏牌普服务"},{name:"mtt_enter",text:"德扑币报名MTT"},{name:"magic_emoji",text:"魔法表情"},
+                       {name:"interactive_props",text:"互动道具"},{name:"low_barrage",text:"普通弹幕"},{name:"mid_barrage",text:"酷玩弹幕"},{name:"high_barrage",text:"炫彩弹幕"},{name:"draw_card",text:"翻翻看消耗"},
+                       {name:"poker",text:"扑克机"},{name:"caribbeangame",text:"加勒比"},{name:"cocklain",text:"牛牛_一粒大米"},{name:"eight_eight",text:"八八碰_一粒大米"},{name:"car_game",text:"奔驰宝马_一粒大米"},
+                       {name:"fishing",text:"捕鱼_一粒大米"},{name:"total_emoji",text:"表情总消耗"},{name:"total_barrage",text:"弹幕总消耗"},{name:"total_minigame",text:"小游戏总消耗"}]
                       ],
-              titles:["充值渠道明细","充值类型汇总"],
+              titles:["德扑币消耗明细"],
               getTitle:function(){return this.titles[this.index]},
               getColumns:function(){return this.columns[this.index]},
-              urls:["/statistic/dmschanelview/user/list","/statistic/dmspaytypeview/user/list"],
+              urls:["/statistic/dmscoinview/user/list"],
               getUrl:function(){return this.urls[this.index]},
               data:{},
               getDataOfTotal:function(){return this.data.total||0},
@@ -431,13 +259,22 @@ Date.prototype.formatterDate = function(param,parrent){
                     return this.data
               },
               initTable:function(){
-                    vat ths = J(this.table_class_dms_table).find("thead").find("th");
+                    J(this.table_class_dms_table).find("thead").find("tr").empty()
                     html   ="";
                         for(var i =0 ; i< this.getColumns().length;i++){
                                 var column = this.getColumns()[i]
-                                J(ths[i]).attr("onclick",'action.orderDESC(this,'+i+')')
-                                J(ths[i]).text(column.text)
+                                html= html+ '<th onclick="action.orderDESC(this,'+i+')">'+column.text+'</th>';
+                                //html= html+ '<th onclick="action.order(this,'+i+')">'+column.text+'</th>';
+                                //(this.table_class_dms_table).find("thead").find("td")
                         }
+                    J(this.table_class_dms_table).find("thead").find("tr").append(html);
+                    //dms_pay_chanel_view
+                    /*for(var i =0 ; i< this.columns.length;i++){
+                            var column = this.columns[i]
+                            //html= html+ '<td onclick="action.order(this,'+i+')">'+column.text+'</td>';
+                            J(this.table_class_dms_table).find("th")[0].innerHTML=column.text
+                            J(J(this.table_class_dms_table).find("th").text()[0]).attr("onclick",'action.order(this,'+i+')')
+                    }*/
               },
               getData:function(){
                 return this.data

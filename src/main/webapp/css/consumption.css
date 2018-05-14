@@ -1,0 +1,30 @@
+.dms-nav,body{
+    min-width: 1500px;
+}
+.dms-chart-wrap{
+    height: 455px;
+}
+.dms-chart{
+    height: 90%;
+}
+.dms-table thead th.first{
+    width: 95px;
+}
+.dms-table thead th.min-wid{
+    min-width: 65px;
+}
+.dms-container{
+    width: 1500px;
+}
+.dms-right {
+    width: 1250px;
+}
+.dms-chart-wrap {
+    width: 1250px;
+}
+.dms-table {
+    width: 1206px;
+}
+.dms-title {
+    width: 1203px;
+}

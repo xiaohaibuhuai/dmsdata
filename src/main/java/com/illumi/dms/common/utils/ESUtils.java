@@ -1,12 +1,7 @@
 package com.illumi.dms.common.utils;
 
-//import com.illumi.dms.model.test_poker.StatisticsCollectUser;
-import com.illumi.dms.common.utils.ValidateObjectUtil;
-import com.illumi.dms.controller.DmsUserVewController;
+import com.illumi.dms.controller.DmsUserViewController;
 import com.illumi.dms.model.test_poker.TUserBaseIinfo;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.Logger;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.TransportAddress;
@@ -14,15 +9,18 @@ import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-//import org.elasticsearch.common.transport.InetSocketTransportAddress;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Properties;
 
+//import org.elasticsearch.common.transport.InetSocketTransportAddress;
+
 public class ESUtils {
     //private static Log logger = LogFactory.getLog(ESUtils.class);
-    private static org.slf4j.Logger logger = LoggerFactory.getLogger(DmsUserVewController.class);
+    private static org.slf4j.Logger logger = LoggerFactory.getLogger(ESUtils.class);
+
     //private static Log logger  = LogFactory.getLog(DmsUserVewController.class);
     //private static final com.jfinal.log.Logger logger = com.jfinal.log.Logger.getLogger(HttpClientUtil.class);
     private static String HOST=""; //集群地址
