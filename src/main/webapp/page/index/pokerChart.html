@@ -1,0 +1,126 @@
+
+<div id="poker" style=" height: 300px;"></div>
+
+@if( so.hasPermission("/stat/clubchart/sum")) {
+   <input type="hidden" id="so_club" value="1">
+@}if( so.hasPermission("/stat/pokerchart/common")) {
+  <input type="hidden" id="so_poker" value="1">
+@}if( so.hasPermission("/stat/userchart/sum")) {
+  <input type="hidden" id="so_user" value="1">
+@}
+
+
+<script src="${CONTEXT_PATH}/static/js/Highcharts-4.2.3/js/highcharts.js"></script>
+<script src="${CONTEXT_PATH}/static/js/Highcharts-4.2.3/js/modules/exporting.js"></script>
+
+	<script type="text/javascript">
+
+	
+	if($("#so_poker").val()==1){
+		 $.post('${CONTEXT_PATH}/stat/pokerchart/common',function(data){
+				
+			    $('#poker').highcharts({
+			        title: {
+			            text: '近30天每日牌局总数及牌局类型分布曲线图',
+			            x: -20 //center
+			        },
+			        credits : {
+						enabled : false
+					},
+			        xAxis: {
+			            categories: data.categories
+			        },
+			        yAxis: {
+			            plotLines: [{
+			                value: 0,
+			                width: 1,
+			                color: '#808080'
+			            }]
+			        },
+			        legend: {
+			            layout: 'vertical',
+			            align: 'right',
+			            verticalAlign: 'middle',
+			            borderWidth: 0
+			        },
+			        series: data.series
+			    });
+			    
+				} ,'json');
+	}
+
+	if($("#so_club").val()==1){
+
+		 $.post('${CONTEXT_PATH}/stat/clubchart/sum',function(data){
+				
+			    $('#club').highcharts({
+			        title: {
+			            text: '每日俱乐部总数及活跃俱乐部曲线图',
+			            x: -20 //center
+			        },
+			        credits : {
+						enabled : false
+					},
+			        xAxis: {
+			            categories: data.categories
+			        },
+			        yAxis: {
+			            plotLines: [{
+			                value: 0,
+			                width: 1,
+			                color: '#808080'
+			            }]
+			        },
+			        legend: {
+			            layout: 'vertical',
+			            align: 'right',
+			            verticalAlign: 'middle',
+			            borderWidth: 0
+			        },
+			        series: data.series
+			    });
+			    
+				} ,'json');
+	}
+	
+	if($("#so_user").val()==1){
+
+		 $.post('${CONTEXT_PATH}/stat/userchart/sum',function(data){
+				
+			    $('#user').highcharts({
+			        title: {
+			            text: '每日玩家总数及活跃玩家曲线图',
+			            x: -20 //center
+			        },
+			        credits : {
+						enabled : false
+					},
+			        xAxis: {
+			            categories: data.categories
+			        },
+			        yAxis: {
+			            plotLines: [{
+			                value: 0,
+			                width: 1,
+			                color: '#808080'
+			            }]
+			        },
+			        legend: {
+			            layout: 'vertical',
+			            align: 'right',
+			            verticalAlign: 'middle',
+			            borderWidth: 0
+			        },
+			        series: data.series
+			    });
+			    
+				} ,'json');
+	}
+	 
+
+			
+			
+</script>			
+			
+
+
