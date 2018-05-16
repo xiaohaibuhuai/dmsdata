@@ -158,33 +158,48 @@ Date.prototype.formatterDate = function(param,parrent){
 
 
     var chart={
-          //echarts:{},
-          url:"/statistic/dmsdiamondview/user/chartdata",
-          div_class_dms_chart_time:'.dms-chart-time',
-          chartOptions:{},
-          getRemoteData:function(param){
-                var option = {url:this.url,data:param,success:this.initChar.bind(this)}
+            index:0,
+            getIndex:function(){return this.index},
+            setIndex:function(index){this.index=index;this.initTable()},
+            urls:["/statistic/dmsconcurrenthourview/user/chartdata","/statistic/dmsconcurrentdayview/user/chartdata"],
+            getUrl:function(){return this.urls[this.index]},
+            div_class_dms_chart_time:'.dms-chart-time',
+            chartOptions:{},
+            getRemoteData:function(param){
+                var option = {url:this.getUrl(),data:param,success:this.initChar.bind(this)}
                 new Ajax(option
                 ).execute()
-          },
-          initChar:function(data){
+            },
+            initChar:function(data){
             if(data){
                 this.chartOptions = pageScope.myChart.getOption()
                 if(!this.chartOptions){
                     return
                 }
-                this.chartOptions.series[0].data = data['series.data']?data['series.data']:[]
-                pageScope.myChart.setOption(this.chartOptions)
-                J(this.div_class_dms_chart_time).html("<span>"+new Date(data['dates'][0]).formatterDate({},"yyyy.MM.dd")+"</span>-<span>"+new Date(data['dates'][data['dates'].length-1]).formatterDate({},"yyyy.MM.dd")+"</span>")
+                try{
+                    this.chartOptions.xAxis[0].data = data['xAxis.data']?data['xAxis.data']:[]
+                    this.chartOptions.series[0].data = data['series.data']?data['series.data']:[]
+                    pageScope.myChart.setOption(this.chartOptions)
+                    if(this.getIndex()==0){
+                        J(this.div_class_dms_chart_time).html("<span>"+new Date(data['date'][0]).formatterDate({},"yyyy.MM.dd")+"</span>")
+                    }else{
+                        J(this.div_class_dms_chart_time).html("<span>"+new Date(data['xAxis.data'][0]).formatterDate({},"yyyy.MM.dd")+"</span>-<span>"+new Date(data['xAxis.data'][data['xAxis.data'].length-1]).formatterDate({},"yyyy.MM.dd")+"</span>")
+                    }
+
+                }catch(err){
+                    console.info("Echar 渲染异常")
+                    return
+                }
+
             }else{
                 //TODO 处理提示信息
             }
 
-          },
-          bind:function(echarts){
+            },
+            bind:function(echarts){
             //this.echarts=echarts;
             this.getRemoteData = this.getRemoteData.bind(this)
-          }
+            }
     }
     chart.bind(w.myChart)
 
@@ -193,17 +208,17 @@ Date.prototype.formatterDate = function(param,parrent){
               getIndex:function(){return this.index},
               setIndex:function(index){this.index=index;this.initTable()},
               columns:[
-                       [{name:"date",text:"日期"},{name:"delayed_tool",text:"峰值1"},{name:"league_set",text:"峰值2"},{name:"club_push",text:"峰值3"},{name:"club_nickname_change",text:"峰值4"},
-                       {name:"mtt_ticket",text:"峰值5"},{name:"mtt_ticket",text:"峰值6"},{name:"mtt_ticket",text:"峰值7"},{name:"mtt_ticket",text:"峰值8"},{name:"platinum_card",text:"峰值9"},
-                       {name:"mtt_ticket",text:"峰值10"},{name:"mtt_ticket",text:"峰值11"},{name:"mtt_ticket",text:"峰值12"},{name:"mtt_ticket",text:"峰值13"},{name:"mtt_ticket",text:"峰值14"},
-                       {name:"mtt_ticket",text:"峰值15"},{name:"mtt_ticket",text:"峰值16"},{name:"mtt_ticket",text:"峰值17"},{name:"mtt_ticket",text:"峰值18"},{name:"mtt_ticket",text:"峰值19"},
-                       {name:"mtt_ticket",text:"峰值20"},{name:"mtt_ticket",text:"峰值21"},{name:"mtt_ticket",text:"峰值22"},{name:"mtt_ticket",text:"峰值23"},{name:"mtt_ticket",text:"峰值24"}],
-                       [{name:"date",text:"日期"},{name:"mtt_ticket",text:"峰值"}]
+                       [{name:"date",text:"日期"},{name:"times_01",text:"峰值1"},{name:"times_02",text:"峰值2"},{name:"times_03",text:"峰值3"},{name:"times_04",text:"峰值4"},
+                       {name:"times_05",text:"峰值5"},{name:"times_06",text:"峰值6"},{name:"times_07",text:"峰值7"},{name:"times_08",text:"峰值8"},{name:"times_09",text:"峰值9"},
+                       {name:"times_10",text:"峰值10"},{name:"times_11",text:"峰值11"},{name:"times_12",text:"峰值12"},{name:"times_13",text:"峰值13"},{name:"times_14",text:"峰值14"},
+                       {name:"times_15",text:"峰值15"},{name:"times_16",text:"峰值16"},{name:"times_17",text:"峰值17"},{name:"times_18",text:"峰值18"},{name:"times_19",text:"峰值19"},
+                       {name:"times_20",text:"峰值20"},{name:"times_21",text:"峰值21"},{name:"times_22",text:"峰值22"},{name:"times_23",text:"峰值23"},{name:"times_24",text:"峰值24"}],
+                       [{name:"date",text:"日期"},{name:"day",text:"峰值"}]
                       ],
               titles:["并发明细／小时","并发明细／日"],
               getTitle:function(){return this.titles[this.index]},
               getColumns:function(){return this.columns[this.index]},
-              urls:["/statistic/dmsdiamondview/user/list"],
+              urls:["/statistic/dmsconcurrenthourview/user/list","/statistic/dmsconcurrentdayview/user/list"],
               getUrl:function(){return this.urls[this.index]},
               data:{},
               getDataOfTotal:function(){return this.data.total||0},
@@ -222,15 +237,20 @@ Date.prototype.formatterDate = function(param,parrent){
                     if(data){
                         J(this.table_class_dms_table).find("tbody").empty()
                         html =""
-                        for(var i =0 ;i < data.rows.length ;i ++){
-                            var row = data.rows[i]
-                            html=html+  "<tr>";
-                                         for(var j =0 ;j<this.getColumns().length;j++){
-                                            var col =  this.getColumns()[j]
-                                            html = html + "<td>"+(Math.round(row[col.name])||row[col.name])+"</td>";
-                                         }
-                                        html = html + "</tr>";
+                        try{
+                            for(var i =0 ;i < data.rows.length ;i ++){
+                                var row = data.rows[i]
+                                html=html+  "<tr>";
+                                             for(var j =0 ;j<this.getColumns().length;j++){
+                                                var col =  this.getColumns()[j]
+                                                html = html + "<td>"+(row[col.name]||"-")+"</td>";
+                                             }
+                                html = html + "</tr>";
+                            }
+                        }catch(err){
+                            console.error(err)
                         }
+
                         J(this.table_class_dms_table).find("tbody").append(html)
                         this.data=data||{}
                     }else{
@@ -329,17 +349,21 @@ Date.prototype.formatterDate = function(param,parrent){
             }
             new Ajax(CONF).download();
         },
+        setIndex:function(index){
+            list.setIndex(index)
+            chart.setIndex(index)
+        },
         hour:function(obj){
-            list.setIndex(0)
+            this.setIndex(0)
             index.setQueryParam({})
             index.loadData()
-            console.info("充值详情")
+            console.info("小时统计")
         },
         day:function(obj){
-            list.setIndex(1)
+            this.setIndex(1)
             index.setQueryParam({})
             index.loadData()
-            console.info("汇总统计")
+            console.info("天统计")
         }
     }
     var index = {

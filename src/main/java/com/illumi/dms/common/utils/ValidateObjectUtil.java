@@ -3,6 +3,7 @@ package com.illumi.dms.common.utils;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.InetAddress;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -307,7 +308,8 @@ public class ValidateObjectUtil {
 
         String   test = "{&quot;total&quot;:7,&quot;queryParams&quot;:{&quot;_type&quot;:&quot;all&quot;,&quot;rows&quot;:10,&quot;page&quot;:1,&quot;startDate&quot;:&quot;2018-5-1&quot;,&quot;endDate&quot;:&quot;2018-5-8&quot;},&quot;url&quot;:&quot;/statistic/dmsuserview/user/list&quot;,&quot;column&quot;:[{&quot;name&quot;:&quot;date&quot;,&quot;text&quot;:&quot;日期&quot;},{&quot;name&quot;:&quot;regist_user_num&quot;,&quot;text&quot;:&quot;注册人数&quot;},{&quot;name&quot;:&quot;regist_buyin_user_num&quot;,&quot;text&quot;:&quot;当日注册且买入人数&quot;},{&quot;name&quot;:&quot;total_buyin_user_num&quot;,&quot;text&quot;:&quot;当日总买入用户数&quot;},{&quot;name&quot;:&quot;total_user_num&quot;,&quot;text&quot;:&quot;累计注册人数&quot;},{&quot;name&quot;:&quot;total_buyin_user_num&quot;,&quot;text&quot;:&quot;累计买入独立用户数&quot;}]}";
         */
-        System.out.println(ValidateObjectUtil.isBlankDefault(null,0,0));
+        List<String>  dates= new ArrayList<>(24);
+        System.out.println(dates.size());
 
 
 

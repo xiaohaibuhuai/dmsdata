@@ -44,16 +44,17 @@ Date.prototype.formatterDate = function(param,parrent){
                        trigger: 'axis'
                    },
                    legend: {
-                       data:['注册人数','买入人数']
+                       data:['注册人数','注册即买入人数'],
+                       bottom:'0%',
+                       right:'10%'
                    },
-                   //5-10修改
-                   grid: {
+                    grid: {
                        left: '0%',
                        right: '3%',
-                       bottom: '3%',
+                       bottom: '10%',
                        top:'10%',
                        containLabel: true
-                   },//5
+                   },//5-16修改end
                    xAxis: {
                        type: 'category',
                        data: ['03-28','03-29','03-30','03-31','04-01','04-02','04-03']
@@ -79,7 +80,7 @@ Date.prototype.formatterDate = function(param,parrent){
                            }
                        },
                        {
-                           name:'买入人数',
+                           name:'注册即买入人数',
                            type:'line',
                            symbol:'circle',//拐点样式
                            symbolSize: 6,//拐点大小
@@ -101,7 +102,7 @@ Date.prototype.formatterDate = function(param,parrent){
     w.onload =function () {
     //    国内国外点击样式切换
             frame.btnActive('.dms-btn-regional');
-
+            frame.btn2Active('.dms-btn-date'); //5-16修改 //5-16修改end
             pageScope.myChart.setOption(pageScope.option);
             pageScope.init();
         }
@@ -172,7 +173,11 @@ Date.prototype.formatterDate = function(param,parrent){
 
 
     var chart={
-          //echarts:{},
+          title:[['注册人数','注册即买入人数'],"买入人数"],
+          index:0,
+          getIndex:function(){return this.index},
+          setIndex:function(index){this.index=index;this.initTable()},
+          mdata:{},
           url:"/statistic/dmsuserview/user/chartdata",
           div_class_dms_chart_time:'.dms-chart-time',
           chartOptions:{},
@@ -181,22 +186,121 @@ Date.prototype.formatterDate = function(param,parrent){
                 new Ajax(option
                 ).execute()
           },
+          legend: {
+             data:['注册人数','注册即买入人数'],
+             bottom:'0%',
+             right:'10%'
+          },
+          mergeChartOptions:function(){
+                  this.chartOptions.legend =  this.getLegend()
+                  this.chartOptions.series =  this.reconstitutionSeries()
+                  return this.chartOptions;
+          },
+          getLegend:function(){
+             this.legend.data= this.title[this.index]
+             return this.legend
+          },
+          series: [
+
+
+          ],
+
+          reconstitutionSeries:function(){
+                this.series = []
+                if(this.index == 0 ){
+                    var data1 = {
+
+                          name:this.title[this.index][0],
+                          type:'line',
+                          symbol:'circle',//拐点样式
+                          symbolSize: 6,//拐点大小
+                          data:this.mdata['series.register.data']?this.mdata['series.register.data']:[],
+                          itemStyle : {
+                              normal : {
+                                  color:'#82c95b',
+                                  lineStyle:{
+                                      color:'#82c95b'
+                                  }
+                              }
+                          }
+                    }
+                    var data2 = {
+
+                          name:this.title[this.index][1],
+                          type:'line',
+                          symbol:'circle',//拐点样式
+                          symbolSize: 6,//拐点大小
+                          data:this.mdata['series.register.buyin.data']?this.mdata['series.register.buyin.data']:[],
+                          itemStyle : {
+                              normal : {
+                                  color:'#82c95b',
+                                  lineStyle:{
+                                      color:'#82c95b'
+                                  }
+                              }
+                          }
+                    }
+                    this.series[0]=data1
+                    this.series[1]=data2
+                }else{
+                    var data1 = {
+
+                          name:this.title[this.index],
+                          type:'line',
+                          symbol:'circle',//拐点样式
+                          symbolSize: 6,//拐点大小
+                          data:this.mdata['series.buyin.data']?this.mdata['series.buyin.data']:[],
+                          itemStyle : {
+                              normal : {
+                                  color:'#82c95b',
+                                  lineStyle:{
+                                      color:'#82c95b'
+                                  }
+                              }
+                          }
+                    }
+                    var data2 = {
+
+                          name:"",
+                          type:'line',
+                          symbol:'circle',//拐点样式
+                          symbolSize: 6,//拐点大小
+                          data:[],
+                          itemStyle : {
+                              normal : {
+                                  color:'#82c95b',
+                                  lineStyle:{
+                                      color:'#82c95b'
+                                  }
+                              }
+                          }
+                    }
+                    this.series[0]=data1
+                    this.series[1]=data2
+                }
+                return this.series
+
+          },
           initChar:function(data){
             if(data){
                 this.chartOptions = pageScope.myChart.getOption()
                 if(!this.chartOptions){
                     return
                 }
-                this.chartOptions.xAxis[0].data = data['xAxis.data']?data['xAxis.data']:[]
-                this.chartOptions.series[0].data = data['series.register.data']?data['series.register.data']:[]
-                this.chartOptions.series[1].data = data['series.buyin.data']?data['series.buyin.data']:[]
-                pageScope.myChart.setOption(this.chartOptions)
-                J(this.div_class_dms_chart_time).html("<span>"+new Date(data['xAxis.data'][0]).formatterDate({},"yyyy.MM.dd")+"</span>-<span>"+new Date(data['xAxis.data'][data['xAxis.data'].length-1]).formatterDate({},"yyyy.MM.dd")+"</span>")
+                this.mdata = data
+                this.redrawchar()
             }else{
                 //TODO 处理提示信息
             }
 
           },
+          redrawchar:function(){
+                this.chartOptions.xAxis[0].data = this.mdata['xAxis.data']?this.mdata['xAxis.data']:[]
+                pageScope.myChart.setOption(this.mergeChartOptions())
+                J(this.div_class_dms_chart_time).html("<span>"+new Date(this.mdata['xAxis.data'][0]).formatterDate({},"yyyy.MM.dd")+"</span>-<span>"+new Date(this.mdata['xAxis.data'][this.mdata['xAxis.data'].length-1]).formatterDate({},"yyyy.MM.dd")+"</span>")
+          },
+          showRegister:function(){this.index=0;this.redrawchar()},
+          showBuyin:function(){this.index=1;this.redrawchar()},
           bind:function(echarts){
             //this.echarts=echarts;
             this.getRemoteData = this.getRemoteData.bind(this)
@@ -355,6 +459,14 @@ Date.prototype.formatterDate = function(param,parrent){
                 data:param
             }
             new Ajax(CONF).download();
+        },
+        register:function(obj){
+            chart.showRegister()
+            console.info("chart 注册")
+        },
+        buyin:function(obj){
+            chart.showBuyin()
+            console.info("chart 买入")
         },
         changeDate:function(obj){
             console.info("日期")

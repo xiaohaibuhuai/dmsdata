@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>用户数据汇总-实时数据</title>
+    <link rel="shortcut icon" href="../imgs/new_icon_58.png">
     <link rel="stylesheet" href="../lib/bootstrap-3.3.7-dist/css/bootstrap.min.css">
-    <link href="http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../lib/date/css/daterangepicker.css">
     <link rel="stylesheet" href="../lib/pagination1/css/pagination.css">
 
@@ -110,7 +110,7 @@
             <!--筛选条件-->
            <div class="dms-filter clearfix">
                <div class="fr">
-                   <button class="dms-btn dms-btn-regional" onclick="action.china(this)" >国内</button><button class="dms-btn dms-btn-regional" onclick="action.abroad(this)">海外</button><input id="dms_date"   class="dms-date form-control" onchange="" type="text" name="date"><button class="dms-btn active" onclick="action.export(this)" >导出</button>
+                   <button class="dms-btn dms-btn-regional" >国内</button><button class="dms-btn dms-btn-regional">海外</button><input id="dms_date" class="dms-date form-control" type="text" name="date"><button class="dms-btn active">导出</button>
                </div>
            </div>
             <!--图表和表格部分-->
@@ -118,7 +118,7 @@
                 <h2 class="dms-title">注册及买入用户趋势</h2>
                 <!--//5-16修改-->
                 <div class="dms-condition">
-                    <button class="dms-btn active dms-btn-date" onclick="action.register(this)">注册人数</button><button class="dms-btn dms-btn-date" onclick="action.buyin(this)">买入人数</button>
+                    <button class="dms-btn active dms-btn-date">注册人数</button><button class="dms-btn dms-btn-date">买入人数</button>
                 </div>
                 <!--//5-16修改end-->
                 <div id="dms-chart" class="dms-chart"></div>
@@ -138,7 +138,6 @@
                          </tr>
                     </thead>
                     <tbody>
-                    <!--
                         <tr>
                             <td>2018-05-01</td>
                             <td>66666</td>
@@ -179,10 +178,8 @@
                             <td>6666666</td>
                             <td>66666</td>
                         </tr>
-                        -->
                     </tbody>
                 </table>
-                <!--分页器-->
                 <!--分页器-->
                 <div class="pagination-wrap">
                     <div class="pagination pagination-esp">
@@ -211,12 +208,11 @@
 
 <script src="../lib/date/js/jquery-1.11.0.min.js"></script>
 <script src="../lib/date/js/moment.min.js"></script>
+<script src="../lib/date/js/daterangepicker.js"></script>
 <script src="../lib/pagination1/js/jquery.pagination.js"></script>
 <script src="../lib/echart/echarts.min.js"></script>
-
-<script src="../js/index.js"></script>
-<script src="../lib/date/js/daterangepicker.js"></script>
 <script src="../js/public/frame.js"></script>
+<script src="../js/index.js"></script>
 
 </body>
 </html>
