@@ -261,21 +261,16 @@ Date.prototype.formatterDate = function(param,parrent){
                     html   ="";
                         for(var i =0 ; i< this.getColumns().length;i++){
                                 var column = this.getColumns()[i]
-                                 if(i==0){
+                                if(i==0){
                                     html= html+ '<th onclick="action.orderASC(this,'+i+')">'+column.text+'</th>';
+                                }else{
+                                    html= html+ '<th onclick="action.orderDESC(this,'+i+')">'+column.text+'</th>';
                                 }
-                                html= html+ '<th onclick="action.orderDESC(this,'+i+')">'+column.text+'</th>';
-                                //html= html+ '<th onclick="action.order(this,'+i+')">'+column.text+'</th>';
-                                //(this.table_class_dms_table).find("thead").find("td")
+
+
                         }
                     J(this.table_class_dms_table).find("thead").find("tr").append(html);
-                    //dms_pay_chanel_view
-                    /*for(var i =0 ; i< this.columns.length;i++){
-                            var column = this.columns[i]
-                            //html= html+ '<td onclick="action.order(this,'+i+')">'+column.text+'</td>';
-                            J(this.table_class_dms_table).find("th")[0].innerHTML=column.text
-                            J(J(this.table_class_dms_table).find("th").text()[0]).attr("onclick",'action.order(this,'+i+')')
-                    }*/
+
               },
               getData:function(){
                 return this.data

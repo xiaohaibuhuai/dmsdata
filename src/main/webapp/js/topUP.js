@@ -437,8 +437,9 @@ Date.prototype.formatterDate = function(param,parrent){
                                 var column = this.getColumns()[i]
                                 if(i==0){
                                     J(ths[i]).attr("onclick",'action.orderASC(this,'+i+')')
+                                }else{
+                                    J(ths[i]).attr("onclick",'action.orderDESC(this,'+i+')')
                                 }
-                                J(ths[i]).attr("onclick",'action.orderDESC(this,'+i+')')
                                 J(ths[i]).text(column.text)
                         }
               },

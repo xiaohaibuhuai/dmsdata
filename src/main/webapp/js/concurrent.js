@@ -245,8 +245,10 @@ Date.prototype.formatterDate = function(param,parrent){
                                 var column = this.getColumns()[i]
                                 if(i==0){
                                     html= html+ '<th onclick="action.orderASC(this,'+i+')">'+column.text+'</th>';
+                                }else{
+                                    html= html+ '<th onclick="action.orderDESC(this,'+i+')">'+column.text+'</th>';
                                 }
-                                html= html+ '<th onclick="action.orderDESC(this,'+i+')">'+column.text+'</th>';
+
                         }
                     J(this.table_class_dms_table).find("thead").find("tr").append(html);
                     J(this.h2_class_dms_title).text(this.getTitle())
