@@ -35,76 +35,62 @@ Date.prototype.formatterDate = function(param,parrent){
      }
      return parrent.replace(/yyyy/g,y).replace(/MM/g,m).replace(/dd/g,d)
 };
+
+
+
 (function(J,w){
     w.pageScope={
         init:init,
         myChart:echarts.init(document.getElementById('dms-chart')),
-        option:{
-                   tooltip: {
-                       trigger: 'axis'
-                   },
-                   legend: {
-                       data:['注册人数','买入人数']
-                   },
-                   //5-10修改
-                   grid: {
-                       left: '0%',
-                       right: '3%',
-                       bottom: '3%',
-                       top:'10%',
-                       containLabel: true
-                   },//5
-                   xAxis: {
-                       type: 'category',
-                       data: ['03-28','03-29','03-30','03-31','04-01','04-02','04-03']
-                   },
-                   yAxis: {
-                       type: 'value'
-                   },
-                   series: [
-                       {
-                           name:'注册人数',
-                           type:'line',
-                           symbol:'circle',//拐点样式
-                           symbolSize: 6,//拐点大小
-                           data:[0, 132, 101, 100, 290, 230, 0],
-                           itemStyle : {
-                               normal : {
-                                   color:'#82c95b',
-           //                        borderColor:'red',  //拐点边框颜色
-                                   lineStyle:{
-                                       color:'#82c95b'
-                                   }
-                               }
-                           }
-                       },
-                       {
-                           name:'买入人数',
-                           type:'line',
-                           symbol:'circle',//拐点样式
-                           symbolSize: 6,//拐点大小
-                           data:[20, 50, 191, 234, 90, 330, 20],
-                           itemStyle : { //折线颜色
-                               normal : {
-                                   color:'#12a0ff', //圆点颜色
-                                   lineStyle:{
-                                       color:'#12a0ff'
-                                   }
-                               }
-                           }
-                       }
-
-                   ]
-           }
+        option :{
+            tooltip: {
+                trigger: 'axis'
+            },//5-10修改
+            grid: {
+                left: '0%',
+                right: '3%',
+                bottom: '3%',
+                top:'10%',
+                containLabel: true
+            },//5-10修改end
+            xAxis: {
+                type: 'category',
+                data: ['03-28','03-29','03-30','03-31','04-01','04-02','04-03']
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [
+                {
+                    name:'活跃人数',
+                    type:'line',
+                    symbol:'circle',//拐点样式
+                    symbolSize: 6,//拐点大小
+                    data:[0, 132, 101, 100, 290, 230, 0],
+                    itemStyle : {
+                        normal : {
+                            color:'#82c95b',
+        //                        borderColor:'red',  //拐点边框颜色
+                            lineStyle:{
+                                color:'#82c95b'
+                            }
+                        }
+                    }
+                }
+            ]
+        }
     }
     //w.myChart = echarts.init(document.getElementById('dms-chart'));
     w.onload =function () {
-    //    国内国外点击样式切换
+            //    国内国外点击样式切换
+            //frame.btnActive('.dms-btn-regional');
+            //国内国外点击样式切换
             frame.btnActive('.dms-btn-regional');
-
+            //   充值详情汇总统计切换
+            frame.btn2Active('.dms-btn-date');
             pageScope.myChart.setOption(pageScope.option);
             pageScope.init();
-        }
+    }
     var Ajax = function (options) {
             this.param = options;
             this.execute = function () {
@@ -173,7 +159,7 @@ Date.prototype.formatterDate = function(param,parrent){
 
     var chart={
           //echarts:{},
-          url:"/statistic/dmsuserview/user/chartdata",
+          url:"/statistic/dmsdiamondview/user/chartdata",
           div_class_dms_chart_time:'.dms-chart-time',
           chartOptions:{},
           getRemoteData:function(param){
@@ -187,11 +173,9 @@ Date.prototype.formatterDate = function(param,parrent){
                 if(!this.chartOptions){
                     return
                 }
-                this.chartOptions.xAxis[0].data = data['xAxis.data']?data['xAxis.data']:[]
-                this.chartOptions.series[0].data = data['series.register.data']?data['series.register.data']:[]
-                this.chartOptions.series[1].data = data['series.buyin.data']?data['series.buyin.data']:[]
+                this.chartOptions.series[0].data = data['series.data']?data['series.data']:[]
                 pageScope.myChart.setOption(this.chartOptions)
-                J(this.div_class_dms_chart_time).html("<span>"+new Date(data['xAxis.data'][0]).formatterDate({},"yyyy.MM.dd")+"</span>-<span>"+new Date(data['xAxis.data'][data['xAxis.data'].length-1]).formatterDate({},"yyyy.MM.dd")+"</span>")
+                J(this.div_class_dms_chart_time).html("<span>"+new Date(data['dates'][0]).formatterDate({},"yyyy.MM.dd")+"</span>-<span>"+new Date(data['dates'][data['dates'].length-1]).formatterDate({},"yyyy.MM.dd")+"</span>")
             }else{
                 //TODO 处理提示信息
             }
@@ -204,27 +188,35 @@ Date.prototype.formatterDate = function(param,parrent){
     }
     chart.bind(w.myChart)
 
-
-
-
-
      var list={
-
-              columns:[{name:"date",text:"日期"},{name:"regist_user_num",text:"注册人数"},{name:"regist_buyin_user_num",text:"当日注册且买入人数"},{name:"total_buyin_user_num",text:"当日总买入用户数"},{name:"total_user_num",text:"累计注册人数"},{name:"total_buyin_user_num",text:"累计买入独立用户数"}],
-              getColumns:function(){return this.columns},
-              url:"/statistic/dmsuserview/user/list",
-              getUrl:function(){return this.url},
+              index:0,
+              getIndex:function(){return this.index},
+              setIndex:function(index){this.index=index;this.initTable()},
+              columns:[
+                       [{name:"date",text:"日期"},{name:"delayed_tool",text:"峰值1"},{name:"league_set",text:"峰值2"},{name:"club_push",text:"峰值3"},{name:"club_nickname_change",text:"峰值4"},
+                       {name:"mtt_ticket",text:"峰值5"},{name:"mtt_ticket",text:"峰值6"},{name:"mtt_ticket",text:"峰值7"},{name:"mtt_ticket",text:"峰值8"},{name:"platinum_card",text:"峰值9"},
+                       {name:"mtt_ticket",text:"峰值10"},{name:"mtt_ticket",text:"峰值11"},{name:"mtt_ticket",text:"峰值12"},{name:"mtt_ticket",text:"峰值13"},{name:"mtt_ticket",text:"峰值14"},
+                       {name:"mtt_ticket",text:"峰值15"},{name:"mtt_ticket",text:"峰值16"},{name:"mtt_ticket",text:"峰值17"},{name:"mtt_ticket",text:"峰值18"},{name:"mtt_ticket",text:"峰值19"},
+                       {name:"mtt_ticket",text:"峰值20"},{name:"mtt_ticket",text:"峰值21"},{name:"mtt_ticket",text:"峰值22"},{name:"mtt_ticket",text:"峰值23"},{name:"mtt_ticket",text:"峰值24"}],
+                       [{name:"date",text:"日期"},{name:"mtt_ticket",text:"峰值"}]
+                      ],
+              titles:["并发明细／小时","并发明细／日"],
+              getTitle:function(){return this.titles[this.index]},
+              getColumns:function(){return this.columns[this.index]},
+              urls:["/statistic/dmsdiamondview/user/list"],
+              getUrl:function(){return this.urls[this.index]},
               data:{},
+              getDataOfTotal:function(){return this.data.total||0},
+              getDataOfRows:function(){return this.data.rows||[]},
               table_class_dms_table:'.dms-table',
+              h2_class_dms_title:'.dms-title',
               getRemoteData:function(param){
-                    var option = {url:this.url,async:false,data:param,success:this.initList.bind(this)}
-                    new Ajax(option
-                    ).execute()
+                    var option = {url:this.getUrl(),async:false,data:param,success:this.initList.bind(this)}
+                    new Ajax(option).execute()
               },
-              setASC:function(obj,_index){
-                    J(obj).attr("onclick",'action.orderASC(this,'+_index+')')
-                    //obj.onclick=orderDESC.bind(obj)
-              },
+               setASC:function(obj,_index){
+                  J(obj).attr("onclick",'action.orderASC(this,'+_index+')')
+               },
               setDESC:function(obj,_index){J(obj).attr("onclick",'action.orderDESC(this,'+_index+')')},
               initList:function(data){
                     if(data){
@@ -232,14 +224,12 @@ Date.prototype.formatterDate = function(param,parrent){
                         html =""
                         for(var i =0 ;i < data.rows.length ;i ++){
                             var row = data.rows[i]
-                            html=html+  "<tr>"+
-                                        "<td>"+(row.date||"")+"</td>"+
-                                        "<td>"+(row.regist_user_num||"")+"</td>"+
-                                        "<td>"+(row.regist_buyin_user_num||"")+"</td>"+
-                                        "<td>"+(row.buyin_user_num||"")+"</td>"+
-                                        "<td>"+(row.total_user_num||"")+"</td>"+
-                                        "<td>"+(row.total_buyin_user_num||"")+"</td>"+
-                                        "</tr>";
+                            html=html+  "<tr>";
+                                         for(var j =0 ;j<this.getColumns().length;j++){
+                                            var col =  this.getColumns()[j]
+                                            html = html + "<td>"+(Math.round(row[col.name])||row[col.name])+"</td>";
+                                         }
+                                        html = html + "</tr>";
                         }
                         J(this.table_class_dms_table).find("tbody").append(html)
                         this.data=data||{}
@@ -251,14 +241,15 @@ Date.prototype.formatterDate = function(param,parrent){
               initTable:function(){
                     J(this.table_class_dms_table).find("thead").find("tr").empty()
                     html   ="";
-                        for(var i =0 ; i< this.columns.length;i++){
-                                var column = this.columns[i]
+                        for(var i =0 ; i< this.getColumns().length;i++){
+                                var column = this.getColumns()[i]
                                 if(i==0){
                                     html= html+ '<th onclick="action.orderASC(this,'+i+')">'+column.text+'</th>';
                                 }
                                 html= html+ '<th onclick="action.orderDESC(this,'+i+')">'+column.text+'</th>';
                         }
                     J(this.table_class_dms_table).find("thead").find("tr").append(html);
+                    J(this.h2_class_dms_title).text(this.getTitle())
               },
               getData:function(){
                 return this.data
@@ -275,50 +266,43 @@ Date.prototype.formatterDate = function(param,parrent){
         button_class_dms_btn_regional_active:'.dms-btn-regional.activate',
         all:function(){
 
-            index.setQueryParam({_type:"all"})
-            chart.getRemoteData(index.getQueryParam());
-            index.setReDrawPage(true)
-            index.loadData()//list.getRemoteData({_type:"all",startDate:"",endDate:""});
-        },
-        china:function(obj){
+           index.setQueryParam({_type:"all"})
+           chart.getRemoteData(index.getQueryParam());
+           index.setReDrawPage(true)
+           index.loadData()
+       },
+       china:function(obj){
 
-            if(obj.classList.length>2){
-                console.info("全部")
-                this.all()
-            }else{
-                console.info("国内")
+           if(obj.classList.length>2){
+               console.info("全部")
+               this.all()
+           }else{
+               console.info("国内")
 
-                index.setQueryParam({_type:"china"})
-                chart.getRemoteData(index.getQueryParam());
-                index.setReDrawPage(true)
-                index.loadData()//list.getRemoteData({_type:"all",startDate:"",endDate:""});
-            }
+               index.setQueryParam({_type:"china"})
+               chart.getRemoteData(index.getQueryParam());
+               index.setReDrawPage(true)
+               index.loadData()//list.getRemoteData({_type:"all",startDate:"",endDate:""});
+           }
 
-        },
-        loadChartData:function(){
-            var classLEN0 = J(this.button_class_dms_btn_regional)[0].classList.length;
-            var classLEN1 = J(this.button_class_dms_btn_regional)[1].classList.length;
-            if(classLEN0 ==  classLEN1){
-                index.setQueryParam({_type:"all"})
-                chart.getRemoteData(index.getQueryParam());
-
-            }else if (classLEN0 > classLEN1){
-                    index.setQueryParam({_type:"china"})
-                    chart.getRemoteData(index.getQueryParam());
-
-            }else{
-                index.setQueryParam({_type:"abroad"})
-                chart.getRemoteData(index.getQueryParam());
-
-            }
-        },
+       },
         orderDESC:function(obj,_index){
-            index.setQueryParam({sort:list.columns[_index].name,by:"desc"})
+            index.setQueryParam({sort:list.getColumns()[_index].name,by:"desc"})
             list.setASC(obj,_index)
             index.loadData()
         },
         orderASC:function(obj,_index){
-                    index.setQueryParam({sort:list.columns[_index].name,by:"asc"})
+                    index.setQueryParam({sort:list.getColumns()[_index].name,by:"asc"})
+                    list.setDESC(obj,_index)
+                    index.loadData()
+        },
+        orderDESC:function(obj,_index){
+            index.setQueryParam({sort:list.getColumns()[_index].name,by:"desc"})
+            list.setASC(obj,_index)
+            index.loadData()
+        },
+        orderASC:function(obj,_index){
+                    index.setQueryParam({sort:list.getColumns()[_index].name,by:"asc"})
                     list.setDESC(obj,_index)
                     index.loadData()
         },
@@ -343,33 +327,27 @@ Date.prototype.formatterDate = function(param,parrent){
                 queryParams:index.getQueryParam()||{}
 
             }
+
+            //J(obj).linkbutton('disable');
             w.setTimeout(function(){console.info("-----------------------------")},5000)
             var CONF={
                 url:"/export/csv",
-                filename:"用户数据汇总",
+                filename:"并发统计",
                 data:param
             }
             new Ajax(CONF).download();
         },
-        changeDate:function(obj){
-            console.info("日期")
-            console.info(obj.value)
-            if(J(this.button_class_dms_btn_regional_active).length==1){
-                var value  = J(this.button_class_dms_btn_regional_active).text()
-                if(value == "国内"){
-                    this.china()
-                }else if( value =="海外"){
-                    this.abroad()
-                }else{
-                    this.call()
-                }
-            }else if(J(this.button_class_dms_btn_regional_active).length==0){
-                this.all()
-            }else{
-                console.info("不处理")
-            }
+        hour:function(obj){
+            list.setIndex(0)
+            index.setQueryParam({})
+            index.loadData()
+            console.info("充值详情")
         },
-        changePage:function(){
+        day:function(obj){
+            list.setIndex(1)
+            index.setQueryParam({})
+            index.loadData()
+            console.info("汇总统计")
         }
     }
     var index = {
@@ -395,7 +373,6 @@ Date.prototype.formatterDate = function(param,parrent){
             this.queryParam.endDate=this.endDate||new Date().formatterDate({},"yyyy-MM-dd")
             list.getRemoteData(this.queryParam)
             if(this.getReDrawPage()){
-
                 this.init({data:list.getData()})
             }
         },
@@ -424,7 +401,7 @@ Date.prototype.formatterDate = function(param,parrent){
 
                 var page =""
                 for( var i = 0 ;i < this.pageItems.length;i++){
-                        page = page + '<option '+((this.perPageItems||this.getDefaultPageItems())==this.pageItems[i]?'selected="selected"':"")+' value="'+this.pageItems[i]+'">'+this.pageItems[i]+'</optio>';
+                        page = page + '<option '+((this.perPageItem||this.getDefaultPageItems())==this.pageItems[i]?'selected="selected"':"")+' value="'+this.pageItems[i]+'">'+this.pageItems[i]+'</optio>';
                 }
                 if(page!=""){
                     J(this.select_id_perPageItems).empty()
@@ -443,9 +420,9 @@ Date.prototype.formatterDate = function(param,parrent){
             this.dmsDate();
 
             this.currentPage(this.tablePage||0,this.totalPage); //1是变量 this.totalPage 后台需要返回;
-           if(!this.isInit){
-               this.PageItem()
-               this.pageJump();
+            if(!this.isInit){
+                this.PageItem()
+                this.pageJump();
             }
             this.isInit=true;
             this.setReDrawPage(false)
@@ -502,9 +479,7 @@ Date.prototype.formatterDate = function(param,parrent){
                     _this.startDate = start.format('YYYY-MM-DD');
                     _this.endDate = end.format('YYYY-MM-DD');
                     _this.setReDrawPage(true)
-
                     _this.loadData()
-                    w.action.loadChartData();
                     console.log( start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') );
 
                 });
@@ -548,12 +523,11 @@ Date.prototype.formatterDate = function(param,parrent){
             // 页面跳转到第几页
             J('#jumpPageBtn').click(function () {
                 var jumpPage = J('#jumpPageInput').val();
-                if( jumpPage <= _this.totalPage&& /(^[1-9]\d*$)/.test(jumpPage)){
+                if( jumpPage <= _this.totalPage&& /(^[1-9]\d*$)/.test(jumpPage) ){
                     _this.currentPage(jumpPage-1,_this.totalPage);
                 }else {
                     alert('页码超出范围');
                 }
-
             });
             //跳到首页
             J('#pageFirst').click(function () {
@@ -579,9 +553,7 @@ Date.prototype.formatterDate = function(param,parrent){
     };
     var init =function(){
         list.initTable();
-        //index.init({data:list.getData(),datestart:"",dateend:""})
         w.action.all()
-
     }
     w.pageScope.init=init
 })($,window)

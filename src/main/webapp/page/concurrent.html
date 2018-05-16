@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>并发统计</title>
+    <link rel="shortcut icon" href="../imgs/new_icon_58.png">
+    <link rel="stylesheet" href="../lib/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../lib/date/css/daterangepicker.css">
+    <link rel="stylesheet" href="../lib/pagination1/css/pagination.css">
+
+    <link rel="stylesheet" href="../css/public/reset.css">
+    <link rel="stylesheet" href="../css/public/frame.css">
+    <link rel="stylesheet" href="../css/concurrent.css">
+</head>
+<body>
+<div class="dms">
+    <!--header-->
+    <div class="dms-nav">
+        <div class="dms-container clearfix">
+            <div class="dms-nav-title fl">
+                <h1>运营管理系统</h1>
+            </div>
+            <div class="dma-nav-info fr">
+                <ul>
+                    <!--<li>-->
+                    <!--<p>切换皮肤</p>-->
+                    <!--</li>-->
+                    <li>
+                        <img src="../imgs/name.png">
+                        <span>用户名</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--content-->
+    <div class="dms-content dms-container clearfix">
+        <!--leftBar-->
+        <div class="dms-left fl" id="dms_left">
+            <ul class="dms-left-menu">
+                <li>
+                    <div class="menu-item-til">
+                        <span>用户统计</span>
+                        <img class="fr menu-default" src="../imgs/left_menu_default.png">
+                    </div>
+                    <ul class="menu-item-list">
+                        <li data-url="index">用户数据汇总-实时数据</li>
+                        <li data-url="activeUser">活跃用户统计</li>
+                        <li data-url="retain">留存用户统计</li>
+                        <li>版本统计</li>
+                    </ul>
+                </li>
+                <li>
+                    <div class="menu-item-til">
+                        <span>终端属性统计</span>
+                        <img class="fr menu-default" src="../imgs/left_menu_default.png">
+                    </div>
+                    <ul class="menu-item-list">
+                        <li data-url="territory">地域统计</li>
+                        <li>设备终端统计</li>
+                        <li>网络状态统计</li>
+                    </ul>
+                </li>
+                <li>
+                    <div class="menu-item-til">
+                        <span>并发统计</span>
+                        <img class="fr menu-default" src="../imgs/left_menu_default.png">
+                    </div>
+                </li>
+                <li>
+                    <div class="menu-item-til">
+                        <span>收入统计</span>
+                        <img class="fr menu-default" src="../imgs/left_menu_default.png">
+                    </div>
+                </li>
+                <li>
+                    <div class="menu-item-til">
+                        <span> 牌局统计</span>
+                        <img class="fr menu-default" src="../imgs/left_menu_default.png">
+                    </div>
+                </li>
+                <li>
+                    <div class="menu-item-til">
+                        <span> 联盟、俱乐部数据统计</span>
+                        <img class="fr menu-default" src="../imgs/left_menu_default.png">
+                    </div>
+                </li>
+                <li>
+                    <div class="menu-item-til">
+                        <span> 道具数据统计</span>
+                        <img class="fr menu-default" src="../imgs/left_menu_default.png">
+                    </div>
+                </li>
+                <li>
+                    <div class="menu-item-til">
+                        <span>小游戏统计</span>
+                        <img class="fr menu-default" src="../imgs/left_menu_default.png">
+                    </div>
+                </li>
+                <li>
+                    <div class="menu-item-til">
+                        <span>权限设置</span>
+                        <img class="fr menu-default" src="../imgs/left_menu_default.png">
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <!--right-->
+        <div class="dms-right fr">
+            <!--筛选条件-->
+            <div class="dms-filter clearfix">
+                <div class="fr">
+                    <button class="dms-btn dms-btn-regional" onclick="action.china(this)">国内</button><button class="dms-btn dms-btn-regional" onclick="action.abroad(this)">海外</button><input id="dms_date" class="dms-date form-control" type="text" name="date"><button class="dms-btn active" onclick="action.export(this)">导出</button>
+                </div>
+            </div>
+            <!--图表和表格部分-->
+            <div class="dms-chart-wrap">
+                <h2 class="dms-title">活跃用户明细</h2>
+                <div class="dms-condition">
+                    <button id="hour_table_btn" class="dms-btn active dms-btn-date" onclick="action.hour(this)">按小时</button><button id="day_table_btn" class="dms-btn dms-btn-date" onclick="action.hour(this)">按天</button>
+                </div>
+                <div id="dms-chart" class="dms-chart"></div>
+                <div class="dms-chart-time"><span>03.28</span>-<span>04.03</span></div>
+            </div>
+            <div class="dms-table-wrap">
+                <!--并发明细／小时table-->
+                <h2 id="hour_table_title" class="dms-title">并发明细／小时</h2>
+                <table id="hour_table" class="dms-table">
+                    <thead>
+                    <tr>
+                        <th>日期</th>
+                        <th>峰值1</th>
+                        <th>峰值2</th>
+                        <th>峰值3</th>
+                        <th>峰值4</th>
+                        <th>峰值5</th>
+                        <th>峰值6</th>
+                        <th>峰值7</th>
+                        <th>峰值8</th>
+                        <th>峰值9</th>
+                        <th>峰值10</th>
+                        <th>峰值11</th>
+                        <th>峰值12</th>
+                        <th>峰值13</th>
+                        <th>峰值14</th>
+                        <th>峰值15</th>
+                        <th>峰值16</th>
+                        <th>峰值17</th>
+                        <th>峰值18</th>
+                        <th>峰值19</th>
+                        <th>峰值20</th>
+                        <th>峰值21</th>
+                        <th>峰值22</th>
+                        <th>峰值23</th>
+                        <th>峰值24</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!--
+                    <tr>
+                        <td>2018-05-01</td>
+                        <td>6666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+
+                    </tr>
+                    <tr>
+                        <td>2018-05-01</td>
+                        <td>66666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+                        <td>6666</td>
+
+                    </tr>-->
+                    </tbody>
+                </table>
+                <!--并发明细／日table-->
+                <h2 id="day_table_title" class="dms-title">并发明细／小时</h2>
+                <table id="day_table" class="dms-table">
+                    <thead>
+                    <tr>
+                        <th>日期</th>
+                        <th>最高峰值</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <!--
+                    <tr>
+                        <td>2018-05-01</td>
+                        <td>66666</td>
+                    </tr>
+                    <tr>
+                        <td>2018-05-01</td>
+                        <td>66666</td>
+                    </tr>
+                    <tr>
+                        <td>2018-05-01</td>
+                        <td>66666</td>
+                    </tr>
+                    <tr>
+                        <td>2018-05-01</td>
+                        <td>66666</td>
+                    </tr>
+                    -->
+                    </tbody>
+                </table>
+                <!--分页器-->
+                <div class="pagination-wrap">
+                    <div class="pagination pagination-esp">
+                        <span>共<span class="totalPage">5</span>页</span>
+                        <span>每页</span>
+                        <select name="" id="perPageItems">
+                            <option value="20">20</option>
+                            <option value="30">30</option>
+                            <option value="30">50</option>
+                            <option value="30">100</option>
+                        </select>
+                        <span>条记录</span>
+                        <span>当前<i id="currentPage">1</i>/<i class="totalPage">5</i>页</span>
+                        <span id="pageFirst">首页</span>
+                    </div>
+                    <div id="pagination" class="pagination"></div>
+                    <div class="pagination pagination-esp">
+                        <span id="pageLast">尾页</span>
+                        <span>跳转到</span><input id="jumpPageInput" class="jumpPage" type="text"><span>页</span><button id="jumpPageBtn" class="jumpPageBtn">GO</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../lib/date/js/jquery-1.11.0.min.js"></script>
+<script src="../lib/date/js/moment.min.js"></script>
+<script src="../lib/date/js/daterangepicker.js"></script>
+<script src="../lib/pagination1/js/jquery.pagination.js"></script>
+<script src="../lib/echart/echarts.min.js"></script>
+<script src="../js/public/frame.js"></script>
+<script src="../js/concurrent.js"></script>
+
+<script>
+
+
+</script>
+
+</body>
+</html>

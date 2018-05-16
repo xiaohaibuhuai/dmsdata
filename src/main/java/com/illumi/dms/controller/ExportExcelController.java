@@ -394,7 +394,8 @@ public class ExportExcelController extends  EasyuiController  {
             //["/cms/transactionLog/topUpList","/cms/transactionLog/withDrawList","/cms/transactionLog/goldToGoldBeanList","/cms/transactionLog/goldBeanTogoldDiamondList","/cms/transactionLog/receiveGiftList","/cms/transactionLog/sendGiftList","/cms/transactionLog/floodScreenList","/cms/transactionLog/transferList","/cms/transactionLog/recycleList","/cms/transactionLog/freezeList","/cms/transactionLog/consumeDiamendList","/cms/transactionLog/sendGoldList"];
             //TOP_UP("/cms/transactionLog/topUpList",null);
             DMS_USER_VIEW("/statistic/dmsuserview/user/list",new DmsUserViewCSV()),DMS_PAY_TYPW_VIEW("/statistic/dmspaytypeview/user/list",new DmsPatTypeViewCSV()),
-            DMS_PAT_CHANEL_VIEW("/statistic/dmschanelview/user/list",new DmsPayChanelCSV()),DMS_COIN_CONSUME_VIEW("/statistic/dmscoinview/user/list",new DmsCoinConsumeViewCSV());
+            DMS_PAT_CHANEL_VIEW("/statistic/dmschanelview/user/list",new DmsPayChanelCSV()),DMS_COIN_CONSUME_VIEW("/statistic/dmscoinview/user/list",new DmsCoinConsumeViewCSV()),
+            DMS_DIAMOND_CONSUME_VIEW("/statistic/dmsdiamondview/user/list",new DmsDiamondConsumeViewCSV());
             private String url;
             private ColumnFormat columnFormat;
 
@@ -426,6 +427,9 @@ public class ExportExcelController extends  EasyuiController  {
                         case "/statistic/dmscoinview/user/list": {
                             return DMS_COIN_CONSUME_VIEW.getFormat();
                         }
+                        case "/statistic/dmsdiamondview/user/list": {
+                            return DMS_DIAMOND_CONSUME_VIEW.getFormat();
+                        }
                         default: {
                             return null;
                         }
@@ -437,7 +441,87 @@ public class ExportExcelController extends  EasyuiController  {
         }
 
 
+    public static class DmsDiamondConsumeViewCSV extends ColumnFormat<DmsDiamondConsumeView> {
+        //columns:[{name:"date",text:"日期"},{name:"regist_user_num",text:"注册人数"},{name:"regist_buyin_user_num",text:"当日注册且买入人数"},{name:"total_buyin_user_num",text:"当日总买入用户数"},{name:"total_user_num",text:"累计注册人数"},{name:"total_buyin_user_num",text:"累计买入独立用户数"}],
+        @Override
+        public String[] format(Map<String, Object> row, List<Map<String, Object>> column) {
+            return  null;
+        }
 
+        @Override
+        public String[] format(DmsDiamondConsumeView row, List<Map<String, Object>> column) {
+            String[] result = null;
+            if (ValidateObjectUtil.isNotBlank(column, row)) {
+                result = new String[column.size()];
+                for (int i = 0; i < result.length; i++) {
+                    String field = ValidateObjectUtil.isBlankDefault(column.get(i).get(DmsUserViewCSV.FIELD), "");
+                    System.out.println(String.format(" >>>>>>>>>>>>>row data:%s ", JsonKit.toJson(row,8)));
+                    String value = ValidateObjectUtil.isBlankDefault(row.get(field),"");
+                    result[i] = value;
+                }
+            }
+            return result;
+        }
+
+        @Override
+        public List<DmsDiamondConsumeView> execute() {
+            try {
+                int page =  ValidateObjectUtil.isBlankDefault(DmsUserViewCSV.QUERY_PARAM.get("page"), 1);
+                int pageSize = ValidateObjectUtil.isBlankDefault(DmsUserViewCSV.REQUEST_PARAM.get("total"), 10000);
+                String type= ValidateObjectUtil.isBlankDefault(DmsUserViewCSV.REQUEST_PARAM.get("_type"), "all");
+                String startDate = ValidateObjectUtil.isBlankDefault(DmsUserViewCSV.QUERY_PARAM.get("startDate"), null);
+                String endDate = ValidateObjectUtil.isBlankDefault(DmsUserViewCSV.QUERY_PARAM.get("endDate"), null);
+                String sort= ValidateObjectUtil.isBlankDefault(DmsUserViewCSV.QUERY_PARAM.get("sort"),"date");
+                String by= ValidateObjectUtil.isBlankDefault(DmsUserViewCSV.QUERY_PARAM.get("by"),"desc");
+
+
+
+                StringBuffer sql = new StringBuffer("select 1 as gpid, date,")
+                        .append(" sum(delayed_tool) as delayed_tool, ")
+                        .append(" sum(league_set) as league_set, ")
+                        .append(" sum(club_push) as club_push, ")
+                        .append(" sum(club_nickname_change) as club_nickname_change, ")
+                        .append(" sum(user_nickname_change) as user_nickname_change, ")
+                        .append(" sum(mtt_ticket) as mtt_ticket, ")
+                        .append(" sum(gold_card) as gold_card, ")
+                        .append(" sum(platinum_card) as platinum_card ")
+                        .append(" from dms_diamond_consume_view where 1=1");
+
+
+
+                if(ValidateObjectUtil.isNotBlank(startDate)){
+                    sql.append(" and date ").append(">= '").append(startDate).append("'");
+                }
+                if(ValidateObjectUtil.isNotBlank(endDate)){
+                    sql.append(" and date ").append("< '").append(endDate).append("'");
+                }
+                if(ValidateObjectUtil.isNotBlank(type)){
+                    if(type.equals("all")){
+                        sql.append(" group by ").append(" date ");
+                    }else if(type.equals("abroad")){
+                        sql.append(" and is_abroad ").append("=").append("1");
+                        sql.append(" group by ").append(" date ");
+                    }else {
+                        sql.append(" and is_abroad ").append("=").append("0");
+                        sql.append(" group by ").append(" date ");
+                    }
+                }
+
+                if(ValidateObjectUtil.isNotBlank(sort)){
+                    sql.append(" order by ").append(sort).append(" ").append(by);
+                }
+
+
+                List<DmsDiamondConsumeView> list = DmsDiamondConsumeView.dao.find(sql.toString());
+
+                return  list;
+
+            } catch (Exception e) {
+                LOGGER.error(e.getMessage(), e);
+                throw  new RuntimeException(e);
+            }
+        }
+    }
 
         public void csv() {
             render(new Render() {

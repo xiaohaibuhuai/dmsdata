@@ -1,0 +1,28 @@
+.dms-nav, body{
+    min-width: 1500px;
+}
+.dms-condition{
+    width: 770px;
+    margin: 0 auto;
+}
+.dms-btn-date{
+    width: 80px;
+}
+.dms-chart-wrap{
+    height: 480px;
+}
+.dms-chart{
+    height: 85%;
+}
+.dms-container{
+    width: 1500px;
+}
+.dms-right ,.dms-chart-wrap{
+    width: 1248px;
+}
+.dms-table ,.dms-title,.dms-condition,.dms-chart{
+    width: 1170px;
+}
+#day_table_title,#day_table{
+    display: none;
+}

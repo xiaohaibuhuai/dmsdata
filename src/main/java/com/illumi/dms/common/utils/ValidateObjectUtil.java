@@ -134,6 +134,9 @@ public class ValidateObjectUtil {
 	{
 		boolean isBlank=true;
         if(null!=flg&&flg.length>0){
+            if(isBlank(object)){
+                return (T)t;
+            }
             boolean isMatch = Pattern.matches("^(\\-|\\+)?\\d+(\\.\\d+)?$",(CharSequence)object.toString());
             if(isMatch){
                 isBlank=numberIsNotBlank(new BigDecimal(object.toString()),flg)?false:true;
@@ -304,7 +307,7 @@ public class ValidateObjectUtil {
 
         String   test = "{&quot;total&quot;:7,&quot;queryParams&quot;:{&quot;_type&quot;:&quot;all&quot;,&quot;rows&quot;:10,&quot;page&quot;:1,&quot;startDate&quot;:&quot;2018-5-1&quot;,&quot;endDate&quot;:&quot;2018-5-8&quot;},&quot;url&quot;:&quot;/statistic/dmsuserview/user/list&quot;,&quot;column&quot;:[{&quot;name&quot;:&quot;date&quot;,&quot;text&quot;:&quot;日期&quot;},{&quot;name&quot;:&quot;regist_user_num&quot;,&quot;text&quot;:&quot;注册人数&quot;},{&quot;name&quot;:&quot;regist_buyin_user_num&quot;,&quot;text&quot;:&quot;当日注册且买入人数&quot;},{&quot;name&quot;:&quot;total_buyin_user_num&quot;,&quot;text&quot;:&quot;当日总买入用户数&quot;},{&quot;name&quot;:&quot;total_user_num&quot;,&quot;text&quot;:&quot;累计注册人数&quot;},{&quot;name&quot;:&quot;total_buyin_user_num&quot;,&quot;text&quot;:&quot;累计买入独立用户数&quot;}]}";
         */
-        System.out.println(ValidateObjectUtil.numberIsNotBlank(1,1));
+        System.out.println(ValidateObjectUtil.isBlankDefault(null,0,0));
 
 
 

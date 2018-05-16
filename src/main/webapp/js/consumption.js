@@ -51,7 +51,7 @@ Date.prototype.formatterDate = function(param,parrent){
                         {
                             name: '充值',
                             type: 'pie',
-                            radius : '80%',
+                            radius : '70%',
                             center: ['50%', '50%'],
                             label: {
                                 normal: {
@@ -216,7 +216,7 @@ Date.prototype.formatterDate = function(param,parrent){
               setIndex:function(index){this.index=index;this.initTable()},
               columns:[
                        [{name:"date",text:"日期"},{name:"service_fee",text:"服务费"},{name:"reward_service_fee",text:"打赏牌普服务"},{name:"mtt_enter",text:"德扑币报名MTT"},{name:"magic_emoji",text:"魔法表情"},
-                       {name:"interactive_props",text:"互动道具"},{name:"low_barrage",text:"普通弹幕"},{name:"mid_barrage",text:"酷玩弹幕"},{name:"high_barrage",text:"炫彩弹幕"},{name:"draw_card",text:"翻翻看消耗"},
+                       {name:"interactive_props",text:"互动道具"},{name:"low_barrage",text:"普通弹幕"},{name:"mid_barragezsConsumption.css",text:"酷玩弹幕"},{name:"high_barrage",text:"炫彩弹幕"},{name:"draw_card",text:"翻翻看消耗"},
                        {name:"poker",text:"扑克机"},{name:"caribbeangame",text:"加勒比"},{name:"cocklain",text:"牛牛_一粒大米"},{name:"eight_eight",text:"八八碰_一粒大米"},{name:"car_game",text:"奔驰宝马_一粒大米"},
                        {name:"fishing",text:"捕鱼_一粒大米"},{name:"total_emoji",text:"表情总消耗"},{name:"total_barrage",text:"弹幕总消耗"},{name:"total_minigame",text:"小游戏总消耗"}]
                       ],
@@ -462,11 +462,18 @@ Date.prototype.formatterDate = function(param,parrent){
             this.dmsDate();
 
             this.currentPage(this.tablePage||0,this.totalPage); //1是变量 this.totalPage 后台需要返回;
-            this.PageItem()
-            this.pageJump();
+             if(!this.isInit){
+                this.PageItem()
+                this.pageJump();
+             }
             this.isInit=true;
             this.setReDrawPage(false)
 
+        },
+        setConfig:function(option){
+               for(ele in option){
+                    this[ele]= option[ele]
+               }
         },
         //    日期插件
         dmsDate:function () {
@@ -558,7 +565,7 @@ Date.prototype.formatterDate = function(param,parrent){
             // 页面跳转到第几页
             J('#jumpPageBtn').click(function () {
                 var jumpPage = J('#jumpPageInput').val();
-                if( jumpPage <= _this.totalPage){
+                if( jumpPage <= _this.totalPage&& /(^[1-9]\d*$)/.test(jumpPage)){
                     _this.currentPage(jumpPage-1,_this.totalPage);
                 }else {
                     alert('页码超出范围');

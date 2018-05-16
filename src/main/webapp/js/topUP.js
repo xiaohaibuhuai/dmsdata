@@ -435,6 +435,9 @@ Date.prototype.formatterDate = function(param,parrent){
                     html   ="";
                         for(var i =0 ; i< this.getColumns().length;i++){
                                 var column = this.getColumns()[i]
+                                if(i==0){
+                                    J(ths[i]).attr("onclick",'action.orderASC(this,'+i+')')
+                                }
                                 J(ths[i]).attr("onclick",'action.orderDESC(this,'+i+')')
                                 J(ths[i]).text(column.text)
                         }
@@ -606,7 +609,7 @@ Date.prototype.formatterDate = function(param,parrent){
 
                 var page =""
                 for( var i = 0 ;i < this.pageItems.length;i++){
-                        page = page + '<option '+((this.perPageItems||this.getDefaultPageItems())==this.pageItems[i]?'selected="selected"':"")+' value="'+this.pageItems[i]+'">'+this.pageItems[i]+'</optio>';
+                        page = page + '<option '+((this.perPageItem||this.getDefaultPageItems())==this.pageItems[i]?'selected="selected"':"")+' value="'+this.pageItems[i]+'">'+this.pageItems[i]+'</optio>';
                 }
                 if(page!=""){
                     J(this.select_id_perPageItems).empty()
@@ -619,6 +622,7 @@ Date.prototype.formatterDate = function(param,parrent){
                 console.info("页面未加载到远程配置，初始化失败")
             }
         },
+
         init:function (conf) {
             this.config=conf
             this._initConfig()
@@ -630,6 +634,11 @@ Date.prototype.formatterDate = function(param,parrent){
             this.isInit=true;
             this.setReDrawPage(false)
 
+        },
+        setConfig:function(option){
+               for(ele in option){
+                    this[ele]= option[ele]
+               }
         },
         //    日期插件
         dmsDate:function () {
@@ -721,7 +730,7 @@ Date.prototype.formatterDate = function(param,parrent){
             // 页面跳转到第几页
             J('#jumpPageBtn').click(function () {
                 var jumpPage = J('#jumpPageInput').val();
-                if( jumpPage <= _this.totalPage){
+                if( jumpPage <= _this.totalPage&& /(^[1-9]\d*$)/.test(jumpPage)){
                     _this.currentPage(jumpPage-1,_this.totalPage);
                 }else {
                     alert('页码超出范围');
@@ -744,7 +753,10 @@ Date.prototype.formatterDate = function(param,parrent){
             var _this = this;
             J('#perPageItems').change(function () {
                 _this.perPageItem = J('#perPageItems').val();
-                _this.currentPage(0,_this.totalPage)
+                _this.setReDrawPage(true)
+                _this.setConfig({tablePage:0})
+                _this.loadData()
+
             });
         }
     };
