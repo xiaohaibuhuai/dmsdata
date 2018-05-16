@@ -131,7 +131,7 @@ var activeUser =  {
         // 页面跳转到第几页
         $('#jumpPageBtn').click(function () {
             var jumpPage = $('#jumpPageInput').val();
-            if( jumpPage <= _this.totalPage){
+            if( jumpPage <= _this.totalPage&& /(^[1-9]\d*$)/.test(jumpPage)){
                 _this.currentPage(jumpPage-1,_this.totalPage);
             }else {
                 alert('页码超出范围');
@@ -255,7 +255,6 @@ function fullTable(sortField,is_abroad,order) {
     }
     var uri = "/user/active/list"+para;
     $.get(uri,function (result) {
-        console.log("返回结果："+result);
         var total = result.total;
         var perPageItems = $('#perPageItems').val();
         var totalPage = Math.ceil(total/perPageItems);
@@ -268,7 +267,9 @@ function fullTable(sortField,is_abroad,order) {
                 "<tr><td>"+rows[i].date+"</td><td>"+rows[i].period_01+"</td>" +
                 "<td>"+rows[i].period_07+"</td><td>"+rows[i].period_30+"</td></tr>");
         }
-
+        if ($("#currentPage").text()==totalPage){
+            $(".next").replaceWith("<span class=\"current next\">下一页</span>");
+        }
     });
 }
 
@@ -376,12 +377,13 @@ $(".activeUserDetail").click(function () {
     // console.log("--->"+$(this).attr("value"));
 });
 
-// 点击国内
-function area(obj){
+// 选择国内外
+$(".dms-btn-regional").click(function () {
+    // alert("aaaaa")
     $(this).toggleClass('active').siblings(".dms-btn-regional").removeClass('active');
-    fullView(null,$(obj).attr("value"));
-    fullTable(null,$(obj).attr("value"));
-}
+    fullView(null,$(this).attr("value"));
+    fullTable(null,$(this).attr("value"));;
+})
 
 // 日期格式化
 Date.prototype.Format = function(fmt) {
@@ -432,5 +434,8 @@ function getDownLoadParam() {
     }
     return param;
 }
+
+
+
 
 

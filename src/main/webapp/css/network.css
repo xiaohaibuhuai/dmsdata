@@ -1,0 +1,18 @@
+.week,.month{
+    background-color: #dddddd;
+    margin-right: 3px;
+    font-weight: bold;
+}
+.dms-condition {
+    width: 770px;
+    margin: 0 auto;
+}
+.dms-chart-wrap{
+    height: 490px;
+}
+.dms-chart{
+    height: 85%;
+}
+/*#operators_table_title,#operators_table{*/
+    /*display: none;*/
+/*}*/

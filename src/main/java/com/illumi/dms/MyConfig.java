@@ -97,7 +97,7 @@ public class MyConfig extends JFinalConfig
 		// 配置AutoTableBindPlugin插件
 		AutoTableBindPlugin atbp = new AutoTableBindPlugin("dbconfig",dbPlugin);
 		if (isDev) atbp.setShowSql(true);
-		atbp.scanPackages("com.illumi.dms.model.user","com.illumi.dms.system.model.test_dms");
+		atbp.scanPackages("com.illumi.dms.model.user","com.illumi.dms.system.model.test_dms","com.illumi.dms.model.terminal");
 		atbp.autoScan(false);
 		me.add(atbp);
 		// sql记录
@@ -117,12 +117,12 @@ public class MyConfig extends JFinalConfig
 		me.add(new EhCachePlugin());
 		me.add(new SqlInXmlPlugin());
 
-		AutoTableBindPlugin atbp2 = new AutoTableBindPlugin("dbconfig2",pokerDbPlugin);
+		/*AutoTableBindPlugin atbp2 = new AutoTableBindPlugin("dbconfig2",pokerDbPlugin);
 		if (isDev) atbp2.setShowSql(true);
 		atbp2.scanPackages("com.illumi.dms.model.test_poker","com.illumi.dms.system.model.test_poker");
 		atbp2.autoScan(false);
 		me.add(atbp2);
-		SqlReporter.setLogger(true);
+		SqlReporter.setLogger(true);*/
 
 
 	

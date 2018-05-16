@@ -1,15 +1,15 @@
-var version =  {
-    startDate:null, //开始时间
-    endDate:null, //结束时间
+var territory = {
+    initStartDate:new Date(new Date()-7*24*3600*1000), //默认开始时间
+    initEndDate:new Date(),  //默认结束时间
     tablePage:null, //table 分页当前页
     perPageItem:null, //每页显示条数
-    totalPage:20, //总页数
+    totalPage:2, //总页数
     init:function () {
         this.dmsDate();
         this.currentPage(0,this.totalPage); //1是变量 this.totalPage 后台需要返回;
         this.pageJump();
-        this.getAllVersion();
-        this.InitData();
+        fullView();
+        fullTable();
     },
     //    日期插件
     dmsDate:function () {
@@ -51,16 +51,38 @@ var version =  {
                     "firstDay": 1
                 },
                 "linkedCalendars": false,
-                // "startDate":"01/01/2017",
-                // "endDate":"01/01/2019"
-                "startDate": new Date().formatterDate({day:-7},"MM/dd/yyyy"),
-                "endDate": new Date().formatterDate({},"MM/dd/yyyy")
+                "startDate": _this.initStartDate,
+                "endDate": _this.initEndDate
             }, function(start, end, label) {
-                _this.startDate = start.format('YYYY-MM-DD');
-                _this.endDate = end.format('YYYY-MM-DD');
                 console.log( start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') );
             });
+            //添加按钮周月按钮
+            $('.range_inputs').prepend('<button id="week" class="week btn btn-sm" type="button">周</button>' +
+                '<button id="month" class="month btn btn-sm" type="button">月</button>');
+            _this.addDmsDateBtn();
         }
+    },
+    //添加按钮周月按钮事件
+    addDmsDateBtn:function () {
+        var _this = this;
+        $('#week').click(function () {
+            if(_this.initStartDate.getDate() == _this.initEndDate.getDate() || _this.initStartDate.getMonth() != _this.initEndDate.getMonth()){
+                _this.initStartDate = new Date(new Date()-7*24*3600*1000);
+                $(document).off('mousedown');
+                _this.dmsDate(); //初始化日期插件
+            }else {
+                _this.dmsDate();
+            }
+        });
+        $('#month').click(function () {
+            if(_this.initStartDate.getMonth() == _this.initEndDate.getMonth()){
+                _this.initStartDate = new Date(new Date()-30*24*3600*1000);
+                $(document).off('mousedown');
+                _this.dmsDate(); //初始化日期插件
+            }else {
+                _this.dmsDate();
+            }
+        });
     },
     //分页插件
     currentPage:function (current,tableTotalPage) {
@@ -106,10 +128,12 @@ var version =  {
         //跳到首页
         $('#pageFirst').click(function () {
             _this.currentPage(0,_this.totalPage)
+            fullTable();
         });
         //跳到尾页
         $('#pageLast').click(function () {
             _this.currentPage(_this.totalPage-1,_this.totalPage)
+            fullTable();
         });
     },
     //每页显示条数设置
@@ -119,107 +143,126 @@ var version =  {
             _this.perPageItem = $('#perPageItems').val();
             _this.currentPage(0,_this.totalPage)
         });
-    },
-    // 加载数据 根据参数
-    InitData:function () {
-        fullTable();
-    },
-    // 页面加载获得版本信息
-    getAllVersion:function () {
-    var uri = "/user/version/getVersion";
-    $.get(uri,function (result) {
-        for(var i in result){
-            $('#id_select').append("<option>"+result[i].app_version+"</option>");
-            $('#id_select').selectpicker('refresh');
-            $('#id_select').selectpicker('render');
-        }
-    });
-}
-
+    }
 };
 
 //输出时间值
 $('#dms_date').change(function () {
-    console.log('开始时间'+version.startDate);
+    console.log('开始时间'+netStatus.startDate);
+    fullView();
     fullTable();
 });
 
-window.onload = function () {
-    //版本搜索框 添加placeHolder
-    $('input[aria-label = "Search"]').attr('placeHolder','搜索 版本');
+window.onload =function () {
     //    国内国外点击样式切换
     // frame.btnActive('.dms-btn-regional');
-    //   日期按钮击样式切换
+    //    新增活跃点击样式切换
+    territory.addDmsDateBtn();
     frame.btn2Active('.dms-btn-date');
-    //表格上的按钮切换
-    $('#totalVersion_btn').click(function () {
-        $('#newVersion').hide();
-        $('#totalVersion').show();
-        fullTable();
-    });
-    $('#newVersion_btn').click(function () {
-        $('#newVersion').show();
-        $('#totalVersion').hide();
-        fullTable();
-    });
+    // 联网方式和运营商点击table切换
+    // $('#networking_table_btn').click(function () {
+    //
+    //     $('#networking_table').show();
+    //     $('#networking_table_title').show();
+    //     $('#operators_table').hide();
+    //     $('#operators_table_title').hide();
+    //     fullView();
+    //     fullTable();
+    // });
+    // $('#operators_table_btn').click(function () {
+    //     $('#networking_table').hide();
+    //     $('#networking_table_title').hide();
+    //     $('#operators_table').show();
+    //     $('#operators_table_title').show();
+    //     fullView();
+    //     fullTable();
+    // });
+    window.netStatus= {
+        myChart : echarts.init(document.getElementById('dms-chart'))
+    };
 
-    //初始化下拉框
-    $('#id_select').selectpicker('refresh');
-    //$('#name').selectpicker('render'); //重绘
-    //监听下拉框的值变化下拉框
-    $('#id_select').change(function () {
-        console.log('app的版本值'+ $('#id_select').selectpicker('val'));
-        fullTable();
-    });
+    window.netStatus.option = {
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'shadow'
+            }
+        },//5-10修改
+        grid: {
+            left: '0%',
+            right: '3%',
+            bottom: '3%',
+            top:'8%',
+            containLabel: true
+        },//5-10修改end
+        xAxis: {
+            type: 'value',
+            boundaryGap: [0, 0.01]
+        },
+        yAxis: {
+            type: 'category',
+            data: ['中国移动','中国联通','中国电信','Verizon','Carrier','KDDI','DiGi']
+        },
+        series: [
+            {
+                name: '用户人数',
+                type: 'bar',
+                data: [23, 89, 34, 70, 44,23, 89]
+            }
 
+        ],
+        color:['rgb(10,160,245)']
+    };
+    window.netStatus.myChart.setOption(window.netStatus.option);
     //页面初始化
-    version.init()
+    territory.init();
 };
 
 function fullTable(sortField,order) {
 
-    var myVersion = $(".dms-btn.active.dms-btn-date").val();
+    // var type = $(".dms-btn.active.dms-btn-date").val();
     var uri;
-    if (myVersion == "newVersion"){
-        uri = "/user/version/newVersion"+getPageParamter(getHeardParamter(),sortField,order);
-    } else {
-        uri = "/user/version/totalVersion"+getPageParamter(getHeardParamter(),sortField,order);
-    }
+    // if (type == "net"){
+    //     uri = "/terminal/network/getNetList"+getPageParamter(getHeardParamter(),sortField,order);
+    // } else {
+        uri = "/terminal/network/getOperatorList"+getPageParamter(getHeardParamter(),sortField,order);
+    // }
     $.get(uri,function (result) {
         var total = result.total;
         var perPageItems = $('#perPageItems').val();
         var totalPage = Math.ceil(total/perPageItems);
-        version.totalPage = totalPage;
+        territory.totalPage = totalPage;
         $('.totalPage').text(totalPage);
         var rows = result.rows;
-        if (myVersion == "newVersion"){
-            $("#addVersion").empty();
+        // if (type == "net"){
+        //     $("#netTerminal").empty();
+        //     for (var i in rows){
+        //         $("#netTerminal").append(
+        //             "<tr>" +
+        //             "<td>"+rows[i].date+"</td>" +
+        //             "<td>"+rows[i].net_type+"</td>" +
+        //             "<td>"+rows[i].regist_user_num+"</td>" +
+        //             "<td>"+rows[i].active_user_num+"</td>" +
+        //             "<td>"+rows[i].total_user_num+"</td>" +
+        //             "</tr>");
+        //     }
+        // } else {
+            $("#netWorkTerminal").empty();
             for (var i in rows){
-                $("#addVersion").append(
+                $("#netWorkTerminal").append(
                     "<tr>" +
                     "<td>"+rows[i].date+"</td>" +
-                    "<td>"+rows[i].app_version+"</td>" +
-                    "<td>"+rows[i].is_new+"</td>" +
-                    "<td>"+rows[i].isupdate+"</td>" +
-                    "<td>"+rows[i].sum_two+"</td>" +
-                    "<td>"+rows[i].token_num+"</td>" +
+                    "<td>"+rows[i].operator+"</td>" +
+                    "<td>"+rows[i].total_user_num+"</td>" +
+                    "<td>"+rows[i].active_user_num+"</td>" +
                     "</tr>");
             }
-        } else {
-            $("#totalVersionBody").empty();
-            for (var i in rows){
-                $("#totalVersionBody").append(
-                    "<tr>" +
-                    "<td>"+rows[i].app_version+"</td>" +
-                    "<td>"+rows[i].token_num+"</td>" +
-                    "<td>"+rows[i].user_num+"</td>" +
-                    "</tr>");
-            }
-        }
+        // }
         if ($("#currentPage").text()==totalPage){
             $(".next").replaceWith("<span class=\"current next\">下一页</span>");
         }
     });
+
 }
 
 function getHeardParamter() {
@@ -228,17 +271,13 @@ function getHeardParamter() {
     // 开始时间和结束时间
     var start_time = new Date((new Date(dataArr[0])).getTime()).Format("yyyy-MM-dd");
     var end_time = new Date((new Date(dataArr[1])).getTime()).Format("yyyy-MM-dd");
+    $("#start").text(start_time.replace("-",".").replace("-","."));
+    $("#end").text(end_time.replace("-",".").replace("-","."));
     // 获得 国内外的值
     var is_abroad = $(".dms-btn.active.dms-btn-regional").val()
-
     var param = "?start_time="+start_time+"&end_time="+end_time;
     if (is_abroad!=null&&is_abroad!=undefined&&is_abroad!=""){
         param += "&is_abroad="+is_abroad;
-    }
-    // 版本
-    var app_version = $('#id_select').selectpicker('val');
-    if (app_version!=("App版本")&&app_version!=null&&app_version!=undefined&&app_version!=""){
-        param += "&app_version="+app_version;
     }
     return param;
 }
@@ -286,7 +325,7 @@ Date.prototype.Format = function(fmt) {
                 : (("00" + o[k]).substr(("" + o[k]).length)));
     return fmt;
 }
-
+// 日期格式化
 Date.prototype.formatterDate = function(param,parrent){
     var parrent =  parrent|| "yyyy-MM-dd HH:mm:ss"
     var ms=[1,2,3,4,5,6,7,8,9,10,11,12];
@@ -324,48 +363,45 @@ Date.prototype.formatterDate = function(param,parrent){
     }
     return parrent.replace(/yyyy/g,y).replace(/MM/g,m).replace(/dd/g,d)
 };
-
+// 获得下载的参数
 function getDownLoadParam() {
     // 时间控件的值
     var dataArr = $("#dms_date").val().split(" - ")
     // 开始时间和结束时间
     var start_time = new Date((new Date(dataArr[0])).getTime()).Format("yyyy-MM-dd");
     var end_time = new Date((new Date(dataArr[1])).getTime()).Format("yyyy-MM-dd");
+    $("#start").text(start_time.replace("-",".").replace("-","."));
+    $("#end").text(end_time.replace("-",".").replace("-","."));
     var is_abroad = $(".dms-btn.active.dms-btn-regional").val();
-    var app_version = $('#id_select').selectpicker('val');
     var param;
     if (is_abroad==null||is_abroad==undefined){
         param = "?start_time="+start_time+"&end_time="+end_time;
     } else {
         param = "?start_time="+start_time+"&end_time="+end_time+"&is_abroad="+is_abroad;
     }
-    // 版本
-    if (app_version!=("App版本")&&app_version!=null&&app_version!=undefined&&app_version!=""){
-        param += "&app_version="+app_version;
-    }
     return param;
 }
-
+// 导出
 $("#export").click(function () {
     var uri ;
-    var myVersion = $(".dms-btn.active.dms-btn-date").val();
-    if (myVersion == "newVersion"){
-        uri = "/user/version/versionDownload"+getDownLoadParam();
-    } else {
-        uri = "/user/version/personDownload"+getDownLoadParam();
-    }
+    // var type = $(".dms-btn.active.dms-btn-date").val();
+    // if (type == "net"){
+    //     uri = "/terminal/network/networkDownLoad"+getDownLoadParam();
+    // } else {
+        uri = "/terminal/network/operatorDownLoad"+getDownLoadParam();
+    // }
     window.location.href=uri;
 });
 
-
+// 国内外
 $(".dms-btn-regional").click(function () {
-    // alert("aaaaa")
     $(this).toggleClass('active').siblings(".dms-btn-regional").removeClass('active');
     fullTable();
-})
+    fullView();
+});
 
-
-$(".version").click(function () {
+// 排序
+$(".rank").click(function () {
     var sortField = $(this).attr("name");
     if ($(this).attr("value")==null||$(this).attr("value")==undefined){
         $(this).attr("value","desc");
@@ -377,3 +413,30 @@ $(".version").click(function () {
     var order = $(this).attr("value");
     fullTable(sortField,order);
 });
+
+// 填充折线图
+function fullView(period,is_abroad) {
+    var uri;
+    var type = $(".dms-btn.active.dms-btn-date").val();
+    // if (type == "net"){
+    //     uri = "/terminal/network/netWorkView"+getDownLoadParam();
+    // } else {
+        uri = "/terminal/network/operatorView"+getDownLoadParam();
+    // }
+    var type = $(".dms-btn.active.dms-btn-date").val();
+
+    $.get(uri,function (result) {
+        var dataArr = new Array();
+        var numArr = new Array();
+        for (var i in result ){
+            dataArr[i] = result[i].operator;
+            numArr[i] = result[i].total_user_num;
+        }
+
+        window.netStatus.option.yAxis.data = dataArr;
+        window.netStatus.option.series[0].data = numArr;
+        window.netStatus.myChart.setOption(window.netStatus.option);
+
+    });
+}
+
