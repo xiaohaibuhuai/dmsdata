@@ -159,7 +159,7 @@ var leftBar = [
         'item':'终端属性统计',
         'children':[{
             itemList:'地域统计',
-            urlName:'territory'
+            urlName:'netStatus'
         }, {
             itemList:'设备终端统计',
             urlName:'TerminalEqu'

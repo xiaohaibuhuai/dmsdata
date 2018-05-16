@@ -131,7 +131,7 @@ var retain =  {
         // 页面跳转到第几页
         $('#jumpPageBtn').click(function () {
             var jumpPage = $('#jumpPageInput').val();
-            if( jumpPage <= _this.totalPage){
+            if( jumpPage <= _this.totalPage&& /(^[1-9]\d*$)/.test(jumpPage)){
                 _this.currentPage(jumpPage-1,_this.totalPage);
             }else {
                 alert('页码超出范围');
@@ -213,7 +213,9 @@ function fullTable(sortField,is_abroad,order) {
                 "<td>"+rows[i].period_30+"</td> " +
             "</tr>");
         }
-
+        if ($("#currentPage").text()==totalPage){
+            $(".next").replaceWith("<span class=\"current next\">下一页</span>");
+        }
     });
 }
 
@@ -271,10 +273,13 @@ Date.prototype.Format = function(fmt) {
 }
 
 // 选择国内外
-function area(obj){
+$(".dms-btn-regional").click(function () {
+    // alert("aaaaa")
     $(this).toggleClass('active').siblings(".dms-btn-regional").removeClass('active');
-    fullTable(null,$(obj).attr("value"));
-}
+    fullTable(null,$(this).attr("value"));
+})
+
+
 
 // 日期改变
 $("#dms_date").change(function () {
@@ -284,7 +289,6 @@ $("#dms_date").change(function () {
 // 导出
 $("#export").click(function () {
     var uri = "/user/retain/download"+getDownLoadParam();
-    alert(uri);
     window.location.href=uri;
 });
 
