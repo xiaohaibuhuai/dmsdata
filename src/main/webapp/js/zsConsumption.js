@@ -285,17 +285,12 @@ Date.prototype.formatterDate = function(param,parrent){
     w.action={
         button_class_dms_btn_regional:'.dms-btn-regional',
         button_class_dms_btn_regional_active:'.dms-btn-regional.activate',
-        /*div_class_range_inputs:"range_inputs",
-        addEvent:function(){
-            w.document.getElementsByClassName("range_inputs")[0].addEventListener("click",function(){
-                index.loadData();
-            })
-        },*/
         all:function(){
 
            index.setQueryParam({_type:"all"})
            chart.getRemoteData(index.getQueryParam());
            index.setReDrawPage(true)
+           index.setConfig({tablePage:0})
            index.loadData()
        },
        china:function(obj){
@@ -309,20 +304,11 @@ Date.prototype.formatterDate = function(param,parrent){
                index.setQueryParam({_type:"china"})
                chart.getRemoteData(index.getQueryParam());
                index.setReDrawPage(true)
+               index.setConfig({tablePage:0})
                index.loadData()//list.getRemoteData({_type:"all",startDate:"",endDate:""});
            }
 
        },
-        orderDESC:function(obj,_index){
-            index.setQueryParam({sort:list.getColumns()[_index].name,by:"desc"})
-            list.setASC(obj,_index)
-            index.loadData()
-        },
-        orderASC:function(obj,_index){
-                    index.setQueryParam({sort:list.getColumns()[_index].name,by:"asc"})
-                    list.setDESC(obj,_index)
-                    index.loadData()
-        },
         orderDESC:function(obj,_index){
             index.setQueryParam({sort:list.getColumns()[_index].name,by:"desc"})
             list.setASC(obj,_index)
@@ -343,6 +329,7 @@ Date.prototype.formatterDate = function(param,parrent){
                   index.setQueryParam({_type:"abroad"})
                   chart.getRemoteData({_type:"abroad"})
                   index.setReDrawPage(true)
+                  index.setConfig({tablePage:0})
                   index.loadData()//list.getRemoteData({_type:"all",startDate:"",endDate:""});
              }
         },
@@ -442,10 +429,9 @@ Date.prototype.formatterDate = function(param,parrent){
         init:function (conf) {
             this.config=conf
             this._initConfig()
-            this.dmsDate();
-
             this.currentPage(this.tablePage||0,this.totalPage); //1是变量 this.totalPage 后台需要返回;
             if(!this.isInit){
+                this.dmsDate();
                 this.PageItem()
                 this.pageJump();
             }
@@ -504,6 +490,7 @@ Date.prototype.formatterDate = function(param,parrent){
                     _this.startDate = start.format('YYYY-MM-DD');
                     _this.endDate = end.format('YYYY-MM-DD');
                     _this.setReDrawPage(true)
+                    _this.setConfig({tablePage:0})
                     _this.loadData()
                     console.log( start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') );
 
@@ -580,8 +567,6 @@ Date.prototype.formatterDate = function(param,parrent){
     var init =function(){
         list.initTable();
         w.action.all()
-        //w.action.addEvent()
-        //index.init({data:list.getData(),datestart:"",dateend:""})
 
     }
     w.pageScope.init=init

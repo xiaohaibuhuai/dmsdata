@@ -280,6 +280,7 @@ Date.prototype.formatterDate = function(param,parrent){
             index.setQueryParam({_type:"all"})
             chart.getRemoteData(index.getQueryParam());
             index.setReDrawPage(true)
+            index.setConfig({tablePage:0})
             index.loadData()//list.getRemoteData({_type:"all",startDate:"",endDate:""});
         },
         china:function(obj){
@@ -293,6 +294,7 @@ Date.prototype.formatterDate = function(param,parrent){
                 index.setQueryParam({_type:"china"})
                 chart.getRemoteData(index.getQueryParam());
                 index.setReDrawPage(true)
+                index.setConfig({tablePage:0})
                 index.loadData()//list.getRemoteData({_type:"all",startDate:"",endDate:""});
             }
 
@@ -334,6 +336,7 @@ Date.prototype.formatterDate = function(param,parrent){
                   index.setQueryParam({_type:"abroad"})
                   chart.getRemoteData({_type:"abroad"})
                   index.setReDrawPage(true)
+                  index.setConfig({tablePage:0})
                   index.loadData()//list.getRemoteData({_type:"all",startDate:"",endDate:""});
              }
         },
@@ -426,7 +429,7 @@ Date.prototype.formatterDate = function(param,parrent){
 
                 var page =""
                 for( var i = 0 ;i < this.pageItems.length;i++){
-                        page = page + '<option '+((this.perPageItems||this.getDefaultPageItems())==this.pageItems[i]?'selected="selected"':"")+' value="'+this.pageItems[i]+'">'+this.pageItems[i]+'</optio>';
+                        page = page + '<option '+((this.perPageItem||this.getDefaultPageItems())==this.pageItems[i]?'selected="selected"':"")+' value="'+this.pageItems[i]+'">'+this.pageItems[i]+'</optio>';
                 }
                 if(page!=""){
                     J(this.select_id_perPageItems).empty()
@@ -442,10 +445,11 @@ Date.prototype.formatterDate = function(param,parrent){
         init:function (conf) {
             this.config=conf
             this._initConfig()
-            this.dmsDate();
+
 
             this.currentPage(this.tablePage||0,this.totalPage); //1是变量 this.totalPage 后台需要返回;
            if(!this.isInit){
+               this.dmsDate();
                this.PageItem()
                this.pageJump();
             }
@@ -504,7 +508,7 @@ Date.prototype.formatterDate = function(param,parrent){
                     _this.startDate = start.format('YYYY-MM-DD');
                     _this.endDate = end.format('YYYY-MM-DD');
                     _this.setReDrawPage(true)
-
+                    _this.setConfig({tablePage:0})
                     _this.loadData()
                     w.action.loadChartData();
                     console.log( start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') );

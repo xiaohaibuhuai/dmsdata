@@ -271,6 +271,7 @@ Date.prototype.formatterDate = function(param,parrent){
            index.setQueryParam({_type:"all"})
            chart.getRemoteData(index.getQueryParam());
            index.setReDrawPage(true)
+           index.setConfig({tablePage:0})
            index.loadData()
        },
        china:function(obj){
@@ -284,20 +285,11 @@ Date.prototype.formatterDate = function(param,parrent){
                index.setQueryParam({_type:"china"})
                chart.getRemoteData(index.getQueryParam());
                index.setReDrawPage(true)
+               index.setConfig({tablePage:0})
                index.loadData()//list.getRemoteData({_type:"all",startDate:"",endDate:""});
            }
 
        },
-        orderDESC:function(obj,_index){
-            index.setQueryParam({sort:list.getColumns()[_index].name,by:"desc"})
-            list.setASC(obj,_index)
-            index.loadData()
-        },
-        orderASC:function(obj,_index){
-                    index.setQueryParam({sort:list.getColumns()[_index].name,by:"asc"})
-                    list.setDESC(obj,_index)
-                    index.loadData()
-        },
         orderDESC:function(obj,_index){
             index.setQueryParam({sort:list.getColumns()[_index].name,by:"desc"})
             list.setASC(obj,_index)
@@ -314,14 +306,14 @@ Date.prototype.formatterDate = function(param,parrent){
                  this.all()
              }else{
                   console.info("国外")
-
                   index.setQueryParam({_type:"abroad"})
                   chart.getRemoteData({_type:"abroad"})
                   index.setReDrawPage(true)
-                  index.loadData()//list.getRemoteData({_type:"all",startDate:"",endDate:""});
+                  index.setConfig({tablePage:0})
+                  index.loadData()
              }
         },
-        export:function(obj){// onclick="action.export(this)"  //action.changeDate(this)
+        export:function(obj){
             param={
                 url:list.getUrl(),
                 total:list.getData().total||0,
@@ -329,8 +321,6 @@ Date.prototype.formatterDate = function(param,parrent){
                 queryParams:index.getQueryParam()||{}
 
             }
-
-            //J(obj).linkbutton('disable');
             w.setTimeout(function(){console.info("-----------------------------")},5000)
             var CONF={
                 url:"/export/csv",
@@ -419,10 +409,11 @@ Date.prototype.formatterDate = function(param,parrent){
         init:function (conf) {
             this.config=conf
             this._initConfig()
-            this.dmsDate();
+
 
             this.currentPage(this.tablePage||0,this.totalPage); //1是变量 this.totalPage 后台需要返回;
             if(!this.isInit){
+                this.dmsDate();
                 this.PageItem()
                 this.pageJump();
             }
@@ -481,6 +472,7 @@ Date.prototype.formatterDate = function(param,parrent){
                     _this.startDate = start.format('YYYY-MM-DD');
                     _this.endDate = end.format('YYYY-MM-DD');
                     _this.setReDrawPage(true)
+                    _this.setConfig({tablePage:0})
                     _this.loadData()
                     console.log( start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') );
 

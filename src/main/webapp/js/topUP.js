@@ -456,17 +456,12 @@ Date.prototype.formatterDate = function(param,parrent){
     w.action={
         button_class_dms_btn_regional:'.dms-btn-regional',
         button_class_dms_btn_regional_active:'.dms-btn-regional.activate',
-        /*div_class_range_inputs:"range_inputs",
-        addEvent:function(){
-            w.document.getElementsByClassName("range_inputs")[0].addEventListener("click",function(){
-                index.loadData();
-            })
-        },*/
         all:function(){
 
            index.setQueryParam({_type:"all"})
            chart.getRemoteData(index.getQueryParam());
            index.setReDrawPage(true)
+           index.setConfig({tablePage:0})
            index.loadData()
        },
        china:function(obj){
@@ -476,24 +471,14 @@ Date.prototype.formatterDate = function(param,parrent){
                this.all()
            }else{
                console.info("国内")
-
                index.setQueryParam({_type:"china"})
                chart.getRemoteData(index.getQueryParam());
                index.setReDrawPage(true)
+               index.setConfig({tablePage:0})
                index.loadData()//list.getRemoteData({_type:"all",startDate:"",endDate:""});
            }
 
        },
-        orderDESC:function(obj,_index){
-            index.setQueryParam({sort:list.getColumns()[_index].name,by:"desc"})
-            list.setASC(obj,_index)
-            index.loadData()
-        },
-        orderASC:function(obj,_index){
-                    index.setQueryParam({sort:list.getColumns()[_index].name,by:"asc"})
-                    list.setDESC(obj,_index)
-                    index.loadData()
-        },
         orderDESC:function(obj,_index){
             index.setQueryParam({sort:list.getColumns()[_index].name,by:"desc"})
             list.setASC(obj,_index)
@@ -514,6 +499,7 @@ Date.prototype.formatterDate = function(param,parrent){
                   index.setQueryParam({_type:"abroad"})
                   chart.getRemoteData({_type:"abroad"})
                   index.setReDrawPage(true)
+                  index.setConfig({tablePage:0})
                   index.loadData()//list.getRemoteData({_type:"all",startDate:"",endDate:""});
              }
         },
@@ -534,16 +520,6 @@ Date.prototype.formatterDate = function(param,parrent){
                 data:param
             }
 
-
-            /*var form=       '<form action="'+CONF.url+'" method="post" id="excel" style="display:none">'+
-                                '<input type="text" name="fileName" value="'+CONF.filename+'">'+
-                                '<textarea name="data">'+JSON.stringify(CONF.data)+'</textarea>'+
-                            '</form>';
-
-            J('body').append(form);
-            J("#excel").submit();
-            J("#excel").remove();
-            console.info("导出")*/
             new Ajax(CONF).download();
         },
         topUpDetail:function(obj){
@@ -627,11 +603,12 @@ Date.prototype.formatterDate = function(param,parrent){
         init:function (conf) {
             this.config=conf
             this._initConfig()
-            this.dmsDate();
-
             this.currentPage(this.tablePage||0,this.totalPage); //1是变量 this.totalPage 后台需要返回;
-            this.PageItem()
-            this.pageJump();
+            if(!this.isInit){
+                this.dmsDate();
+                this.PageItem()
+                this.pageJump();
+            }
             this.isInit=true;
             this.setReDrawPage(false)
 
@@ -687,6 +664,7 @@ Date.prototype.formatterDate = function(param,parrent){
                     _this.startDate = start.format('YYYY-MM-DD');
                     _this.endDate = end.format('YYYY-MM-DD');
                     _this.setReDrawPage(true)
+                    _this.setConfig({tablePage:0})
                     _this.loadData()
                     console.log( start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') );
 
@@ -764,8 +742,6 @@ Date.prototype.formatterDate = function(param,parrent){
     var init =function(){
         list.initTable();
         w.action.all()
-        //w.action.addEvent()
-        //index.init({data:list.getData(),datestart:"",dateend:""})
 
     }
     w.pageScope.init=init
