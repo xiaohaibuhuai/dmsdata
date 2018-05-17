@@ -1,0 +1,15 @@
+.dms-nav,body{
+    min-width: 1300px;
+}
+.first{
+    min-width:80px;
+}
+.dms-container{
+    width: 1300px;
+}
+.dms-right{
+    width:1048px;
+}
+.dms-title,.dms-table{
+    width: 970px;
+}

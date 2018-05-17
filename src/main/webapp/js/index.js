@@ -173,7 +173,7 @@ Date.prototype.formatterDate = function(param,parrent){
 
 
     var chart={
-          title:[['注册人数','注册即买入人数'],"买入人数"],
+          title:[['注册人数','注册即买入人数'],["买入人数"]],
           index:0,
           getIndex:function(){return this.index},
           setIndex:function(index){this.index=index;this.initTable()},
@@ -189,7 +189,8 @@ Date.prototype.formatterDate = function(param,parrent){
           legend: {
              data:['注册人数','注册即买入人数'],
              bottom:'0%',
-             right:'10%'
+             right:'10%',
+             selectedMode:false
           },
           mergeChartOptions:function(){
                   this.chartOptions.legend =  this.getLegend()
@@ -233,10 +234,10 @@ Date.prototype.formatterDate = function(param,parrent){
                           data:this.mdata['series.register.buyin.data']?this.mdata['series.register.buyin.data']:[],
                           itemStyle : {
                               normal : {
-                                  color:'#82c95b',
-                                  lineStyle:{
-                                      color:'#82c95b'
-                                  }
+                                 color:'#12a0ff', //圆点颜色
+                                lineStyle:{
+                                    color:'#12a0ff'
+                                }
                               }
                           }
                     }
@@ -245,7 +246,7 @@ Date.prototype.formatterDate = function(param,parrent){
                 }else{
                     var data1 = {
 
-                          name:this.title[this.index],
+                          name:this.title[this.index][0],
                           type:'line',
                           symbol:'circle',//拐点样式
                           symbolSize: 6,//拐点大小
