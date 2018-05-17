@@ -122,6 +122,7 @@ var version =  {
     },
     // 加载数据 根据参数
     InitData:function () {
+        setTotalPage();
         fullTable();
     },
     // 页面加载获得版本信息
@@ -140,7 +141,8 @@ var version =  {
 
 //输出时间值
 $('#dms_date').change(function () {
-    console.log('开始时间'+version.startDate);
+    $("#currentPage").text(1);
+    setTotalPage();
     fullTable();
 });
 
@@ -168,6 +170,8 @@ window.onload = function () {
     //$('#name').selectpicker('render'); //重绘
     //监听下拉框的值变化下拉框
     $('#id_select').change(function () {
+        $("#currentPage").text(1);
+        setTotalPage();
         console.log('app的版本值'+ $('#id_select').selectpicker('val'));
         fullTable();
     });
@@ -186,11 +190,6 @@ function fullTable(sortField,order) {
         uri = "/user/version/totalVersion"+getPageParamter(getHeardParamter(),sortField,order);
     }
     $.get(uri,function (result) {
-        var total = result.total;
-        var perPageItems = $('#perPageItems').val();
-        var totalPage = Math.ceil(total/perPageItems);
-        version.totalPage = totalPage;
-        $('.totalPage').text(totalPage);
         var rows = result.rows;
         if (myVersion == "newVersion"){
             $("#addVersion").empty();
@@ -215,9 +214,6 @@ function fullTable(sortField,order) {
                     "<td>"+rows[i].user_num+"</td>" +
                     "</tr>");
             }
-        }
-        if ($("#currentPage").text()==totalPage){
-            $(".next").replaceWith("<span class=\"current next\">下一页</span>");
         }
     });
 }
@@ -360,6 +356,8 @@ $("#export").click(function () {
 
 $(".dms-btn-regional").click(function () {
     // alert("aaaaa")
+    $("#currentPage").text(1);
+    setTotalPage();
     $(this).toggleClass('active').siblings(".dms-btn-regional").removeClass('active');
     fullTable();
 })
@@ -377,3 +375,14 @@ $(".version").click(function () {
     var order = $(this).attr("value");
     fullTable(sortField,order);
 });
+
+function setTotalPage() {
+    var uri = "/user/version/newVersion"+getPageParamter(getHeardParamter(),null,null);
+    $.get(uri,function (result) {
+        var total = result.total;
+        var perPageItems = $('#perPageItems').val();
+        var totalPage = Math.ceil(total/perPageItems);
+        version.totalPage=totalPage;
+        version.currentPage(0,totalPage);
+    });
+}

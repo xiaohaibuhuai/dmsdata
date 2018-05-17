@@ -35,6 +35,8 @@ Date.prototype.formatterDate = function(param,parrent){
     }
     return parrent.replace(/yyyy/g,y).replace(/MM/g,m).replace(/dd/g,d)
 };
+
+
 var retain =  {
     startDate:null, //开始时间
     endDate:null, //结束时间
@@ -43,8 +45,8 @@ var retain =  {
     totalPage:20, //总页数
     init:function () {
         this.dmsDate();
-        fullTable();
-        this.currentPage(0,this.totalPage); //1是变量 this.totalPage 后台需要返回;
+        this.fullPage();
+        // this.currentPage(0,this.totalPage); //1是变量 this.totalPage 后台需要返回;
         this.pageJump();
     },
     //    日期插件
@@ -99,6 +101,7 @@ var retain =  {
     //分页插件
     currentPage:function (current,tableTotalPage) {
         var _this = this;
+
         $('#pagination').pagination(tableTotalPage,{
             prev_text:'上一页', //上一页
             next_text:'下一页', //下一页
@@ -120,7 +123,6 @@ var retain =  {
                 }else {
                     $('#pageLast').css('color','#12a0ff').removeClass('disabled');
                 }
-                // alert(page_index);
                 fullTable();
             }
         });
@@ -154,6 +156,10 @@ var retain =  {
             _this.perPageItem = $('#perPageItems').val();
             _this.currentPage(0,_this.totalPage)
         });
+    },
+    fullPage : function () {
+      setTotalPage();
+      fullTable();
     }
 };
 
@@ -176,6 +182,7 @@ window.onload = function () {
     retain.init();
 };
 
+
 // 填充表格
 function fullTable(sortField,is_abroad,order) {
 
@@ -194,11 +201,6 @@ function fullTable(sortField,is_abroad,order) {
     var uri = "/user/retain/list"+para;
     $.get(uri,function (result) {
         console.log("返回结果："+result);
-        var total = result.total;
-        var perPageItems = $('#perPageItems').val();
-        var totalPage = Math.ceil(total/perPageItems);
-        retain.totalPage = totalPage;
-        $('.totalPage').text(totalPage);
         var rows = result.rows
         $("#body").empty();
         for (var i in rows){
@@ -213,9 +215,20 @@ function fullTable(sortField,is_abroad,order) {
                 "<td>"+rows[i].period_30+"</td> " +
             "</tr>");
         }
-        if ($("#currentPage").text()==totalPage){
-            $(".next").replaceWith("<span class=\"current next\">下一页</span>");
-        }
+
+    });
+}
+
+function setTotalPage() {
+     var para = getTableParamter();
+    para = para +"&sortField=date&order=desc";
+    var uri = "/user/retain/list"+para;
+    $.get(uri,function (result) {
+        var total = result.total;
+        var perPageItems = $('#perPageItems').val();
+        var totalPage = Math.ceil(total/perPageItems);
+        retain.totalPage=totalPage;
+        retain.currentPage(0,totalPage);
     });
 }
 
@@ -248,8 +261,6 @@ function getTableParamter(is_abroad){
     return para;
 }
 
-
-
 // 日期格式化
 Date.prototype.Format = function(fmt) {
     var o = {
@@ -274,7 +285,8 @@ Date.prototype.Format = function(fmt) {
 
 // 选择国内外
 $(".dms-btn-regional").click(function () {
-    // alert("aaaaa")
+    $("#currentPage").text(1);
+    setTotalPage();
     $(this).toggleClass('active').siblings(".dms-btn-regional").removeClass('active');
     fullTable(null,$(this).attr("value"));
 })
@@ -283,6 +295,8 @@ $(".dms-btn-regional").click(function () {
 
 // 日期改变
 $("#dms_date").change(function () {
+    $("#currentPage").text(1);
+    setTotalPage();
     fullTable();
 });
 

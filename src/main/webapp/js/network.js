@@ -50,6 +50,7 @@ var territory = {
                     ],
                     "firstDay": 1
                 },
+                "maxDate":new Date(),
                 "linkedCalendars": false,
                 "startDate": _this.initStartDate,
                 "endDate": _this.initEndDate
@@ -148,6 +149,7 @@ var territory = {
 
 //输出时间值
 $('#dms_date').change(function () {
+    $("#currentPage").text(1);
     console.log('开始时间'+netStatus.startDate);
     fullView();
     fullTable();
@@ -260,6 +262,8 @@ function fullTable(sortField,order) {
         // }
         if ($("#currentPage").text()==totalPage){
             $(".next").replaceWith("<span class=\"current next\">下一页</span>");
+        }else {
+            $(".next").replaceWith("<a href=\"#\" class=\"next\">下一页</a>");
         }
     });
 
@@ -395,6 +399,7 @@ $("#export").click(function () {
 
 // 国内外
 $(".dms-btn-regional").click(function () {
+    $("#currentPage").text(1);
     $(this).toggleClass('active').siblings(".dms-btn-regional").removeClass('active');
     fullTable();
     fullView();

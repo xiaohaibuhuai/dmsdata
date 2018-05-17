@@ -1,17 +1,17 @@
 
-jdbcUrl = jdbc:mysql://172.16.10.221:3306/dms_test?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
-user = dms_test
-password =dms_test
-dbType=mysql
-devMode = false
-decrypt=true
-
-#jdbcUrl = jdbc:mysql://172.16.24.20:3306/dms_support?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
-#user = cheat_check
-#password =yilumi6784782
+#jdbcUrl = jdbc:mysql://172.16.10.221:3306/dms_test?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
+#user = dms_test
+#password =dms_test
 #dbType=mysql
 #devMode = false
 #decrypt=true
+
+jdbcUrl = jdbc:mysql://172.16.24.20:3306/dms_support?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
+user = cheat_check
+password =yilumi6784782
+dbType=mysql
+devMode = false
+decrypt=true
 
 
 #master_jdbc_url = jdbc:mysql://172.16.24.25:3306/test_poker?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
