@@ -44,7 +44,7 @@ var activeUser =  {
     init:function () {
         this.dmsDate();
         full();
-        this.currentPage(0,this.totalPage); //1是变量 this.totalPage 后台需要返回;
+        // this.currentPage(0,this.totalPage); //1是变量 this.totalPage 后台需要返回;
         this.pageJump();
     },
     //    日期插件
@@ -231,6 +231,7 @@ window.onload = function () {
 
 // 填充
 function  full(){
+    setTotalPage();
     // 填充折线图
     fullView();
     // 填充表格
@@ -255,20 +256,12 @@ function fullTable(sortField,is_abroad,order) {
     }
     var uri = "/user/active/list"+para;
     $.get(uri,function (result) {
-        var total = result.total;
-        var perPageItems = $('#perPageItems').val();
-        var totalPage = Math.ceil(total/perPageItems);
-        activeUser.totalPage = totalPage;
-        $('.totalPage').text(totalPage);
-        var rows = result.rows
+        var rows = result.rows;
         $("#body").empty();
         for (var i in rows){
             $("#body").append(
                 "<tr><td>"+rows[i].date+"</td><td>"+rows[i].period_01+"</td>" +
                 "<td>"+rows[i].period_07+"</td><td>"+rows[i].period_30+"</td></tr>");
-        }
-        if ($("#currentPage").text()==totalPage){
-            $(".next").replaceWith("<span class=\"current next\">下一页</span>");
         }
     });
 }
@@ -361,6 +354,20 @@ function activeNum(obj){
     fullView($(obj).attr("value"));
 }
 
+// 设置总页数
+function setTotalPage() {
+
+    var para =  getTableParamter()+"&sortField=date&order=desc";
+    var uri = "/user/active/list"+para;
+    $.get(uri,function (result) {
+        var total = result.total;
+        var perPageItems = $('#perPageItems').val();
+        var totalPage = Math.ceil(total/perPageItems);
+        activeUser.totalPage=totalPage;
+        activeUser.currentPage(0,totalPage);
+    });
+}
+
 //  排序
 $(".activeUserDetail").click(function () {
 
@@ -381,6 +388,8 @@ $(".activeUserDetail").click(function () {
 $(".dms-btn-regional").click(function () {
     // alert("aaaaa")
     $(this).toggleClass('active').siblings(".dms-btn-regional").removeClass('active');
+    $("#currentPage").text(1);
+    setTotalPage();
     fullView(null,$(this).attr("value"));
     fullTable(null,$(this).attr("value"));;
 })
@@ -409,6 +418,7 @@ Date.prototype.Format = function(fmt) {
 
 // 日期改变
 $("#dms_date").change(function () {
+    $("#currentPage").text(1);
     full();
 });
 
@@ -421,7 +431,7 @@ $("#export").click(function () {
 function getDownLoadParam() {
 
     // 时间控件的值
-    var dataArr = $("#dms_date").val().split(" - ")
+    var dataArr = $("#dms_date").val().split(" - ");
     // 开始时间和结束时间
     var start_time = new Date((new Date(dataArr[0])).getTime()).Format("yyyy-MM-dd");
     var end_time = new Date((new Date(dataArr[1])).getTime()).Format("yyyy-MM-dd");
