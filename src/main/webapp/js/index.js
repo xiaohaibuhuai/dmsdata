@@ -456,7 +456,7 @@ Date.prototype.formatterDate = function(param,parrent){
             w.setTimeout(function(){console.info("-----------------------------")},5000)
             var CONF={
                 url:"/export/csv",
-                filename:"用户数据汇总",
+                filename:"并发趋势",
                 data:param
             }
             new Ajax(CONF).download();
@@ -704,3 +704,4 @@ Date.prototype.formatterDate = function(param,parrent){
     }
     w.pageScope.init=init
 })($,window)
+

@@ -156,13 +156,15 @@ Date.prototype.formatterDate = function(param,parrent){
             };
     };
 
-
     var chart={
+            title:[["并发趋势"]],
             index:0,
             getIndex:function(){return this.index},
-            setIndex:function(index){this.index=index;this.initTable()},
+            setIndex:function(index){this.index=index},
             urls:["/statistic/dmsconcurrenthourview/user/chartdata","/statistic/dmsconcurrentdayview/user/chartdata"],
             getUrl:function(){return this.urls[this.index]},
+            div_class_dms_chart_time:'.dms-chart-time',
+            mdata:{},
             div_class_dms_chart_time:'.dms-chart-time',
             chartOptions:{},
             getRemoteData:function(param){
@@ -170,39 +172,94 @@ Date.prototype.formatterDate = function(param,parrent){
                 new Ajax(option
                 ).execute()
             },
+            mergeChartOptions:function(){
+                  this.chartOptions.xAxis = this.reconstitutionxAxis()
+                  this.chartOptions.series =  this.reconstitutionSeries()
+                  return this.chartOptions;
+            },
+            xAxis: {
+                type: 'category',
+                data: ['03-28','03-29','03-30','03-31','04-01','04-02','04-03']
+            },
+            reconstitutionxAxis:function(){
+                this.xAxis.data = this.mdata['xAxis.data']?this.mdata['xAxis.data']:[]
+                return  this.xAxis
+            },
+            series: [
+
+
+            ],
+            reconstitutionSeries:function(){
+                this.series = []
+                if(this.index == 0 ){
+                    var data1 = {
+
+                          name:'活跃人数',
+                          type:'line',
+                          symbol:'circle',//拐点样式
+                          symbolSize: 6,//拐点大小
+                          data:this.mdata['series.data']?this.mdata['series.data']:[],
+                          itemStyle : {
+                              normal : {
+                                  color:'#82c95b',
+                                  lineStyle:{
+                                      color:'#82c95b'
+                                  }
+                              }
+                          }
+                    }
+
+                    this.series[0]=data1
+                }else{
+                     var data1 = {
+                          name:'活跃人数',
+                          type:'line',
+                          symbol:'circle',//拐点样式
+                          symbolSize: 6,//拐点大小
+                          data:this.mdata['series.data']?this.mdata['series.data']:[],
+                          itemStyle : {
+                              normal : {
+                                  color:'#82c95b',
+                                  lineStyle:{
+                                      color:'#82c95b'
+                                  }
+                              }
+                          }
+                     }
+                    this.series[0]=data1
+                }
+                return this.series
+
+            },
             initChar:function(data){
             if(data){
                 this.chartOptions = pageScope.myChart.getOption()
                 if(!this.chartOptions){
                     return
                 }
-                try{
-                    this.chartOptions.xAxis[0].data = data['xAxis.data']?data['xAxis.data']:[]
-                    this.chartOptions.series[0].data = data['series.data']?data['series.data']:[]
-                    pageScope.myChart.setOption(this.chartOptions)
-                    if(this.getIndex()==0){
-                        J(this.div_class_dms_chart_time).html("<span>"+new Date(data['date'][0]).formatterDate({},"yyyy.MM.dd")+"</span>")
-                    }else{
-                        J(this.div_class_dms_chart_time).html("<span>"+new Date(data['xAxis.data'][0]).formatterDate({},"yyyy.MM.dd")+"</span>-<span>"+new Date(data['xAxis.data'][data['xAxis.data'].length-1]).formatterDate({},"yyyy.MM.dd")+"</span>")
-                    }
-
-                }catch(err){
-                    console.info("Echar 渲染异常")
-                    return
-                }
-
+                this.mdata = data
+                this.redrawchar()
             }else{
                 //TODO 处理提示信息
             }
 
             },
-            bind:function(echarts){
-            //this.echarts=echarts;
-            this.getRemoteData = this.getRemoteData.bind(this)
-            }
-    }
-    chart.bind(w.myChart)
+            redrawchar:function(){
+                pageScope.myChart.setOption(this.mergeChartOptions())
+                if(this.getIndex()==0){
+                    J(this.div_class_dms_chart_time).html("<span>"+new Date(this.mdata['date'][0]).formatterDate({},"yyyy.MM.dd")+"</span>")
+                }else{
+                    J(this.div_class_dms_chart_time).html("<span>"+new Date(this.mdata['xAxis.data'][0]).formatterDate({},"yyyy.MM.dd")+"</span>-<span>"+new Date(this.mdata['xAxis.data'][this.mdata['xAxis.data'].length-1]).formatterDate({},"yyyy.MM.dd")+"</span>")
+                }
 
+            },
+            showHour:function(){this.index=0;this.getRemoteData(index.getQueryParam())},
+            showDay:function(){this.index=1;this.getRemoteData(index.getQueryParam())},
+            bind:function(echarts){
+                this.getRemoteData = this.getRemoteData.bind(this)
+            }
+     }
+     chart.bind(w.myChart)
      var list={
               index:0,
               getIndex:function(){return this.index},
@@ -357,11 +414,13 @@ Date.prototype.formatterDate = function(param,parrent){
             this.setIndex(0)
             index.setQueryParam({})
             index.loadData()
+            chart.showHour()
             console.info("小时统计")
         },
         day:function(obj){
             this.setIndex(1)
             index.setQueryParam({})
+            chart.showDay()
             index.loadData()
             console.info("天统计")
         }

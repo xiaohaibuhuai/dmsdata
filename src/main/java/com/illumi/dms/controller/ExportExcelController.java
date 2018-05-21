@@ -390,12 +390,180 @@ public class ExportExcelController extends  EasyuiController  {
     }
 
 
+    public static class DmsConcurrentDayViewCSV extends ColumnFormat<DmsConcurrentDayView> {
+        //columns:[{name:"date",text:"日期"},{name:"regist_user_num",text:"注册人数"},{name:"regist_buyin_user_num",text:"当日注册且买入人数"},{name:"total_buyin_user_num",text:"当日总买入用户数"},{name:"total_user_num",text:"累计注册人数"},{name:"total_buyin_user_num",text:"累计买入独立用户数"}],
+        @Override
+        public String[] format(Map<String, Object> row, List<Map<String, Object>> column) {
+            return  null;
+        }
+
+        @Override
+        public String[] format(DmsConcurrentDayView row, List<Map<String, Object>> column) {
+            String[] result = null;
+            if (ValidateObjectUtil.isNotBlank(column, row)) {
+                result = new String[column.size()];
+                for (int i = 0; i < result.length; i++) {
+                    String field = ValidateObjectUtil.isBlankDefault(column.get(i).get(DmsUserViewCSV.FIELD), "");
+                    System.out.println(String.format(" >>>>>>>>>>>>>row data:%s ", JsonKit.toJson(row,8)));
+                    String value = ValidateObjectUtil.isBlankDefault(row.get(field),"");
+                    result[i] = value;
+                }
+            }
+            return result;
+        }
+
+        @Override
+        public List<DmsConcurrentDayView> execute() {
+            try {
+                int page =  ValidateObjectUtil.isBlankDefault(DmsUserViewCSV.QUERY_PARAM.get("page"), 1);
+                int pageSize = ValidateObjectUtil.isBlankDefault(DmsUserViewCSV.REQUEST_PARAM.get("total"), 10000);
+                String type= ValidateObjectUtil.isBlankDefault(DmsUserViewCSV.REQUEST_PARAM.get("_type"), "all");
+                String startDate = ValidateObjectUtil.isBlankDefault(DmsUserViewCSV.QUERY_PARAM.get("startDate"), null);
+                String endDate = ValidateObjectUtil.isBlankDefault(DmsUserViewCSV.QUERY_PARAM.get("endDate"), null);
+                String sort= ValidateObjectUtil.isBlankDefault(DmsUserViewCSV.QUERY_PARAM.get("sort"),"date");
+                String by= ValidateObjectUtil.isBlankDefault(DmsUserViewCSV.QUERY_PARAM.get("by"),"desc");
+
+
+                StringBuffer sql = new StringBuffer("select 1 as gpid, date,")
+                        .append(" sum(day) as day ")
+                        .append(" from dms_concurrent_day_view where 1=1");
+
+
+                if(ValidateObjectUtil.isNotBlank(startDate)){
+
+                    sql.append(" and date ").append(">= '").append(startDate).append("'");
+                }
+                if(ValidateObjectUtil.isNotBlank(endDate)){
+                    sql.append(" and date ").append("< '").append(endDate).append("'");
+                }
+
+                if(ValidateObjectUtil.isNotBlank(type)){
+                    if(type.equals("all")){
+                        sql.append(" group by ").append(" date ");
+                    }else if(type.equals("abroad")){
+                        sql.append(" and is_abroad ").append("=").append("1");
+                        sql.append(" group by ").append(" date ");
+                    }else {
+                        sql.append(" and is_abroad ").append("=").append("0");
+                        sql.append(" group by ").append(" date ");
+                    }
+                }
+
+                if(ValidateObjectUtil.isNotBlank(sort)){
+                    sql.append(" order by ").append(sort).append(" ").append(by);
+                }
+
+                List<DmsConcurrentDayView> list = DmsConcurrentDayView.dao.find(sql.toString());
+
+                return  list;
+
+            } catch (Exception e) {
+                LOGGER.error(e.getMessage(), e);
+                throw  new RuntimeException(e);
+            }
+        }
+    }
+
+    public static class DmsConcurrentHourViewCSV extends ColumnFormat<DmsConcurrentHourView> {
+        //columns:[{name:"date",text:"日期"},{name:"regist_user_num",text:"注册人数"},{name:"regist_buyin_user_num",text:"当日注册且买入人数"},{name:"total_buyin_user_num",text:"当日总买入用户数"},{name:"total_user_num",text:"累计注册人数"},{name:"total_buyin_user_num",text:"累计买入独立用户数"}],
+        @Override
+        public String[] format(Map<String, Object> row, List<Map<String, Object>> column) {
+            return  null;
+        }
+
+        @Override
+        public String[] format(DmsConcurrentHourView row, List<Map<String, Object>> column) {
+            String[] result = null;
+            if (ValidateObjectUtil.isNotBlank(column, row)) {
+                result = new String[column.size()];
+                for (int i = 0; i < result.length; i++) {
+                    String field = ValidateObjectUtil.isBlankDefault(column.get(i).get(DmsUserViewCSV.FIELD), "");
+                    System.out.println(String.format(" >>>>>>>>>>>>>row data:%s ", JsonKit.toJson(row,8)));
+                    String value = ValidateObjectUtil.isBlankDefault(row.get(field),"");
+                    result[i] = value;
+                }
+            }
+            return result;
+        }
+
+        @Override
+        public List<DmsConcurrentHourView> execute() {
+            try {
+                int page =  ValidateObjectUtil.isBlankDefault(DmsUserViewCSV.QUERY_PARAM.get("page"), 1);
+                int pageSize = ValidateObjectUtil.isBlankDefault(DmsUserViewCSV.REQUEST_PARAM.get("total"), 10000);
+                String type= ValidateObjectUtil.isBlankDefault(DmsUserViewCSV.REQUEST_PARAM.get("_type"), "all");
+                String startDate = ValidateObjectUtil.isBlankDefault(DmsUserViewCSV.QUERY_PARAM.get("startDate"), null);
+                String endDate = ValidateObjectUtil.isBlankDefault(DmsUserViewCSV.QUERY_PARAM.get("endDate"), null);
+                String sort= ValidateObjectUtil.isBlankDefault(DmsUserViewCSV.QUERY_PARAM.get("sort"),"date");
+                String by= ValidateObjectUtil.isBlankDefault(DmsUserViewCSV.QUERY_PARAM.get("by"),"desc");
+
+
+                StringBuffer sql = new StringBuffer("select 1 as gpid, date,")
+                        .append(" sum(times_01) as times_01, ")
+                        .append(" sum(times_02) as times_02, ")
+                        .append(" sum(times_03) as times_03, ")
+                        .append(" sum(times_04) as times_04, ")
+                        .append(" sum(times_05) as times_05, ")
+                        .append(" sum(times_06) as times_06, ")
+                        .append(" sum(times_07) as times_07, ")
+                        .append(" sum(times_08) as times_08, ")
+                        .append(" sum(times_09) as times_09, ")
+                        .append(" sum(times_10) as times_10, ")
+                        .append(" sum(times_11) as times_11, ")
+                        .append(" sum(times_12) as times_12, ")
+                        .append(" sum(times_13) as times_13, ")
+                        .append(" sum(times_14) as times_14, ")
+                        .append(" sum(times_15) as times_15, ")
+                        .append(" sum(times_16) as times_16, ")
+                        .append(" sum(times_17) as times_17, ")
+                        .append(" sum(times_18) as times_18, ")
+                        .append(" sum(times_19) as times_19, ")
+                        .append(" sum(times_20) as times_20, ")
+                        .append(" sum(times_21) as times_21, ")
+                        .append(" sum(times_22) as times_22, ")
+                        .append(" sum(times_23) as times_23, ")
+                        .append(" sum(times_24) as times_24 ")
+                        .append(" from dms_concurrent_hour_view where 1=1");
+
+
+                if(ValidateObjectUtil.isNotBlank(startDate)){
+                    sql.append(" and date ").append("= '").append(startDate).append("'");
+                }
+                if(ValidateObjectUtil.isNotBlank(type)){
+                    if(type.equals("all")){
+                        sql.append(" group by ").append(" date ");
+                    }else if(type.equals("abroad")){
+                        sql.append(" and is_abroad ").append("=").append("1");
+                        sql.append(" group by ").append(" date ");
+                    }else {
+                        sql.append(" and is_abroad ").append("=").append("0");
+                        sql.append(" group by ").append(" date ");
+                    }
+                }
+
+                if(ValidateObjectUtil.isNotBlank(sort)){
+                    sql.append(" order by ").append(sort).append(" ").append(by);
+                }
+
+                List<DmsConcurrentHourView> list = DmsConcurrentHourView.dao.find(sql.toString());
+
+                return  list;
+
+            } catch (Exception e) {
+                LOGGER.error(e.getMessage(), e);
+                throw  new RuntimeException(e);
+            }
+        }
+    }
+
         enum TableExcel {
             //["/cms/transactionLog/topUpList","/cms/transactionLog/withDrawList","/cms/transactionLog/goldToGoldBeanList","/cms/transactionLog/goldBeanTogoldDiamondList","/cms/transactionLog/receiveGiftList","/cms/transactionLog/sendGiftList","/cms/transactionLog/floodScreenList","/cms/transactionLog/transferList","/cms/transactionLog/recycleList","/cms/transactionLog/freezeList","/cms/transactionLog/consumeDiamendList","/cms/transactionLog/sendGoldList"];
             //TOP_UP("/cms/transactionLog/topUpList",null);
             DMS_USER_VIEW("/statistic/dmsuserview/user/list",new DmsUserViewCSV()),DMS_PAY_TYPW_VIEW("/statistic/dmspaytypeview/user/list",new DmsPatTypeViewCSV()),
             DMS_PAT_CHANEL_VIEW("/statistic/dmschanelview/user/list",new DmsPayChanelCSV()),DMS_COIN_CONSUME_VIEW("/statistic/dmscoinview/user/list",new DmsCoinConsumeViewCSV()),
-            DMS_DIAMOND_CONSUME_VIEW("/statistic/dmsdiamondview/user/list",new DmsDiamondConsumeViewCSV());
+            DMS_DIAMOND_CONSUME_VIEW("/statistic/dmsdiamondview/user/list",new DmsDiamondConsumeViewCSV()),
+            DMS_CONCURRENT_DAY_VIEW("/statistic/dmsconcurrentdayview/user/list",new DmsConcurrentDayViewCSV()),
+            DMS_CONCURRENT_HOUR_VIEW("/statistic/dmsconcurrenthourview/user/list",new DmsConcurrentHourViewCSV());
             private String url;
             private ColumnFormat columnFormat;
 
@@ -429,6 +597,12 @@ public class ExportExcelController extends  EasyuiController  {
                         }
                         case "/statistic/dmsdiamondview/user/list": {
                             return DMS_DIAMOND_CONSUME_VIEW.getFormat();
+                        }
+                        case "/statistic/dmsconcurrentdayview/user/list": {
+                            return DMS_CONCURRENT_DAY_VIEW.getFormat();
+                        }
+                        case "/statistic/dmsconcurrenthourview/user/list": {
+                            return DMS_CONCURRENT_HOUR_VIEW.getFormat();
                         }
                         default: {
                             return null;
